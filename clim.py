@@ -11,7 +11,7 @@ class CLIM(object):
 
     Simple Example:
 
-        cli = CLIM('My useful CLI tool.', main)
+        cli = CLIM('My useful CLI tool.')
 
         @cli.entrypoint
         def main(cli):
@@ -105,6 +105,8 @@ class CLIM(object):
             raise RuntimeError('You must run this before the with statement!')
 
         self._entrypoint = handler
+
+        return handler
 
     def subcommand(self, handler, name=None, **kwargs):
         """Register a subcommand.
