@@ -1,4 +1,4 @@
-"""PyCLIm - The CLI Context Manager
+"""py-clim - The CLI Context Manager
 """
 from __future__ import division, print_function, unicode_literals
 import argparse
@@ -7,45 +7,143 @@ import logging
 class CLIM(object):
     """CLI Context Manager
 
-    This class wraps some standard python modules in nice ways for CLI tools.
+    CLIM is a framework for writing CLI apps using an opinionated approach.
+    It optimizes for the most common unix tool pattern- small tools that are
+    run from the command line but generally do not feature any user 
+    interaction while they run.
+
+    This class wraps some standard python modules in nice ways for CLI tools. 
+    It provides a Context Manager that can be used to quickly and easily
+    write tools that behave in the way endusers expect. It's meant to lightly
+    wrap standard python modules with just enough framework to make writing
+    simple scripts simple while allowing you to organically grow into large 
+    complex programs with hundreds of options.
 
     Simple Example:
 
         cli = CLIM('My useful CLI tool.')
 
+        @cli.argument('-n', '--name', help='Name to greet', default='World')
         @cli.entrypoint
         def main(cli):
-            cli.log.info('Hello, World!')
+            cli.log.info('Hello, %(name)s!', cli.args.name)
 
         if __name__ == '__main__':
             with cli:
                 cli.run()
 
-    Subcommand Example:
+    # Basics of a CLIM app
 
-        cli = CLIM('My useful CLI tool.')
+    Start by instaniating a CLIM context manager and defining your entrypoint:
 
-        @cli.entrypoint
+        cli = CLIM('My useful CLI tool')
+
         def main(cli):
-            cli.log.info('Hello, World!')
+            print('Hello, %s!' % cli.args.name)
 
-        @cli.subcommand
-        def cmd1(cli):
-            '''Description of cmd1 here.'''
-            cli.log.info('Hello, Sub-Command 1!')
-
-        def cmd2(cli):
-            '''This will show up in --help output.'''
-            cli.log.info('Hello, Sub-Command 2!')
+    From here, you should setup your CLI environment. I typically prefer to
+    do this behind a __main__ check.
 
         if __name__ == '__main__':
-            # You can register subcommands using a decorator as seen above,
-            # or using a function like like this:
-            cli.subcommand(cmd2)
+            cli.entrypoint(main)
+            cli.add_argument('-n', '--name', help='Name to greet', default='World')
+
+    Finally, invoke it as a context manager and use `cli.run()` to dispatch to
+    your entrypoint (or a subcommand, if one has been specified.)
 
             with cli:
-                # The run function will automatically pick between main(), cmd1() and cmd2()
-                cli.run()  
+                cli.run()
+
+    ## Complete CLIM script, using functions
+
+        cli = CLIM('My useful CLI tool')
+
+        def main(cli):
+            print('Hello, %s!' % cli.args.name)
+
+        if __name__ == '__main__':
+            cli.entrypoint(main)
+            cli.add_argument('-n', '--name', help='Name to greet', default='World')
+
+            with cli:
+                cli.run()
+
+    # Using decorators instead
+
+    If you prefer you can use decorators instead. This can help as your program
+    grows by keeping the definition of arguments near the relevant entrypoint.
+    Not that due to the way decorators are evaluated you need to place all
+    `@cli.argument()` decorators above all other decorators.
+
+        cli = CLIM('My useful CLI tool')
+
+        @cli.argument('-n', '--name', help='Name to greet', default='World')
+        @cli.entrypoint
+        def main(cli):
+            print('Hello, %s!' % cli.args.name)
+
+        if __name__ == '__main__':
+            with cli:
+                cli.run()
+
+    # Using Subcommands
+
+    A command pattern for CLI tools is to have subcommands. For example, 
+    you see this in git with `git status` and `git pull`. CLIM supports
+    this pattern using the built-in argparse subcommand functionality. 
+
+    You can register subcommands by using the `cli.subcommand(func)` 
+    function, or by decorating functions with `@cli.subcommand`. In
+    either case the subcommand name will be the same as the name of the
+    function.
+
+    You can access the underlying subcommand instance in two ways-
+
+        * Attribute access (`cli.<subcommand>`)
+        * Dictionary access (`cli.subcommands['<subcommand>']`)
+
+    You should generally prefer the attribute access. If there is a conflict 
+    with an existing attribute or the name is not a legal attribute name you 
+    will have to access it via the dictionary.
+
+    When subcommands are not in use `cli.run()` will always be the same as 
+    `cli.entrypoint()`. When subcommands are in use `cli.run()` will be 
+    pointed to the proper command to run. If no valid subcommand is given on 
+    the command line it will point to `cli.entrypoint()`. If a valid  
+    subcommand is supplied it will point to `<subcommand>()`.
+
+    Note: Python 2 does not support calling @cli.entrypoint when subcommands 
+    are in use. If you need to call @cli.entrypoint when a subcommand is not 
+    specified you will need to use python 3.
+
+    ## Subcommand Example
+
+        cli = CLIM('My useful CLI tool with subcommands.')
+
+        @cli.argument('-c', '--comma', help='Include the comma in output', action='store_true')
+        @cli.entrypoint
+        def main(cli):
+            cli.log.info('Hello%s World!', cli.args.comma)
+
+        @cli.argument('-n', '--name', help='Name to greet', default='World')
+        @cli.subcommand
+        def hello(cli):
+            '''Description of hello subcommand here.'''
+            cli.log.info('Hello%s %s!', cli.args.comma, cli.args.name)
+
+        def goodbye(cli):
+            '''This will show up in --help output.'''
+            cli.log.info('Goodbye%s %s!', cli.args.comma, cli.args.name)
+
+        if __name__ == '__main__':
+            # You can register subcommands using decorators as seen above,
+            # or using functions like like this:
+            cli.subcommand(goodbye)
+            cli.goodbye.add_argument('-n', '--name', help='Name to bid farewell to', default='World')
+
+            with cli:
+                cli.args.comma = ',' if cli.args.comma else ''
+                cli.run()  # Automatically picks between main(), hello() and goodbye()
     """
     def __init__(self, description, entrypoint=None, fromfile_prefix_chars='@', conflict_handler='resolve', **kwargs):
         self._entrypoint = entrypoint
@@ -60,7 +158,7 @@ class CLIM(object):
         self.set_defaults = self._arg_parser.set_defaults
         self.print_usage = self._arg_parser.print_usage
         self.print_help = self._arg_parser.print_help
-        self.subcommands = None
+        self.subcommands = {}
 
         # Setup logging
         self.log_level = logging.INFO
@@ -69,23 +167,31 @@ class CLIM(object):
         self.add_argument('--datetime-fmt', default='%Y-%m-%d %H:%M:%S', help='Format string for datetimes')
         self.add_argument('--log-fmt', default='[%(levelname)s] [%(asctime)s] [file:%(pathname)s] [line:%(lineno)d] %(message)s', help='Format string for log output.')
 
-    def __get__(self, obj, type=None):
-        """Override to allow us to support accessing subcommands as attributes.
-        """
-        if hasattr(self, obj):
-            return getattr(self, obj)
-
-        if obj in self.subcommands:
-            return self.subcommands[obj]
-
-        raise AttributeError("'%s' object has no attribute '%s'" % (self.__class__.__name__, obj))
-
     def add_subparsers(self, title='Sub-commands', **kwargs):
         if self._inside_context_manager:
             raise RuntimeError('You must run this before the with statement!')
 
         self._subparsers = self._arg_parser.add_subparsers(title=title, dest='subcommand', **kwargs)
-        self.subcommands = {}
+
+    def argument(self, *args, **kwargs):
+        """Decorator to call self.add_argument or self.<subcommand>.add_argument.
+        """
+        if self._inside_context_manager:
+            raise RuntimeError('You must run this before the with statement!')
+
+        def argument_function(handler):
+            if handler is self._entrypoint:
+                self.add_argument(*args, **kwargs)
+
+            elif handler.__name__ in self.subcommands:
+                self.subcommands[handler.__name__].add_argument(*args, **kwargs)
+
+            else:
+                raise RuntimeError('Decorated function is not entrypoint or subcommand!')
+
+            return handler
+
+        return argument_function
 
     def run(self):
         """Execute the entrypoint function.
@@ -126,6 +232,11 @@ class CLIM(object):
         self.subcommands[name] = self._subparsers.add_parser(name, **kwargs)
         self.subcommands[name].set_defaults(func=handler)
 
+        if name not in self.__dict__:
+            self.__dict__[name] = self.subcommands[name]
+        else:
+            self.log.debug("Could not add subcommand '%s' to attributes, key already exists!", name)
+
         return handler
 
     def __enter__(self):
@@ -150,25 +261,29 @@ class CLIM(object):
 
 
 if __name__ == '__main__':
-    def main(cli):
-        cli.log.info('Hello, World!')
+        cli = CLIM('My useful CLI tool with subcommands.')
 
-    def cmd1(cli):
-        """Command 1
-        """
-        cli.log.info('Hello, Sub-Command 1!')
+        @cli.argument('-c', '--comma', help='Include the comma in output', action='store_true')
+        @cli.entrypoint
+        def main(cli):
+            cli.log.info('Hello%s World!', cli.args.comma)
 
-    def cmd2(cli):
-        """Command 2
-        """
-        cli.log.info('Hello, Sub-Command 2!')
+        @cli.argument('-n', '--name', help='Name to greet', default='World')
+        @cli.subcommand
+        def hello(cli):
+            '''Description of hello subcommand here.'''
+            cli.log.info('Hello%s %s!', cli.args.comma, cli.args.name)
 
-    if __name__ == '__main__':
-        cli = CLIM('My useful CLI tool.', main)
+        def goodbye(cli):
+            '''This will show up in --help output.'''
+            cli.log.info('Goodbye%s %s!', cli.args.comma, cli.args.name)
 
-        cli.subcommand('cmd1', cmd1)
-        cli.subcommand('cmd2', cmd2)
+        if __name__ == '__main__':
+            # You can register subcommands using decorators as seen above,
+            # or using functions like like this:
+            cli.subcommand(goodbye)
+            cli.goodbye.add_argument('-n', '--name', help='Name to bid farewell to', default='World')
 
-        with cli:
-            # The run function will automatically pick between main(), cmd1(), and cmd2() based on the CLI arguments
-            cli.run()
+            with cli:
+                cli.args.comma = ',' if cli.args.comma else ''
+                cli.run()  # Automatically picks between main(), hello() and goodbye()
