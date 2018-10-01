@@ -1,0 +1,31 @@
+#!/usr/bin/env python
+from __future__ import division, print_function, unicode_literals
+
+from clim import CLIM
+
+cli = CLIM('QMK command line tool.')
+
+
+@cli.entrypoint
+def main(cli):
+    """What you want?"""
+    cli.log.error("I don't do anything.")
+
+
+@cli.subcommand
+def hello(cli):
+    """Hello, World!
+    """
+    print('Hello, World!')
+
+
+@cli.subcommand
+def goodbye(cli):
+    """Goodbye, World!
+    """
+    print('Goodbye, World!')
+
+
+if __name__ == '__main__':
+    with cli:
+        cli.run()
