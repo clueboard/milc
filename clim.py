@@ -4,14 +4,15 @@ CLIM is an opinionated framework for writing CLI apps. It optimizes for the
 most common unix tool pattern- small tools that are run from the command
 line but generally do not feature any user interaction while they run.
 
-Using CLIM will give your script all of these features with no work for you:
+Using CLIM will give your script all of these features with little or no
+work on your part:
 
 * CLI Argument Parsing, with or without subcommands
 * Performance improvement from putting your code inside a function
   <https://stackoverflow.com/questions/11241523/why-does-python-code-run-faster-in-a-function>
 * Config file support, with config options overridden by command line flags
 * Logging to stderr and/or a file
-* Thread safe! (Note: This needs more eyes looking at it to ensure thread safety.)
+* Thread safety! (Note: This needs more eyes looking at it.)
 """
 from __future__ import division, print_function, unicode_literals
 import argparse
