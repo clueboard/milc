@@ -5,28 +5,28 @@ import argparse
 import logging
 
 class CLIM(object):
-    """CLI Context Manager
+    """# CLI Context Manager
 
-    CLIM is a framework for writing CLI apps using an opinionated approach.
-    It optimizes for the most common unix tool pattern- small tools that are
-    run from the command line but generally do not feature any user 
-    interaction while they run.
+    CLIM is an opinionated framework for writing CLI apps. It optimizes for
+    the most common unix tool pattern- small tools that are run from the
+    command line but generally do not feature any user interaction while they
+    run.
 
-    This class wraps some standard python modules in nice ways for CLI tools. 
+    This class wraps some standard python modules in nice ways for CLI tools.
     It provides a Context Manager that can be used to quickly and easily
     write tools that behave in the way endusers expect. It's meant to lightly
     wrap standard python modules with just enough framework to make writing
-    simple scripts simple while allowing you to organically grow into large 
+    simple scripts simple while allowing you to organically grow into large
     complex programs with hundreds of options.
 
-    Simple Example:
+    ## Simple Example:
 
         cli = CLIM('My useful CLI tool.')
 
         @cli.argument('-n', '--name', help='Name to greet', default='World')
         @cli.entrypoint
         def main(cli):
-            cli.log.info('Hello, %(name)s!', cli.args.name)
+            cli.log.info('Hello, %s!', cli.args.name)
 
         if __name__ == '__main__':
             with cli:
@@ -88,11 +88,11 @@ class CLIM(object):
 
     # Using Subcommands
 
-    A command pattern for CLI tools is to have subcommands. For example, 
+    A command pattern for CLI tools is to have subcommands. For example,
     you see this in git with `git status` and `git pull`. CLIM supports
-    this pattern using the built-in argparse subcommand functionality. 
+    this pattern using the built-in argparse subcommand functionality.
 
-    You can register subcommands by using the `cli.subcommand(func)` 
+    You can register subcommands by using the `cli.subcommand(func)`
     function, or by decorating functions with `@cli.subcommand`. In
     either case the subcommand name will be the same as the name of the
     function.
@@ -102,18 +102,18 @@ class CLIM(object):
         * Attribute access (`cli.<subcommand>`)
         * Dictionary access (`cli.subcommands['<subcommand>']`)
 
-    You should generally prefer the attribute access. If there is a conflict 
-    with an existing attribute or the name is not a legal attribute name you 
+    You should generally prefer the attribute access. If there is a conflict
+    with an existing attribute or the name is not a legal attribute name you
     will have to access it via the dictionary.
 
-    When subcommands are not in use `cli.run()` will always be the same as 
-    `cli.entrypoint()`. When subcommands are in use `cli.run()` will be 
-    pointed to the proper command to run. If no valid subcommand is given on 
-    the command line it will point to `cli.entrypoint()`. If a valid  
+    When subcommands are not in use `cli.run()` will always be the same as
+    `cli.entrypoint()`. When subcommands are in use `cli.run()` will be
+    pointed to the proper command to run. If no valid subcommand is given on
+    the command line it will point to `cli.entrypoint()`. If a valid
     subcommand is supplied it will point to `<subcommand>()`.
 
-    Note: Python 2 does not support calling @cli.entrypoint when subcommands 
-    are in use. If you need to call @cli.entrypoint when a subcommand is not 
+    Note: Python 2 does not support calling @cli.entrypoint when subcommands
+    are in use. If you need to call @cli.entrypoint when a subcommand is not
     specified you will need to use python 3.
 
     ## Subcommand Example
@@ -144,6 +144,10 @@ class CLIM(object):
             with cli:
                 cli.args.comma = ',' if cli.args.comma else ''
                 cli.run()  # Automatically picks between main(), hello() and goodbye()
+
+    # More Docs!
+
+    Details about the rest of the system can be found in the [docs/](docs/) directory.
     """
     def __init__(self, description, entrypoint=None, fromfile_prefix_chars='@', conflict_handler='resolve', **kwargs):
         self._entrypoint = entrypoint
