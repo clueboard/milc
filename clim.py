@@ -11,14 +11,18 @@ Using CLIM will give your script all of these features with no work for you:
   <https://stackoverflow.com/questions/11241523/why-does-python-code-run-faster-in-a-function>
 * Config file support, with config options overridden by command line flags
 * Logging to stderr and/or a file
-
-CLIM is not currently thread safe, but it aspires to be.
+* Thread safe! (Note: This needs more eyes looking at it to ensure thread safety.)
 """
 from __future__ import division, print_function, unicode_literals
 import argparse
 import logging
 import sys
 
+try:
+    import thread
+    import therading
+except ImportError:
+    thread = None
 
 class CLIM(object):
     """# CLI Context Manager
@@ -165,6 +169,10 @@ class CLIM(object):
         self._inside_context_manager = False
         self.version = 'unknown'
 
+        # Setup a lock for thread safety and hold it until initialization is complete
+        self._lock = threading.RLock() if thread else None
+        self.acquire_lock()
+
         # Setup argument handling
         kwargs['fromfile_prefix_chars'] = fromfile_prefix_chars
         kwargs['conflict_handler'] = conflict_handler
@@ -193,11 +201,28 @@ class CLIM(object):
         self.add_argument('--log-file-fmt', default='[%(levelname)s] [%(asctime)s] [file:%(pathname)s] [line:%(lineno)d] %(message)s', help='Format string for log file.')
         self.add_argument('--log-file', help='File to write log messages to')
 
+        # Release the lock
+        self.release_lock()
+
     def add_subparsers(self, title='Sub-commands', **kwargs):
         if self._inside_context_manager:
             raise RuntimeError('You must run this before the with statement!')
 
+        self.acquire_lock()
         self._subparsers = self._arg_parser.add_subparsers(title=title, dest='subcommand', **kwargs)
+        self.release_lock()
+
+    def acquire_lock(self):
+        """Acquire the CLIM lock for exclusive access to properties.
+        """
+        if self._lock:
+            self._lock.acquire()
+
+    def release_lock(self):
+        """Release the CLIM lock.
+        """
+        if self._lock:
+            self._lock.release()
 
     def argument(self, *args, **kwargs):
         """Decorator to call self.add_argument or self.<subcommand>.add_argument.
@@ -236,7 +261,9 @@ class CLIM(object):
         if self._inside_context_manager:
             raise RuntimeError('You must run this before the with statement!')
 
+        self.acquire_lock()
         self._entrypoint = handler
+        self.release_lock()
 
         return handler
 
@@ -251,6 +278,8 @@ class CLIM(object):
         if self._subparsers is None:
             self.add_subparsers()
 
+        self.acquire_lock()
+
         if not name:
             name = handler.__name__
 
@@ -263,6 +292,8 @@ class CLIM(object):
         else:
             self.log.debug("Could not add subcommand '%s' to attributes, key already exists!", name)
 
+        self.release_lock()
+
         return handler
 
     def setup_logging(self):
@@ -271,6 +302,8 @@ class CLIM(object):
         if len(logging.root.handlers) != 0:
             # This is not a design decision. This is what I'm doing for now until I can examine and think about this situation in more detail.
             raise RuntimeError('CLIM should be the only system installing root log handlers!')
+
+        self.acquire_lock()
 
         self.log_format = logging.Formatter(self.args.log_fmt, self.args.datetime_fmt)
         self.log_file_format = logging.Formatter(self.args.log_file_fmt, self.args.datetime_fmt)
@@ -289,7 +322,10 @@ class CLIM(object):
 
         logging.root.setLevel(self.log_level)
 
+        self.release_lock()
+
     def __enter__(self):
+        self.acquire_lock()
         self._inside_context_manager = True
         self.args = self._arg_parser.parse_args()
 
@@ -307,6 +343,7 @@ class CLIM(object):
         self.log_file_format = self.args.log_file_fmt
         self.log_format = self.args.log_fmt
 
+        self.release_lock()
         self.setup_logging()
 
         return self
