@@ -11,10 +11,13 @@ Using CLIM will give your script all of these features with no work for you:
   <https://stackoverflow.com/questions/11241523/why-does-python-code-run-faster-in-a-function>
 * Config file support, with config options overridden by command line flags
 * Logging to stderr and/or a file
+
+CLIM is not currently thread safe, but it aspires to be.
 """
 from __future__ import division, print_function, unicode_literals
 import argparse
 import logging
+import sys
 
 
 class CLIM(object):
@@ -160,6 +163,7 @@ class CLIM(object):
     def __init__(self, description, entrypoint=None, fromfile_prefix_chars='@', conflict_handler='resolve', **kwargs):
         self._entrypoint = entrypoint
         self._inside_context_manager = False
+        self.version = 'unknown'
 
         # Setup argument handling
         kwargs['fromfile_prefix_chars'] = fromfile_prefix_chars
@@ -173,11 +177,21 @@ class CLIM(object):
         self.subcommands = {}
 
         # Setup logging
+        self.log_file = None
+        self.log_file_mode = 'a'
+        self.log_file_handler = None
+        self.log_print = True
+        self.log_print_to = sys.stderr
+        self.log_print_level = logging.INFO
+        self.log_file_level = logging.DEBUG
         self.log_level = logging.INFO
         self.log = logging.getLogger(self.__class__.__name__)
-        self.add_argument('-v', '--verbose', action='store_true', help='Make the logging more verbose.')
+        self.add_argument('-V', '--version', action='store_true', help="Display the program's version and exit")
+        self.add_argument('-v', '--verbose', action='store_true', help='Make the logging more verbose')
         self.add_argument('--datetime-fmt', default='%Y-%m-%d %H:%M:%S', help='Format string for datetimes')
-        self.add_argument('--log-fmt', default='[%(levelname)s] [%(asctime)s] [file:%(pathname)s] [line:%(lineno)d] %(message)s', help='Format string for log output.')
+        self.add_argument('--log-fmt', default='[%(levelname)s] %(message)s', help='Format string for printed log output')
+        self.add_argument('--log-file-fmt', default='[%(levelname)s] [%(asctime)s] [file:%(pathname)s] [line:%(lineno)d] %(message)s', help='Format string for log file.')
+        self.add_argument('--log-file', help='File to write log messages to')
 
     def add_subparsers(self, title='Sub-commands', **kwargs):
         if self._inside_context_manager:
@@ -251,17 +265,49 @@ class CLIM(object):
 
         return handler
 
+    def setup_logging(self):
+        """Called by __enter__() to setup the logging configuration.
+        """
+        if len(logging.root.handlers) != 0:
+            # This is not a design decision. This is what I'm doing for now until I can examine and think about this situation in more detail.
+            raise RuntimeError('CLIM should be the only system installing root log handlers!')
+
+        self.log_format = logging.Formatter(self.args.log_fmt, self.args.datetime_fmt)
+        self.log_file_format = logging.Formatter(self.args.log_file_fmt, self.args.datetime_fmt)
+
+        if self.log_file:
+            self.log_file_handler = logging.FileHandler(self.log_file, self.log_file_mode)
+            self.log_file_handler.setFormatter(self.log_file_format)
+            self.log_file_handler.setLevel(self.log_file_level)
+            logging.root.addHandler(self.log_file_handler)
+
+        if self.log_print:
+            self.log_print_handler = logging.StreamHandler(self.log_print_to)
+            self.log_print_handler.setFormatter(self.log_format)
+            self.log_print_handler.setLevel(self.log_print_level)
+            logging.root.addHandler(self.log_print_handler)
+
+        logging.root.setLevel(self.log_level)
+
     def __enter__(self):
         self._inside_context_manager = True
         self.args = self._arg_parser.parse_args()
+
+        if self.args.version:
+            print('%s version %s' % (sys.argv[0], self.version))
+            exit(0)
 
         if 'func' in self.args:
             self._entrypoint = self.args.func
 
         if self.args.verbose:
-            self.log_level = logging.DEBUG
+            self.log_print_level = logging.DEBUG
 
-        logging.basicConfig(level=self.log_level, format=self.args.log_fmt, datefmt=self.args.datetime_fmt)
+        self.log_file = self.args.log_file or self.log_file
+        self.log_file_format = self.args.log_file_fmt
+        self.log_format = self.args.log_fmt
+
+        self.setup_logging()
 
         return self
 
