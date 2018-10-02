@@ -1,16 +1,24 @@
 """py-clim - The CLI Context Manager
+
+CLIM is an opinionated framework for writing CLI apps. It optimizes for the
+most common unix tool pattern- small tools that are run from the command
+line but generally do not feature any user interaction while they run.
+
+Using CLIM will give your script all of these features with no work for you:
+
+* CLI Argument Parsing, with or without subcommands
+* Performance improvement from putting your code inside a function
+  <https://stackoverflow.com/questions/11241523/why-does-python-code-run-faster-in-a-function>
+* Config file support, with config options overridden by command line flags
+* Logging to stderr and/or a file
 """
 from __future__ import division, print_function, unicode_literals
 import argparse
 import logging
 
+
 class CLIM(object):
     """# CLI Context Manager
-
-    CLIM is an opinionated framework for writing CLI apps. It optimizes for
-    the most common unix tool pattern- small tools that are run from the
-    command line but generally do not feature any user interaction while they
-    run.
 
     This class wraps some standard python modules in nice ways for CLI tools.
     It provides a Context Manager that can be used to quickly and easily
