@@ -17,6 +17,7 @@ work on your part:
 from __future__ import division, print_function, unicode_literals
 import argparse
 import logging
+import re
 import sys
 
 try:
@@ -24,6 +25,50 @@ try:
     import therading
 except ImportError:
     thread = None
+
+import colorama
+
+
+# Regex was gratefully borrowed from kfir on stackoverflow:
+# https://stackoverflow.com/a/45448194
+ansi_regex = r'\x1b(' \
+             r'(\[\??\d+[hl])|' \
+             r'([=<>a-kzNM78])|' \
+             r'([\(\)][a-b0-2])|' \
+             r'(\[\d{0,2}[ma-dgkjqi])|' \
+             r'(\[\d+;\d+[hfy]?)|' \
+             r'(\[;?[hf])|' \
+             r'(#[3-68])|' \
+             r'([01356]n)|' \
+             r'(O[mlnp-z]?)|' \
+             r'(/Z)|' \
+             r'(\d+)|' \
+             r'(\[\?\d;\d0c)|' \
+             r'(\d;\dR))'
+ansi_escape = re.compile(ansi_regex, flags=re.IGNORECASE)
+ansi_colors = {}
+for prefix, obj in (('fg', colorama.ansi.AnsiFore()),
+                    ('bg', colorama.ansi.AnsiBack()),
+                    ('style', colorama.ansi.AnsiStyle())):
+    for color in [x for x in obj.__dict__ if not x.startswith('_')]:
+        ansi_colors[prefix + '_' + color.lower()] = getattr(obj, color)
+
+
+class ANSIPrintingFormatter(logging.Formatter):
+    """A log formatter that inserts ANSI colors.
+    """
+    def format(self,record):
+        msg = super(ANSIPrintingFormatter, self).format(record)
+        return msg.format(**ansi_colors) + ansi_colors['style_reset_all']
+
+
+class ANSIStrippingFormatter(ANSIPrintingFormatter):
+    """A log formatter that strip ANSI.
+    """
+    def format(self,record):
+        msg = super(ANSIStrippingFormatter, self).format(record)
+        return ansi_escape.sub('', msg)
+
 
 class CLIM(object):
     """# CLI Context Manager
@@ -166,19 +211,22 @@ class CLIM(object):
     Details about the rest of the system can be found in the [docs/](docs/) directory.
     """
     def __init__(self, description, entrypoint=None, fromfile_prefix_chars='@', conflict_handler='resolve', **kwargs):
-        self._entrypoint = entrypoint
-        self._inside_context_manager = False
-        self.version = 'unknown'
-
         # Setup a lock for thread safety and hold it until initialization is complete
         self._lock = threading.RLock() if thread else None
         self.acquire_lock()
+
+        # Define some basic info
+        self._entrypoint = entrypoint
+        self._inside_context_manager = False
+        self.ansi = ansi_colors
+        self.version = 'unknown'
 
         # Setup argument handling
         kwargs['fromfile_prefix_chars'] = fromfile_prefix_chars
         kwargs['conflict_handler'] = conflict_handler
         self._arg_parser = argparse.ArgumentParser(description=description, **kwargs)
         self._subparsers = None
+        self.args_parsed = False
         self.add_argument = self._arg_parser.add_argument
         self.set_defaults = self._arg_parser.set_defaults
         self.print_usage = self._arg_parser.print_usage
@@ -201,6 +249,7 @@ class CLIM(object):
         self.add_argument('--log-fmt', default='[%(levelname)s] %(message)s', help='Format string for printed log output')
         self.add_argument('--log-file-fmt', default='[%(levelname)s] [%(asctime)s] [file:%(pathname)s] [line:%(lineno)d] %(message)s', help='Format string for log file.')
         self.add_argument('--log-file', help='File to write log messages to')
+        self.add_argument('--no-color', default=False, action='store_true', help='Disable color in output')
 
         # Release the lock
         self.release_lock()
@@ -245,11 +294,32 @@ class CLIM(object):
 
         return argument_function
 
+    def parse_args(self):
+        """Parse the CLI args.
+        """
+        if self.args_parsed:
+            self.log.debug('Warning: Arguments have already been parsed, ignoring duplicate attempt!')
+            return
+
+        self.acquire_lock()
+        self.args = self._arg_parser.parse_args()
+        self.args_parsed = True
+
+        if 'func' in self.args:
+            self._entrypoint = self.args.func
+
+        self.release_lock()
+
     def run(self):
         """Execute the entrypoint function.
         """
+        if self.args.version:
+            print('%s version %s' % (sys.argv[0], self.version))
+            exit(0)
+
         if not self._inside_context_manager:
-            raise RuntimeError('You must run this inside of a with statement!')
+            self.__enter__()
+            self.log.debug('Warning: self.run() called outside of context manager. This will preclude calling self.__exit__().')
 
         if not self._entrypoint:
             raise RuntimeError('No entrypoint provided!')
@@ -306,12 +376,22 @@ class CLIM(object):
 
         self.acquire_lock()
 
-        self.log_format = logging.Formatter(self.args.log_fmt, self.args.datetime_fmt)
-        self.log_file_format = logging.Formatter(self.args.log_file_fmt, self.args.datetime_fmt)
+        if self.args.verbose:
+            self.log_print_level = logging.DEBUG
+
+        self.log_file = self.args.log_file or self.log_file
+        self.log_file_format = self.args.log_file_fmt
+        self.log_file_format = ANSIStrippingFormatter(self.args.log_file_fmt, self.args.datetime_fmt)
+        self.log_format = self.args.log_fmt
+
+        if self.args.no_color:
+            self.log_format = ANSIStrippingFormatter(self.args.log_fmt, self.args.datetime_fmt)
+        else:
+            self.log_format = ANSIPrintingFormatter(self.args.log_fmt, self.args.datetime_fmt)
 
         if self.log_file:
             self.log_file_handler = logging.FileHandler(self.log_file, self.log_file_mode)
-            self.log_file_handler.setFormatter(self.log_file_format)
+            self.log_file_handler.setFormatter(ANSIStrippingFormatter(self.log_file_format))
             self.log_file_handler.setLevel(self.log_file_level)
             logging.root.addHandler(self.log_file_handler)
 
@@ -326,31 +406,25 @@ class CLIM(object):
         self.release_lock()
 
     def __enter__(self):
+        if self._inside_context_manager:
+            self.log.debug('Warning: context manager was entered again. This usually means that self.run() was called before the with statement. You probably do not want to do that.')
+            return
+
         self.acquire_lock()
         self._inside_context_manager = True
-        self.args = self._arg_parser.parse_args()
-
-        if self.args.version:
-            print('%s version %s' % (sys.argv[0], self.version))
-            exit(0)
-
-        if 'func' in self.args:
-            self._entrypoint = self.args.func
-
-        if self.args.verbose:
-            self.log_print_level = logging.DEBUG
-
-        self.log_file = self.args.log_file or self.log_file
-        self.log_file_format = self.args.log_file_fmt
-        self.log_format = self.args.log_fmt
-
         self.release_lock()
+
+        self.parse_args()
+        colorama.init()
         self.setup_logging()
 
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        self.acquire_lock()
         self._inside_context_manager = False
+        self.release_lock()
+
         if exc_type is not None:
             logging.exception(exc_val)
             exit(255)
@@ -362,17 +436,18 @@ if __name__ == '__main__':
         @cli.argument('-c', '--comma', help='Include the comma in output', action='store_true')
         @cli.entrypoint
         def main(cli):
-            cli.log.info('Hello%s World!', cli.args.comma)
+            cli.args.comma = ',' if cli.args.comma else ''
+            cli.log.info('{bg_green}{fg_red}Hello%s World!', cli.args.comma)
 
         @cli.argument('-n', '--name', help='Name to greet', default='World')
         @cli.subcommand
         def hello(cli):
             '''Description of hello subcommand here.'''
-            cli.log.info('Hello%s %s!', cli.args.comma, cli.args.name)
+            cli.log.info('{fg_blue}Hello%s %s!', cli.args.comma, cli.args.name)
 
         def goodbye(cli):
             '''This will show up in --help output.'''
-            cli.log.info('Goodbye%s %s!', cli.args.comma, cli.args.name)
+            cli.log.info('{bg_red}Goodbye%s %s!', cli.args.comma, cli.args.name)
 
         if __name__ == '__main__':
             # You can register subcommands using decorators as seen above,
