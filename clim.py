@@ -22,7 +22,7 @@ import sys
 
 try:
     import thread
-    import therading
+    import threading
 except ImportError:
     thread = None
 
