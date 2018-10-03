@@ -19,6 +19,7 @@ import argparse
 import logging
 import re
 import sys
+from time import sleep
 
 try:
     import thread
@@ -27,6 +28,7 @@ except ImportError:
     thread = None
 
 import colorama
+import halo
 
 
 # Log Level Representations
@@ -241,6 +243,7 @@ class CLIM(object):
         self._entrypoint = entrypoint
         self._inside_context_manager = False
         self.ansi = ansi_colors
+        self.spinner = halo.Halo
         self.version = 'unknown'
 
         # Setup argument handling
@@ -470,6 +473,20 @@ if __name__ == '__main__':
         def goodbye(cli):
             '''This will show up in --help output.'''
             cli.log.info('{bg_red}Goodbye%s %s!', cli.args.comma, cli.args.name)
+
+        @cli.argument('-n', '--name', help='Name to greet', default='World')
+        @cli.subcommand
+        def thinking(cli):
+            '''Think a bit before greeting the user.'''
+            spinner = cli.spinner(text='Just a moment...', spinner='earth')
+            spinner.start()
+            sleep(2)
+            spinner.stop()
+
+            with cli.spinner(text='Almost there!', spinner='moon'):
+                sleep(2)
+
+            cli.log.info('{fg_cyan}Hello%s %s!', cli.args.comma, cli.args.name)
 
         if __name__ == '__main__':
             # You can register subcommands using decorators as seen above,
