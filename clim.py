@@ -29,6 +29,20 @@ except ImportError:
 import colorama
 
 
+# Log Level Representations
+EMOJI_LOGLEVELS = {
+    'CRITICAL': '{bg_red}{fg_white}¬_¬{style_reset_all}',
+    'ERROR': '{fg_info}☒{style_reset_all}',
+    'WARNING': '{fg_yellow}⚠{style_reset_all}',
+    'INFO': '{fg_blue}ℹ{style_reset_all}',
+    'DEBUG': '{fg_cyan}☐{style_reset_all}',
+    'NOTSET': '{style_reset_all}¯\\_(o_o)_/¯'
+}
+EMOJI_LOGLEVELS['FATAL'] = EMOJI_LOGLEVELS['CRITICAL']
+EMOJI_LOGLEVELS['WARN'] = EMOJI_LOGLEVELS['WARNING']
+
+
+# ANSI Color setup
 # Regex was gratefully borrowed from kfir on stackoverflow:
 # https://stackoverflow.com/a/45448194
 ansi_regex = r'\x1b(' \
@@ -54,16 +68,24 @@ for prefix, obj in (('fg', colorama.ansi.AnsiFore()),
         ansi_colors[prefix + '_' + color.lower()] = getattr(obj, color)
 
 
-class ANSIPrintingFormatter(logging.Formatter):
-    """A log formatter that inserts ANSI colors.
+class ANSIFormatter(logging.Formatter):
+    """A log formatter that inserts ANSI color.
     """
     def format(self,record):
-        msg = super(ANSIPrintingFormatter, self).format(record)
+        msg = super(ANSIFormatter, self).format(record)
         return msg.format(**ansi_colors) + ansi_colors['style_reset_all']
 
 
-class ANSIStrippingFormatter(ANSIPrintingFormatter):
-    """A log formatter that strip ANSI.
+class ANSIEmojiLoglevelFormatter(ANSIFormatter):
+    """A log formatter that makes the loglevel an emoji.
+    """
+    def format(self,record):
+        record.levelname = EMOJI_LOGLEVELS[record.levelname].format(**ansi_colors)
+        return super(ANSIEmojiLoglevelFormatter, self).format(record)
+
+
+class ANSIStrippingFormatter(ANSIFormatter):
+    """A log formatter that strips ANSI.
     """
     def format(self,record):
         msg = super(ANSIStrippingFormatter, self).format(record)
@@ -246,7 +268,7 @@ class CLIM(object):
         self.add_argument('-V', '--version', action='store_true', help="Display the program's version and exit")
         self.add_argument('-v', '--verbose', action='store_true', help='Make the logging more verbose')
         self.add_argument('--datetime-fmt', default='%Y-%m-%d %H:%M:%S', help='Format string for datetimes')
-        self.add_argument('--log-fmt', default='[%(levelname)s] %(message)s', help='Format string for printed log output')
+        self.add_argument('--log-fmt', default='%(levelname)s %(message)s', help='Format string for printed log output')
         self.add_argument('--log-file-fmt', default='[%(levelname)s] [%(asctime)s] [file:%(pathname)s] [line:%(lineno)d] %(message)s', help='Format string for log file.')
         self.add_argument('--log-file', help='File to write log messages to')
         self.add_argument('--no-color', default=False, action='store_true', help='Disable color in output')
@@ -387,11 +409,11 @@ class CLIM(object):
         if self.args.no_color:
             self.log_format = ANSIStrippingFormatter(self.args.log_fmt, self.args.datetime_fmt)
         else:
-            self.log_format = ANSIPrintingFormatter(self.args.log_fmt, self.args.datetime_fmt)
+            self.log_format = ANSIEmojiLoglevelFormatter(self.args.log_fmt, self.args.datetime_fmt)
 
         if self.log_file:
             self.log_file_handler = logging.FileHandler(self.log_file, self.log_file_mode)
-            self.log_file_handler.setFormatter(ANSIStrippingFormatter(self.log_file_format))
+            self.log_file_handler.setFormatter(self.log_file_format)
             self.log_file_handler.setLevel(self.log_file_level)
             logging.root.addHandler(self.log_file_handler)
 
