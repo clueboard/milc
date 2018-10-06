@@ -170,6 +170,27 @@ class ConfigurationOption(Configuration):
         return self._config[key]
 
 
+def handle_store_boolean(self, *args, **kwargs):
+    """Does the add_argument for action='store_boolean'.
+    """
+    kwargs['add_dest'] = False
+    disabled_args = None
+    disabled_kwargs = kwargs.copy()
+    disabled_kwargs['action'] = 'store_false'
+    disabled_kwargs['help'] = 'Disable ' + kwargs['help']
+    kwargs['action'] = 'store_true'
+    kwargs['help'] = 'Enable ' + kwargs['help']
+
+    for flag in args:
+        if flag[:2] == '--':
+            disabled_args = ('--no-' + flag[2:],)
+            break
+
+    self.add_argument(*args, **kwargs)
+    self.add_argument(*disabled_args, **disabled_kwargs)
+
+    return (args, kwargs, disabled_args, disabled_kwargs)
+
 class SubparserWrapper(object):
     """Wrap subparsers so we can populate the normal and the shadow parser.
     """
@@ -183,8 +204,16 @@ class SubparserWrapper(object):
                 setattr(self, attr, getattr(subparser, attr))
 
     def add_argument(self, *args, **kwargs):
-        kwargs['dest'] = self.submodule + '_' + self.cli.get_argument_name(*args, **kwargs)
+        if kwargs.get('add_dest', True):
+            kwargs['dest'] = self.submodule + '_' + self.cli.get_argument_name(*args, **kwargs)
+        if 'add_dest' in kwargs:
+            del(kwargs['add_dest'])
+
+        if 'action' in kwargs and kwargs['action'] == 'store_boolean':
+            return handle_store_boolean(self, *args, **kwargs)
+
         self.subparser.add_argument(*args, **kwargs)
+
         if 'default' in kwargs:
             del(kwargs['default'])
         if 'action' in kwargs and kwargs['action'] == 'store_false':
@@ -303,7 +332,7 @@ class CLIM(object):
 
         cli = CLIM('My useful CLI tool with subcommands.')
 
-        @cli.argument('-c', '--comma', help='Include the comma in output', action='store_true')
+        @cli.argument('-c', '--comma', help='Include the comma in output', default=True, action='store_true')
         @cli.entrypoint
         def main(cli):
             cli.log.info('Hello%s World!', cli.config.general.comma)
@@ -365,7 +394,7 @@ class CLIM(object):
     def initialize_argparse(self, description, kwargs):
         """Prepare to process arguments from sys.argv.
         """
-        self._arg_defaults = argparse.ArgumentParser(description='Shadow parser', **kwargs)
+        self._arg_defaults = argparse.ArgumentParser(description=description, **kwargs)
         self._arg_parser = argparse.ArgumentParser(description=description, **kwargs)
         self.set_defaults = self._arg_parser.set_defaults
         self.print_usage = self._arg_parser.print_usage
@@ -374,8 +403,17 @@ class CLIM(object):
     def add_argument(self, *args, **kwargs):
         """Wrapper to add arguments to both the main and the shadow argparser.
         """
-        kwargs['dest'] = 'general_' + self.get_argument_name(*args, **kwargs)
+        if kwargs.get('add_dest', True):
+            kwargs['dest'] = 'general_' + self.get_argument_name(*args, **kwargs)
+        if 'add_dest' in kwargs:
+            del(kwargs['add_dest'])
+
+        if 'action' in kwargs and kwargs['action'] == 'store_boolean':
+            return handle_store_boolean(self, *args, **kwargs)
+
         self._arg_parser.add_argument(*args, **kwargs)
+
+        # Populate the shadow parser
         if 'default' in kwargs:
             del(kwargs['default'])
         if 'action' in kwargs and kwargs['action'] == 'store_false':
@@ -402,7 +440,7 @@ class CLIM(object):
         self.add_argument('--log-fmt', default='%(levelname)s %(message)s', help='Format string for printed log output')
         self.add_argument('--log-file-fmt', default='[%(levelname)s] [%(asctime)s] [file:%(pathname)s] [line:%(lineno)d] %(message)s', help='Format string for log file.')
         self.add_argument('--log-file', help='File to write log messages to')
-        self.add_argument('--no-color', action='store_true', help='Disable color in output')
+        self.add_argument('--color', action='store_boolean', default=True, help='color in output')
         self.add_argument('-c', '--config-file', help='The config file to read and/or write')
         self.add_argument('--save-config', action='store_true', help='Save the running configuration to the config file')
 
@@ -525,7 +563,7 @@ class CLIM(object):
                 continue
 
             section, option = argument.split('_', 1)
-            if getattr(self.args_passed, argument):
+            if hasattr(self.args_passed, argument):
                 self.config[section][option] = getattr(self.args, argument)
             else:
                 if option not in self.config[section]:
@@ -635,10 +673,10 @@ class CLIM(object):
         self.log_file_format = ANSIStrippingFormatter(self.config['general']['log_file_fmt'], self.config['general']['datetime_fmt'])
         self.log_format = self.config['general']['log_fmt']
 
-        if self.config.general.no_color:
-            self.log_format = ANSIStrippingFormatter(self.args.general_log_fmt, self.config.general.datetime_fmt)
-        else:
+        if self.config.general.color:
             self.log_format = ANSIEmojiLoglevelFormatter(self.args.general_log_fmt, self.config.general.datetime_fmt)
+        else:
+            self.log_format = ANSIStrippingFormatter(self.args.general_log_fmt, self.config.general.datetime_fmt)
 
 
         if self.log_file:
@@ -687,26 +725,29 @@ class CLIM(object):
 if __name__ == '__main__':
         cli = CLIM('My useful CLI tool with subcommands.')
 
-        @cli.argument('-c', '--comma', help='Include the comma in output', action='store_true')
+        @cli.argument('-c', '--comma', help='comma in output', default=True, action='store_boolean')
         @cli.entrypoint
         def main(cli):
-            cli.config.general.comma = ',' if cli.config.general.comma else ''
-            cli.log.info('{bg_green}{fg_red}Hello%s World!', cli.config.general.comma)
+            comma = ',' if cli.config.general.comma else ''
+            cli.log.info('{bg_green}{fg_red}Hello%s World!', comma)
 
         @cli.argument('-n', '--name', help='Name to greet', default='World')
         @cli.subcommand
         def hello(cli):
             '''Description of hello subcommand here.'''
-            cli.log.info('{fg_blue}Hello%s %s!', cli.config.general.comma, cli.config.hello.name)
+            comma = ',' if cli.config.general.comma else ''
+            cli.log.info('{fg_blue}Hello%s %s!', comma, cli.config.hello.name)
 
         def goodbye(cli):
             '''This will show up in --help output.'''
-            cli.log.info('{bg_red}Goodbye%s %s!', cli.config.general.comma, cli.config.goodbye.name)
+            comma = ',' if cli.config.general.comma else ''
+            cli.log.info('{bg_red}Goodbye%s %s!', comma, cli.config.goodbye.name)
 
         @cli.argument('-n', '--name', help='Name to greet', default='World')
         @cli.subcommand
         def thinking(cli):
             '''Think a bit before greeting the user.'''
+            comma = ',' if cli.config.general.comma else ''
             spinner = cli.spinner(text='Just a moment...', spinner='earth')
             spinner.start()
             sleep(2)
@@ -715,7 +756,7 @@ if __name__ == '__main__':
             with cli.spinner(text='Almost there!', spinner='moon'):
                 sleep(2)
 
-            cli.log.info('{fg_cyan}Hello%s %s!', cli.config.general.comma, cli.config.thinking.name)
+            cli.log.info('{fg_cyan}Hello%s %s!', comma, cli.config.thinking.name)
 
         if __name__ == '__main__':
             # You can register subcommands using decorators as seen above,
@@ -724,5 +765,4 @@ if __name__ == '__main__':
             cli.goodbye.add_argument('-n', '--name', help='Name to bid farewell to', default='World')
 
             with cli:
-                cli.config.general.comma = ',' if cli.config.general.comma else ''
                 cli.run()  # Automatically picks between main(), hello() and goodbye()
