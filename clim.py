@@ -82,7 +82,7 @@ for prefix, obj in (('fg', colorama.ansi.AnsiFore()),
 class ANSIFormatter(logging.Formatter):
     """A log formatter that inserts ANSI color.
     """
-    def format(self,record):
+    def format(self, record):
         msg = super(ANSIFormatter, self).format(record)
         # Avoid .format() so we don't have to worry about the log content
         for color in ansi_colors:
@@ -94,7 +94,7 @@ class ANSIFormatter(logging.Formatter):
 class ANSIEmojiLoglevelFormatter(ANSIFormatter):
     """A log formatter that makes the loglevel an emoji.
     """
-    def format(self,record):
+    def format(self, record):
         record.levelname = EMOJI_LOGLEVELS[record.levelname].format(**ansi_colors)
         return super(ANSIEmojiLoglevelFormatter, self).format(record)
 
@@ -102,7 +102,7 @@ class ANSIEmojiLoglevelFormatter(ANSIFormatter):
 class ANSIStrippingFormatter(ANSIFormatter):
     """A log formatter that strips ANSI.
     """
-    def format(self,record):
+    def format(self, record):
         msg = super(ANSIStrippingFormatter, self).format(record)
         return ansi_escape.sub('', msg)
 
@@ -190,6 +190,7 @@ def handle_store_boolean(self, *args, **kwargs):
     self.add_argument(*disabled_args, **disabled_kwargs)
 
     return (args, kwargs, disabled_args, disabled_kwargs)
+
 
 class SubparserWrapper(object):
     """Wrap subparsers so we can populate the normal and the shadow parser.
@@ -677,7 +678,6 @@ class CLIM(object):
             self.log_format = ANSIEmojiLoglevelFormatter(self.args.general_log_fmt, self.config.general.datetime_fmt)
         else:
             self.log_format = ANSIStrippingFormatter(self.args.general_log_fmt, self.config.general.datetime_fmt)
-
 
         if self.log_file:
             self.log_file_handler = logging.FileHandler(self.log_file, self.log_file_mode)
