@@ -1,3 +1,4 @@
+# coding=utf-8
 """py-clim - The CLI Context Manager
 
 CLIM is an opinionated framework for writing CLI apps. It optimizes for the
@@ -17,9 +18,17 @@ work on your part:
 from __future__ import division, print_function, unicode_literals
 import argparse
 import logging
+import os.path
 import re
 import sys
+from decimal import Decimal
+from tempfile import NamedTemporaryFile
 from time import sleep
+
+try:
+    from ConfigParser import RawConfigParser
+except ImportError:
+    from configparser import RawConfigParser
 
 try:
     import thread
@@ -34,7 +43,7 @@ import halo
 # Log Level Representations
 EMOJI_LOGLEVELS = {
     'CRITICAL': '{bg_red}{fg_white}¬_¬{style_reset_all}',
-    'ERROR': '{fg_info}☒{style_reset_all}',
+    'ERROR': '{fg_red}☒{style_reset_all}',
     'WARNING': '{fg_yellow}⚠{style_reset_all}',
     'INFO': '{fg_blue}ℹ{style_reset_all}',
     'DEBUG': '{fg_cyan}☐{style_reset_all}',
@@ -75,7 +84,11 @@ class ANSIFormatter(logging.Formatter):
     """
     def format(self,record):
         msg = super(ANSIFormatter, self).format(record)
-        return msg.format(**ansi_colors) + ansi_colors['style_reset_all']
+        # Avoid .format() so we don't have to worry about the log content
+        for color in ansi_colors:
+            msg = msg.replace('{%s}' % color, ansi_colors[color])
+        msg = msg + ansi_colors['style_reset_all']
+        return msg
 
 
 class ANSIEmojiLoglevelFormatter(ANSIFormatter):
@@ -92,6 +105,91 @@ class ANSIStrippingFormatter(ANSIFormatter):
     def format(self,record):
         msg = super(ANSIStrippingFormatter, self).format(record)
         return ansi_escape.sub('', msg)
+
+
+class Configuration(object):
+    """Represents the running configuration.
+
+    This class never raises IndexError, instead it will return None if a
+    section or option does not yet exist.
+    """
+    def __contains__(self, key):
+        return self._config.__contains__(key)
+
+    def __iter__(self):
+        return self._config.__iter__()
+
+    def __len__(self):
+        return self._config.__len__()
+
+    def __repr__(self):
+        return self._config.__repr__()
+
+    def keys(self):
+        return self._config.keys()
+
+    def items(self):
+        return self._config.items()
+
+    def values(self):
+        return self._config.values()
+
+    def __init__(self, *args, **kwargs):
+        self._config = {}
+        self.default_container = ConfigurationOption
+
+    def __getitem__(self, key):
+        """Returns a config section, creating it if it doesn't exist yet.
+        """
+        if key not in self._config:
+            self.__dict__[key] = self._config[key] = ConfigurationOption()
+
+        return self._config[key]
+
+    def __setitem__(self, key, value):
+        self.__dict__[key] = value
+        self._config[key] = value
+
+    def __delitem__(self, key):
+        if key in self.__dict__ and key[0] != '_':
+            del(self.__dict__[key])
+        del(self._config[key])
+
+
+class ConfigurationOption(Configuration):
+    def __init__(self, *args, **kwargs):
+        super(ConfigurationOption, self).__init__(*args, **kwargs)
+        self.default_container = dict
+
+    def __getitem__(self, key):
+        """Returns a config section, creating it if it doesn't exist yet.
+        """
+        if key not in self._config:
+            self.__dict__[key] = self._config[key] = None
+
+        return self._config[key]
+
+
+class SubparserWrapper(object):
+    """Wrap subparsers so we can populate the normal and the shadow parser.
+    """
+    def __init__(self, cli, submodule, subparser):
+        self.cli = cli
+        self.submodule = submodule
+        self.subparser = subparser
+
+        for attr in dir(subparser):
+            if not hasattr(self, attr):
+                setattr(self, attr, getattr(subparser, attr))
+
+    def add_argument(self, *args, **kwargs):
+        kwargs['dest'] = self.submodule + '_' + self.cli.get_argument_name(*args, **kwargs)
+        self.subparser.add_argument(*args, **kwargs)
+        if 'default' in kwargs:
+            del(kwargs['default'])
+        if 'action' in kwargs and kwargs['action'] == 'store_false':
+            kwargs['action'] == 'store_true'
+        self.cli.subcommands_default[self.submodule].add_argument(*args, **kwargs)
 
 
 class CLIM(object):
@@ -111,7 +209,7 @@ class CLIM(object):
         @cli.argument('-n', '--name', help='Name to greet', default='World')
         @cli.entrypoint
         def main(cli):
-            cli.log.info('Hello, %s!', cli.args.name)
+            cli.log.info('Hello, %s!', cli.config.general.name)
 
         if __name__ == '__main__':
             with cli:
@@ -124,7 +222,7 @@ class CLIM(object):
         cli = CLIM('My useful CLI tool')
 
         def main(cli):
-            print('Hello, %s!' % cli.args.name)
+            print('Hello, %s!' % cli.config.general.name)
 
     From here, you should setup your CLI environment. I typically prefer to
     do this behind a __main__ check.
@@ -144,7 +242,7 @@ class CLIM(object):
         cli = CLIM('My useful CLI tool')
 
         def main(cli):
-            print('Hello, %s!' % cli.args.name)
+            print('Hello, %s!' % cli.config.general.name)
 
         if __name__ == '__main__':
             cli.entrypoint(main)
@@ -165,7 +263,7 @@ class CLIM(object):
         @cli.argument('-n', '--name', help='Name to greet', default='World')
         @cli.entrypoint
         def main(cli):
-            print('Hello, %s!' % cli.args.name)
+            print('Hello, %s!' % cli.config.general.name)
 
         if __name__ == '__main__':
             with cli:
@@ -208,17 +306,17 @@ class CLIM(object):
         @cli.argument('-c', '--comma', help='Include the comma in output', action='store_true')
         @cli.entrypoint
         def main(cli):
-            cli.log.info('Hello%s World!', cli.args.comma)
+            cli.log.info('Hello%s World!', cli.config.general.comma)
 
         @cli.argument('-n', '--name', help='Name to greet', default='World')
         @cli.subcommand
         def hello(cli):
             '''Description of hello subcommand here.'''
-            cli.log.info('Hello%s %s!', cli.args.comma, cli.args.name)
+            cli.log.info('Hello%s %s!', cli.config.general.comma, cli.config.hello.name)
 
         def goodbye(cli):
             '''This will show up in --help output.'''
-            cli.log.info('Goodbye%s %s!', cli.args.comma, cli.args.name)
+            cli.log.info('Goodbye%s %s!', cli.config.general.comma, cli.config.goodbye.name)
 
         if __name__ == '__main__':
             # You can register subcommands using decorators as seen above,
@@ -227,7 +325,7 @@ class CLIM(object):
             cli.goodbye.add_argument('-n', '--name', help='Name to bid farewell to', default='World')
 
             with cli:
-                cli.args.comma = ',' if cli.args.comma else ''
+                cli.config.general.comma = ',' if cli.config.general.comma else ''
                 cli.run()  # Automatically picks between main(), hello() and goodbye()
 
     # More Docs!
@@ -235,6 +333,9 @@ class CLIM(object):
     Details about the rest of the system can be found in the [docs/](docs/) directory.
     """
     def __init__(self, description, entrypoint=None, fromfile_prefix_chars='@', conflict_handler='resolve', **kwargs):
+        kwargs['fromfile_prefix_chars'] = fromfile_prefix_chars
+        kwargs['conflict_handler'] = conflict_handler
+
         # Setup a lock for thread safety and hold it until initialization is complete
         self._lock = threading.RLock() if thread else None
         self.acquire_lock()
@@ -242,23 +343,48 @@ class CLIM(object):
         # Define some basic info
         self._entrypoint = entrypoint
         self._inside_context_manager = False
+        self._subparsers = None
+        self._subparsers_default = None
+        self.args = None
         self.ansi = ansi_colors
+        self.config = Configuration()
+        self.config_file = None
+        self.prog_name = sys.argv[0][:-3] if sys.argv[0].endswith('.py') else sys.argv[0]
+        self.subcommands = {}
+        self.subcommands_default = {}
         self.spinner = halo.Halo
         self.version = 'unknown'
 
-        # Setup argument handling
-        kwargs['fromfile_prefix_chars'] = fromfile_prefix_chars
-        kwargs['conflict_handler'] = conflict_handler
+        # Initialize all the things
+        self.initialize_argparse(description, kwargs)
+        self.initialize_logging()
+
+        # Release the lock
+        self.release_lock()
+
+    def initialize_argparse(self, description, kwargs):
+        """Prepare to process arguments from sys.argv.
+        """
+        self._arg_defaults = argparse.ArgumentParser(description='Shadow parser', **kwargs)
         self._arg_parser = argparse.ArgumentParser(description=description, **kwargs)
-        self._subparsers = None
-        self.args_parsed = False
-        self.add_argument = self._arg_parser.add_argument
         self.set_defaults = self._arg_parser.set_defaults
         self.print_usage = self._arg_parser.print_usage
         self.print_help = self._arg_parser.print_help
-        self.subcommands = {}
 
-        # Setup logging
+    def add_argument(self, *args, **kwargs):
+        """Wrapper to add arguments to both the main and the shadow argparser.
+        """
+        kwargs['dest'] = 'general_' + self.get_argument_name(*args, **kwargs)
+        self._arg_parser.add_argument(*args, **kwargs)
+        if 'default' in kwargs:
+            del(kwargs['default'])
+        if 'action' in kwargs and kwargs['action'] == 'store_false':
+            kwargs['action'] == 'store_true'
+        self._arg_defaults.add_argument(*args, **kwargs)
+
+    def initialize_logging(self):
+        """Prepare the defaults for the logging infrastructure.
+        """
         self.log_file = None
         self.log_file_mode = 'a'
         self.log_file_handler = None
@@ -268,23 +394,25 @@ class CLIM(object):
         self.log_file_level = logging.DEBUG
         self.log_level = logging.INFO
         self.log = logging.getLogger(self.__class__.__name__)
-        self.add_argument('-V', '--version', action='store_true', help="Display the program's version and exit")
+        self.log.setLevel(logging.DEBUG)
+        logging.root.setLevel(logging.DEBUG)
+        self.add_argument('-V', '--version', version=self.version, action='version', help='Display the version and exit')
         self.add_argument('-v', '--verbose', action='store_true', help='Make the logging more verbose')
         self.add_argument('--datetime-fmt', default='%Y-%m-%d %H:%M:%S', help='Format string for datetimes')
         self.add_argument('--log-fmt', default='%(levelname)s %(message)s', help='Format string for printed log output')
         self.add_argument('--log-file-fmt', default='[%(levelname)s] [%(asctime)s] [file:%(pathname)s] [line:%(lineno)d] %(message)s', help='Format string for log file.')
         self.add_argument('--log-file', help='File to write log messages to')
-        self.add_argument('--no-color', default=False, action='store_true', help='Disable color in output')
-
-        # Release the lock
-        self.release_lock()
+        self.add_argument('--no-color', action='store_true', help='Disable color in output')
+        self.add_argument('-c', '--config-file', help='The config file to read and/or write')
+        self.add_argument('--save-config', action='store_true', help='Save the running configuration to the config file')
 
     def add_subparsers(self, title='Sub-commands', **kwargs):
         if self._inside_context_manager:
             raise RuntimeError('You must run this before the with statement!')
 
         self.acquire_lock()
-        self._subparsers = self._arg_parser.add_subparsers(title=title, dest='subcommand', **kwargs)
+        self._subparsers_default = self._arg_defaults.add_subparsers(title=title, dest='subparsers', **kwargs)
+        self._subparsers = self._arg_parser.add_subparsers(title=title, dest='subparsers', **kwargs)
         self.release_lock()
 
     def acquire_lock(self):
@@ -298,6 +426,22 @@ class CLIM(object):
         """
         if self._lock:
             self._lock.release()
+
+    def find_config_file(self):
+        """Locate the config file.
+        """
+        if self.config_file:
+            return self.config_file
+
+        if self.args and self.args.general_config_file:
+            return self.args.general_config_file
+
+        return os.path.abspath(os.path.expanduser('~/.%s.ini' % self.prog_name))
+
+    def get_argument_name(self, *args, **kwargs):
+        """Takes argparse arguments and returns the dest name.
+        """
+        return self._arg_parser._get_optional_kwargs(*args, **kwargs)['dest']
 
     def argument(self, *args, **kwargs):
         """Decorator to call self.add_argument or self.<subcommand>.add_argument.
@@ -319,29 +463,110 @@ class CLIM(object):
 
         return argument_function
 
+    def arg_passed(self, arg):
+        """Returns True if arg was passed on the command line.
+        """
+        return self.args_passed[arg] in (None, False)
+
     def parse_args(self):
         """Parse the CLI args.
         """
-        if self.args_parsed:
+        if self.args:
             self.log.debug('Warning: Arguments have already been parsed, ignoring duplicate attempt!')
             return
 
         self.acquire_lock()
-        self.args = self._arg_parser.parse_args()
-        self.args_parsed = True
 
-        if 'func' in self.args:
-            self._entrypoint = self.args.func
+        self.args_passed = self._arg_defaults.parse_args()
+        self.args = self._arg_parser.parse_args()
+
+        if 'entrypoint' in self.args:
+            self._entrypoint = self.args.entrypoint
+
+        if self.args.general_config_file:
+            self.config_file = self.args.general_config_file
+
+        self.release_lock()
+
+    def read_config(self):
+        """Parse the configuration file and determine the runtime configuration.
+        """
+        self.acquire_lock()
+        self.config_file = self.find_config_file()
+
+        if self.config_file and os.path.exists(cli.config_file):
+            config = RawConfigParser(self.config)
+            config.read(self.config_file)
+
+            # Iterate over the config file options and write them into self.config
+            for section in config.sections():
+                for option in config.options(section):
+                    value = config.get(section, option)
+
+                    # Coerce values into useful datatypes
+                    if value.lower() in ['1', 'yes', 'true', 'on']:
+                        value = True
+                    elif value.lower() in ['0', 'no', 'false', 'none', 'off']:
+                        value = False
+                    elif value.replace('.', '').isdigit():
+                        if '.' in value:
+                            value = Decimal(value)
+                        else:
+                            value = int(value)
+
+                    self.config[section][option] = value
+
+        # Fold the CLI args into self.config
+        for argument in vars(self.args):
+            if argument in ('subparsers', 'entrypoint'):
+                continue
+
+            if '_' not in argument:
+                continue
+
+            section, option = argument.split('_', 1)
+            if getattr(self.args_passed, argument):
+                self.config[section][option] = getattr(self.args, argument)
+            else:
+                if option not in self.config[section]:
+                    self.config[section][option] = getattr(self.args, argument)
+
+        self.release_lock()
+
+    def save_config(self):
+        """Save the current configuration to the config file.
+        """
+        self.log.debug("Saving config file to '%s'", self.config_file)
+
+        if not self.config_file:
+            self.log.warning('%s.config_file file not set, not saving config!', self.__class__.__name__)
+            return
+
+        self.acquire_lock()
+
+        config = RawConfigParser()
+        for section_name, section in self.config._config.items():
+            config.add_section(section_name)
+            for option_name, value in section.items():
+                if section_name == 'general':
+                    if option_name in ['save_config']:
+                        continue
+                config.set(section_name, option_name, str(value))
+
+        with NamedTemporaryFile(mode='w', dir=os.path.dirname(self.config_file), delete=False) as tmpfile:
+            config.write(tmpfile)
+
+        # Move the new config file into place atomically
+        if os.path.getsize(tmpfile.name) > 0:
+            os.rename(tmpfile.name, self.config_file)
+        else:
+            self.log.warning('Config file saving failed, not replacing %s with %s.', self.config_file, tmpfile.name)
 
         self.release_lock()
 
     def run(self):
         """Execute the entrypoint function.
         """
-        if self.args.version:
-            print('%s version %s' % (sys.argv[0], self.version))
-            exit(0)
-
         if not self._inside_context_manager:
             self.__enter__()
             self.log.debug('Warning: self.run() called outside of context manager. This will preclude calling self.__exit__().')
@@ -380,8 +605,9 @@ class CLIM(object):
             name = handler.__name__
 
         kwargs['help'] = handler.__doc__.split('\n')[0] if handler.__doc__ else None
-        self.subcommands[name] = self._subparsers.add_parser(name, **kwargs)
-        self.subcommands[name].set_defaults(func=handler)
+        self.subcommands_default[name] = self._subparsers_default.add_parser(name, **kwargs)
+        self.subcommands[name] = SubparserWrapper(self, name, self._subparsers.add_parser(name, **kwargs))
+        self.subcommands[name].set_defaults(entrypoint=handler)
 
         if name not in self.__dict__:
             self.__dict__[name] = self.subcommands[name]
@@ -401,32 +627,31 @@ class CLIM(object):
 
         self.acquire_lock()
 
-        if self.args.verbose:
+        if self.config['general']['verbose']:
             self.log_print_level = logging.DEBUG
 
-        self.log_file = self.args.log_file or self.log_file
-        self.log_file_format = self.args.log_file_fmt
-        self.log_file_format = ANSIStrippingFormatter(self.args.log_file_fmt, self.args.datetime_fmt)
-        self.log_format = self.args.log_fmt
+        self.log_file = self.config['general']['log_file'] or self.log_file
+        self.log_file_format = self.config['general']['log_file_fmt']
+        self.log_file_format = ANSIStrippingFormatter(self.config['general']['log_file_fmt'], self.config['general']['datetime_fmt'])
+        self.log_format = self.config['general']['log_fmt']
 
-        if self.args.no_color:
-            self.log_format = ANSIStrippingFormatter(self.args.log_fmt, self.args.datetime_fmt)
+        if self.config.general.no_color:
+            self.log_format = ANSIStrippingFormatter(self.args.general_log_fmt, self.config.general.datetime_fmt)
         else:
-            self.log_format = ANSIEmojiLoglevelFormatter(self.args.log_fmt, self.args.datetime_fmt)
+            self.log_format = ANSIEmojiLoglevelFormatter(self.args.general_log_fmt, self.config.general.datetime_fmt)
+
 
         if self.log_file:
             self.log_file_handler = logging.FileHandler(self.log_file, self.log_file_mode)
-            self.log_file_handler.setFormatter(self.log_file_format)
             self.log_file_handler.setLevel(self.log_file_level)
+            self.log_file_handler.setFormatter(self.log_file_format)
             logging.root.addHandler(self.log_file_handler)
 
         if self.log_print:
             self.log_print_handler = logging.StreamHandler(self.log_print_to)
-            self.log_print_handler.setFormatter(self.log_format)
             self.log_print_handler.setLevel(self.log_print_level)
+            self.log_print_handler.setFormatter(self.log_format)
             logging.root.addHandler(self.log_print_handler)
-
-        logging.root.setLevel(self.log_level)
 
         self.release_lock()
 
@@ -439,9 +664,13 @@ class CLIM(object):
         self._inside_context_manager = True
         self.release_lock()
 
-        self.parse_args()
         colorama.init()
+        self.parse_args()
+        self.read_config()
         self.setup_logging()
+
+        if self.config.general.save_config:
+            self.save_config()
 
         return self
 
@@ -461,18 +690,18 @@ if __name__ == '__main__':
         @cli.argument('-c', '--comma', help='Include the comma in output', action='store_true')
         @cli.entrypoint
         def main(cli):
-            cli.args.comma = ',' if cli.args.comma else ''
-            cli.log.info('{bg_green}{fg_red}Hello%s World!', cli.args.comma)
+            cli.config.general.comma = ',' if cli.config.general.comma else ''
+            cli.log.info('{bg_green}{fg_red}Hello%s World!', cli.config.general.comma)
 
         @cli.argument('-n', '--name', help='Name to greet', default='World')
         @cli.subcommand
         def hello(cli):
             '''Description of hello subcommand here.'''
-            cli.log.info('{fg_blue}Hello%s %s!', cli.args.comma, cli.args.name)
+            cli.log.info('{fg_blue}Hello%s %s!', cli.config.general.comma, cli.config.hello.name)
 
         def goodbye(cli):
             '''This will show up in --help output.'''
-            cli.log.info('{bg_red}Goodbye%s %s!', cli.args.comma, cli.args.name)
+            cli.log.info('{bg_red}Goodbye%s %s!', cli.config.general.comma, cli.config.goodbye.name)
 
         @cli.argument('-n', '--name', help='Name to greet', default='World')
         @cli.subcommand
@@ -486,7 +715,7 @@ if __name__ == '__main__':
             with cli.spinner(text='Almost there!', spinner='moon'):
                 sleep(2)
 
-            cli.log.info('{fg_cyan}Hello%s %s!', cli.args.comma, cli.args.name)
+            cli.log.info('{fg_cyan}Hello%s %s!', cli.config.general.comma, cli.config.thinking.name)
 
         if __name__ == '__main__':
             # You can register subcommands using decorators as seen above,
@@ -495,5 +724,5 @@ if __name__ == '__main__':
             cli.goodbye.add_argument('-n', '--name', help='Name to bid farewell to', default='World')
 
             with cli:
-                cli.args.comma = ',' if cli.args.comma else ''
+                cli.config.general.comma = ',' if cli.config.general.comma else ''
                 cli.run()  # Automatically picks between main(), hello() and goodbye()
