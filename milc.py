@@ -83,16 +83,21 @@ for prefix, obj in (('fg', colorama.ansi.AnsiFore()),
         ansi_colors[prefix + '_' + color.lower()] = getattr(obj, color)
 
 
+def format_ansi(text):
+    """Return a copy of text with certain strings replaced with ansi.
+    """
+    # Avoid .format() so we don't have to worry about the log content
+    for color in ansi_colors:
+        text = text.replace('{%s}' % color, ansi_colors[color])
+    return text + ansi_colors['style_reset_all']
+
+
 class ANSIFormatter(logging.Formatter):
     """A log formatter that inserts ANSI color.
     """
     def format(self, record):
         msg = super(ANSIFormatter, self).format(record)
-        # Avoid .format() so we don't have to worry about the log content
-        for color in ansi_colors:
-            msg = msg.replace('{%s}' % color, ansi_colors[color])
-        msg = msg + ansi_colors['style_reset_all']
-        return msg
+        return format_ansi(msg)
 
 
 class ANSIEmojiLoglevelFormatter(ANSIFormatter):
@@ -396,6 +401,23 @@ class MILC(object):
 
         # Release the lock
         self.release_lock()
+
+    def print(self, text, *args, **kwargs):
+        """Print a string to stdout after formatting.
+
+        ANSI color strings (such as {fg-blue}) will be converted into ANSI
+        escape sequences, and the ANSI reset sequence will be added to all
+        strings.
+
+        If *args or **kwargs are passed they will be used to %-format the strings.
+        """
+        if args and kwargs:
+            raise RuntimeError('You can only specify *args or **kwargs, not both!')
+
+        args = args or kwargs
+        text = format_ansi(text)
+
+        print(text % args)
 
     def initialize_argparse(self, description, kwargs):
         """Prepare to process arguments from sys.argv.
@@ -770,6 +792,16 @@ if __name__ == '__main__':
                 sleep(2)
 
             cli.log.info('{fg_cyan}Hello%s %s!', comma, cli.config.thinking.name)
+
+        @cli.subcommand
+        def pride(cli):
+            '''Show off our ANSI colors.'''
+            cli.print('{bg_red}                    ')
+            cli.print('{bg_lightred_ex}                    ')
+            cli.print('{bg_lightyellow_ex}                    ')
+            cli.print('{bg_green}                    ')
+            cli.print('{bg_blue}                    ')
+            cli.print('{bg_magenta}                    ')
 
         if __name__ == '__main__':
             # You can register subcommands using decorators as seen above,
