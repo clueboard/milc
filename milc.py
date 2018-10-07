@@ -1,11 +1,14 @@
+#!/usr/bin/env python
 # coding=utf-8
-"""py-clim - The CLI Context Manager
+"""milc - A CLI Framework
 
-CLIM is an opinionated framework for writing CLI apps. It optimizes for the
+PYTHON_ARGCOMPLETE_OK
+
+MILC is an opinionated framework for writing CLI apps. It optimizes for the
 most common unix tool pattern- small tools that are run from the command
 line but generally do not feature any user interaction while they run.
 
-Using CLIM will give your script all of these features with little or no
+Using MILC will give your script all of these features with little or no
 work on your part:
 
 * CLI Argument Parsing, with or without subcommands
@@ -36,6 +39,7 @@ try:
 except ImportError:
     thread = None
 
+import argcomplete
 import colorama
 import halo
 
@@ -204,6 +208,11 @@ class SubparserWrapper(object):
             if not hasattr(self, attr):
                 setattr(self, attr, getattr(subparser, attr))
 
+    def completer(self, completer):
+        """Add an arpcomplete completer to this subcommand.
+        """
+        self.subparser.completer = completer
+
     def add_argument(self, *args, **kwargs):
         if kwargs.get('add_dest', True):
             kwargs['dest'] = self.submodule + '_' + self.cli.get_argument_name(*args, **kwargs)
@@ -222,7 +231,7 @@ class SubparserWrapper(object):
         self.cli.subcommands_default[self.submodule].add_argument(*args, **kwargs)
 
 
-class CLIM(object):
+class MILC(object):
     """# CLI Context Manager
 
     This class wraps some standard python modules in nice ways for CLI tools.
@@ -234,7 +243,7 @@ class CLIM(object):
 
     ## Simple Example:
 
-        cli = CLIM('My useful CLI tool.')
+        cli = MILC('My useful CLI tool.')
 
         @cli.argument('-n', '--name', help='Name to greet', default='World')
         @cli.entrypoint
@@ -242,14 +251,13 @@ class CLIM(object):
             cli.log.info('Hello, %s!', cli.config.general.name)
 
         if __name__ == '__main__':
-            with cli:
-                cli.run()
+            cli()
 
-    # Basics of a CLIM app
+    # Basics of a MILC app
 
-    Start by instaniating a CLIM context manager and defining your entrypoint:
+    Start by instaniating a MILC context manager and defining your entrypoint:
 
-        cli = CLIM('My useful CLI tool')
+        cli = MILC('My useful CLI tool')
 
         def main(cli):
             print('Hello, %s!' % cli.config.general.name)
@@ -261,15 +269,14 @@ class CLIM(object):
             cli.entrypoint(main)
             cli.add_argument('-n', '--name', help='Name to greet', default='World')
 
-    Finally, invoke it as a context manager and use `cli.run()` to dispatch to
-    your entrypoint (or a subcommand, if one has been specified.)
+    Finally, call `cli()` to dispatch to your entrypoint (or a subcommand, 
+    if one has been specified.)
 
-            with cli:
-                cli.run()
+            cli()
 
-    ## Complete CLIM script, using functions
+    ## Complete MILC script, using functions
 
-        cli = CLIM('My useful CLI tool')
+        cli = MILC('My useful CLI tool')
 
         def main(cli):
             print('Hello, %s!' % cli.config.general.name)
@@ -278,8 +285,7 @@ class CLIM(object):
             cli.entrypoint(main)
             cli.add_argument('-n', '--name', help='Name to greet', default='World')
 
-            with cli:
-                cli.run()
+            cli()
 
     # Using decorators instead
 
@@ -288,7 +294,7 @@ class CLIM(object):
     Not that due to the way decorators are evaluated you need to place all
     `@cli.argument()` decorators above all other decorators.
 
-        cli = CLIM('My useful CLI tool')
+        cli = MILC('My useful CLI tool')
 
         @cli.argument('-n', '--name', help='Name to greet', default='World')
         @cli.entrypoint
@@ -296,13 +302,12 @@ class CLIM(object):
             print('Hello, %s!' % cli.config.general.name)
 
         if __name__ == '__main__':
-            with cli:
-                cli.run()
+            cli()
 
     # Using Subcommands
 
     A command pattern for CLI tools is to have subcommands. For example,
-    you see this in git with `git status` and `git pull`. CLIM supports
+    you see this in git with `git status` and `git pull`. MILC supports
     this pattern using the built-in argparse subcommand functionality.
 
     You can register subcommands by using the `cli.subcommand(func)`
@@ -319,8 +324,8 @@ class CLIM(object):
     with an existing attribute or the name is not a legal attribute name you
     will have to access it via the dictionary.
 
-    When subcommands are not in use `cli.run()` will always be the same as
-    `cli.entrypoint()`. When subcommands are in use `cli.run()` will be
+    When subcommands are not in use `cli()` will always be the same as
+    `cli.entrypoint()`. When subcommands are in use `cli()` will be
     pointed to the proper command to run. If no valid subcommand is given on
     the command line it will point to `cli.entrypoint()`. If a valid
     subcommand is supplied it will point to `<subcommand>()`.
@@ -331,7 +336,7 @@ class CLIM(object):
 
     ## Subcommand Example
 
-        cli = CLIM('My useful CLI tool with subcommands.')
+        cli = MILC('My useful CLI tool with subcommands.')
 
         @cli.argument('-c', '--comma', help='Include the comma in output', default=True, action='store_true')
         @cli.entrypoint
@@ -354,9 +359,8 @@ class CLIM(object):
             cli.subcommand(goodbye)
             cli.goodbye.add_argument('-n', '--name', help='Name to bid farewell to', default='World')
 
-            with cli:
-                cli.config.general.comma = ',' if cli.config.general.comma else ''
-                cli.run()  # Automatically picks between main(), hello() and goodbye()
+            cli.config.general.comma = ',' if cli.config.general.comma else ''
+            cli()  # Automatically picks between main(), hello() and goodbye()
 
     # More Docs!
 
@@ -375,6 +379,7 @@ class CLIM(object):
         self._inside_context_manager = False
         self._subparsers = None
         self._subparsers_default = None
+        self.argwarn = argcomplete.warn
         self.args = None
         self.ansi = ansi_colors
         self.config = Configuration()
@@ -400,6 +405,11 @@ class CLIM(object):
         self.set_defaults = self._arg_parser.set_defaults
         self.print_usage = self._arg_parser.print_usage
         self.print_help = self._arg_parser.print_help
+
+    def completer(self, completer):
+        """Add an arpcomplete completer to this subcommand.
+        """
+        self._arg_parser.completer = completer
 
     def add_argument(self, *args, **kwargs):
         """Wrapper to add arguments to both the main and the shadow argparser.
@@ -455,13 +465,13 @@ class CLIM(object):
         self.release_lock()
 
     def acquire_lock(self):
-        """Acquire the CLIM lock for exclusive access to properties.
+        """Acquire the MILC lock for exclusive access to properties.
         """
         if self._lock:
             self._lock.acquire()
 
     def release_lock(self):
-        """Release the CLIM lock.
+        """Release the MILC lock.
         """
         if self._lock:
             self._lock.release()
@@ -516,8 +526,9 @@ class CLIM(object):
 
         self.acquire_lock()
 
-        self.args_passed = self._arg_defaults.parse_args()
+        argcomplete.autocomplete(self._arg_parser)
         self.args = self._arg_parser.parse_args()
+        self.args_passed = self._arg_defaults.parse_args()
 
         if 'entrypoint' in self.args:
             self._entrypoint = self.args.entrypoint
@@ -533,7 +544,7 @@ class CLIM(object):
         self.acquire_lock()
         self.config_file = self.find_config_file()
 
-        if self.config_file and os.path.exists(cli.config_file):
+        if self.config_file and os.path.exists(self.config_file):
             config = RawConfigParser(self.config)
             config.read(self.config_file)
 
@@ -603,12 +614,14 @@ class CLIM(object):
 
         self.release_lock()
 
-    def run(self):
+    def __call__(self):
         """Execute the entrypoint function.
         """
         if not self._inside_context_manager:
-            self.__enter__()
-            self.log.debug('Warning: self.run() called outside of context manager. This will preclude calling self.__exit__().')
+            # If they didn't use the context manager use it ourselves
+            with self:
+                self.__call__()
+                return
 
         if not self._entrypoint:
             raise RuntimeError('No entrypoint provided!')
@@ -619,7 +632,7 @@ class CLIM(object):
         """Set the entrypoint for when no subcommand is provided.
         """
         if self._inside_context_manager:
-            raise RuntimeError('You must run this before the with statement!')
+            raise RuntimeError('You must run this before cli()!')
 
         self.acquire_lock()
         self._entrypoint = handler
@@ -662,7 +675,7 @@ class CLIM(object):
         """
         if len(logging.root.handlers) != 0:
             # This is not a design decision. This is what I'm doing for now until I can examine and think about this situation in more detail.
-            raise RuntimeError('CLIM should be the only system installing root log handlers!')
+            raise RuntimeError('MILC should be the only system installing root log handlers!')
 
         self.acquire_lock()
 
@@ -695,7 +708,7 @@ class CLIM(object):
 
     def __enter__(self):
         if self._inside_context_manager:
-            self.log.debug('Warning: context manager was entered again. This usually means that self.run() was called before the with statement. You probably do not want to do that.')
+            self.log.debug('Warning: context manager was entered again. This usually means that self.__call__() was called before the with statement. You probably do not want to do that.')
             return
 
         self.acquire_lock()
@@ -723,7 +736,7 @@ class CLIM(object):
 
 
 if __name__ == '__main__':
-        cli = CLIM('My useful CLI tool with subcommands.')
+        cli = MILC('My useful CLI tool with subcommands.')
 
         @cli.argument('-c', '--comma', help='comma in output', default=True, action='store_boolean')
         @cli.entrypoint
@@ -764,5 +777,4 @@ if __name__ == '__main__':
             cli.subcommand(goodbye)
             cli.goodbye.add_argument('-n', '--name', help='Name to bid farewell to', default='World')
 
-            with cli:
-                cli.run()  # Automatically picks between main(), hello() and goodbye()
+            cli()  # Automatically picks between main(), hello() and goodbye()
