@@ -227,6 +227,7 @@ class SubparserWrapper(object):
         if 'action' in kwargs and kwargs['action'] == 'store_boolean':
             return handle_store_boolean(self, *args, **kwargs)
 
+        self.cli.acquire_lock()
         self.subparser.add_argument(*args, **kwargs)
 
         if 'default' in kwargs:
@@ -234,6 +235,7 @@ class SubparserWrapper(object):
         if 'action' in kwargs and kwargs['action'] == 'store_false':
             kwargs['action'] == 'store_true'
         self.cli.subcommands_default[self.submodule].add_argument(*args, **kwargs)
+        self.cli.release_lock()
 
 
 class MILC(object):
@@ -371,36 +373,34 @@ class MILC(object):
 
     Details about the rest of the system can be found in the [docs/](docs/) directory.
     """
-    def __init__(self, description, entrypoint=None, fromfile_prefix_chars='@', conflict_handler='resolve', **kwargs):
-        kwargs['fromfile_prefix_chars'] = fromfile_prefix_chars
-        kwargs['conflict_handler'] = conflict_handler
-
-        # Setup a lock for thread safety and hold it until initialization is complete
+    def __init__(self):
+        # Setup a lock for thread safety
         self._lock = threading.RLock() if thread else None
-        self.acquire_lock()
 
         # Define some basic info
-        self._entrypoint = entrypoint
+        self.acquire_lock()
+        self._description = None
+        self._entrypoint = None
         self._inside_context_manager = False
-        self._subparsers = None
-        self._subparsers_default = None
-        self.argwarn = argcomplete.warn
-        self.args = None
         self.ansi = ansi_colors
         self.config = Configuration()
         self.config_file = None
         self.prog_name = sys.argv[0][:-3] if sys.argv[0].endswith('.py') else sys.argv[0]
-        self.subcommands = {}
-        self.subcommands_default = {}
         self.spinner = halo.Halo
         self.version = 'unknown'
+        self.release_lock()
 
         # Initialize all the things
-        self.initialize_argparse(description, kwargs)
+        self.initialize_argparse()
         self.initialize_logging()
 
-        # Release the lock
-        self.release_lock()
+    @property
+    def description(self):
+        return self._description
+
+    @description.setter
+    def description(self, value):
+        self._description = self._arg_parser.description = self._arg_defaults.description = value
 
     def echo(self, text, *args, **kwargs):
         """Print a string to stdout after formatting.
@@ -419,14 +419,27 @@ class MILC(object):
 
         print(text % args)
 
-    def initialize_argparse(self, description, kwargs):
+    def initialize_argparse(self):
         """Prepare to process arguments from sys.argv.
         """
-        self._arg_defaults = argparse.ArgumentParser(description=description, **kwargs)
-        self._arg_parser = argparse.ArgumentParser(description=description, **kwargs)
+        kwargs = {
+            'fromfile_prefix_chars': '@',
+            'conflict_handler': 'resolve'
+        }
+
+        self.acquire_lock()
+        self.subcommands = {}
+        self.subcommands_default = {}
+        self._subparsers = None
+        self._subparsers_default = None
+        self.argwarn = argcomplete.warn
+        self.args = None
+        self._arg_defaults = argparse.ArgumentParser(**kwargs)
+        self._arg_parser = argparse.ArgumentParser(**kwargs)
         self.set_defaults = self._arg_parser.set_defaults
         self.print_usage = self._arg_parser.print_usage
         self.print_help = self._arg_parser.print_help
+        self.release_lock()
 
     def completer(self, completer):
         """Add an arpcomplete completer to this subcommand.
@@ -444,6 +457,7 @@ class MILC(object):
         if 'action' in kwargs and kwargs['action'] == 'store_boolean':
             return handle_store_boolean(self, *args, **kwargs)
 
+        self.acquire_lock()
         self._arg_parser.add_argument(*args, **kwargs)
 
         # Populate the shadow parser
@@ -452,10 +466,12 @@ class MILC(object):
         if 'action' in kwargs and kwargs['action'] == 'store_false':
             kwargs['action'] == 'store_true'
         self._arg_defaults.add_argument(*args, **kwargs)
+        self.release_lock()
 
     def initialize_logging(self):
         """Prepare the defaults for the logging infrastructure.
         """
+        self.acquire_lock()
         self.log_file = None
         self.log_file_mode = 'a'
         self.log_file_handler = None
@@ -467,6 +483,8 @@ class MILC(object):
         self.log = logging.getLogger(self.__class__.__name__)
         self.log.setLevel(logging.DEBUG)
         logging.root.setLevel(logging.DEBUG)
+        self.release_lock()
+
         self.add_argument('-V', '--version', version=self.version, action='version', help='Display the version and exit')
         self.add_argument('-v', '--verbose', action='store_true', help='Make the logging more verbose')
         self.add_argument('--datetime-fmt', default='%Y-%m-%d %H:%M:%S', help='Format string for datetimes')
@@ -546,9 +564,9 @@ class MILC(object):
             self.log.debug('Warning: Arguments have already been parsed, ignoring duplicate attempt!')
             return
 
-        self.acquire_lock()
-
         argcomplete.autocomplete(self._arg_parser)
+
+        self.acquire_lock()
         self.args = self._arg_parser.parse_args()
         self.args_passed = self._arg_defaults.parse_args()
 
@@ -650,19 +668,26 @@ class MILC(object):
 
         return self._entrypoint(self)
 
-    def entrypoint(self, handler):
+    def entrypoint(self, description):
         """Set the entrypoint for when no subcommand is provided.
         """
         if self._inside_context_manager:
             raise RuntimeError('You must run this before cli()!')
 
         self.acquire_lock()
-        self._entrypoint = handler
+        self.description = description
         self.release_lock()
 
-        return handler
+        def entrypoint_func(handler):
+            self.acquire_lock()
+            self._entrypoint = handler
+            self.release_lock()
 
-    def subcommand(self, handler, name=None, **kwargs):
+            return handler
+
+        return entrypoint_func
+
+    def add_subcommand(self, handler, description, name=None, **kwargs):
         """Register a subcommand.
 
         If name is not provided we use `handler.__name__`.
@@ -673,12 +698,11 @@ class MILC(object):
         if self._subparsers is None:
             self.add_subparsers()
 
-        self.acquire_lock()
-
         if not name:
             name = handler.__name__
 
-        kwargs['help'] = handler.__doc__.split('\n')[0] if handler.__doc__ else None
+        self.acquire_lock()
+        kwargs['help'] = description
         self.subcommands_default[name] = self._subparsers_default.add_parser(name, **kwargs)
         self.subcommands[name] = SubparserWrapper(self, name, self._subparsers.add_parser(name, **kwargs))
         self.subcommands[name].set_defaults(entrypoint=handler)
@@ -691,6 +715,14 @@ class MILC(object):
         self.release_lock()
 
         return handler
+
+    def subcommand(self, description, **kwargs):
+        """Decorator to register a subcommand.
+        """
+        def subcommand_function(handler):
+            return self.add_subcommand(handler, description, **kwargs)
+
+        return subcommand_function
 
     def setup_logging(self):
         """Called by __enter__() to setup the logging configuration.
@@ -757,31 +789,28 @@ class MILC(object):
             exit(255)
 
 
-if __name__ == '__main__':
-        cli = MILC('My useful CLI tool with subcommands.')
+cli = MILC()
 
+if __name__ == '__main__':
         @cli.argument('-c', '--comma', help='comma in output', default=True, action='store_boolean')
-        @cli.entrypoint
+        @cli.entrypoint('My useful CLI tool with subcommands.')
         def main(cli):
             comma = ',' if cli.config.general.comma else ''
             cli.log.info('{bg_green}{fg_red}Hello%s World!', comma)
 
         @cli.argument('-n', '--name', help='Name to greet', default='World')
-        @cli.subcommand
+        @cli.subcommand('Description of hello subcommand here.')
         def hello(cli):
-            '''Description of hello subcommand here.'''
             comma = ',' if cli.config.general.comma else ''
             cli.log.info('{fg_blue}Hello%s %s!', comma, cli.config.hello.name)
 
         def goodbye(cli):
-            '''This will show up in --help output.'''
             comma = ',' if cli.config.general.comma else ''
             cli.log.info('{bg_red}Goodbye%s %s!', comma, cli.config.goodbye.name)
 
         @cli.argument('-n', '--name', help='Name to greet', default='World')
-        @cli.subcommand
+        @cli.subcommand('Think a bit before greeting the user.')
         def thinking(cli):
-            '''Think a bit before greeting the user.'''
             comma = ',' if cli.config.general.comma else ''
             spinner = cli.spinner(text='Just a moment...', spinner='earth')
             spinner.start()
@@ -793,9 +822,8 @@ if __name__ == '__main__':
 
             cli.log.info('{fg_cyan}Hello%s %s!', comma, cli.config.thinking.name)
 
-        @cli.subcommand
+        @cli.subcommand('Show off our ANSI colors.')
         def pride(cli):
-            '''Show off our ANSI colors.'''
             cli.echo('{bg_red}                    ')
             cli.echo('{bg_lightred_ex}                    ')
             cli.echo('{bg_lightyellow_ex}                    ')
@@ -806,7 +834,7 @@ if __name__ == '__main__':
         if __name__ == '__main__':
             # You can register subcommands using decorators as seen above,
             # or using functions like like this:
-            cli.subcommand(goodbye)
+            cli.add_subcommand(goodbye, 'This will show up in --help output.')
             cli.goodbye.add_argument('-n', '--name', help='Name to bid farewell to', default='World')
 
             cli()  # Automatically picks between main(), hello() and goodbye()

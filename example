@@ -1,22 +1,20 @@
 #!/usr/bin/env python3
-from milc import MILC
-
-cli = MILC('Greet a user.')
+from milc import cli
 
 @cli.argument('-n', '--name', help='Name to greet', default='World')
-@cli.entrypoint
+@cli.entrypoint('Greet a user.')
 def main(cli):
     cli.log.info('No subcommand specified!')
     cli.print_usage()
 
 @cli.argument('--comma', help='comma in output', action='store_boolean', default=True)
-@cli.subcommand
+@cli.subcommand('Say hello.')
 def hello(cli):
     comma = ',' if cli.config.hello.comma else ''
     cli.echo('{fg_green}Hello%s %s!', comma, cli.config.general.name)
 
 @cli.argument('-f', '--flag', help='Write it in a flag', action='store_true')
-@cli.subcommand
+@cli.subcommand('Say goodbye.')
 def goodbye(cli):
     if cli.config.goodbye.flag:
         cli.log.debug('Drawing a flag.')
