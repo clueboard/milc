@@ -14,6 +14,29 @@ all the features users expect from a modern CLI tool out of the box:
 
 ## Short Example
 
+### With Functions
+
+This example is equivalent to the decorator example below.
+
+```python
+from milc import MILC
+
+def main(cli):
+    comma = ',' if cli.config.general.comma else ''
+    cli.log.info('Hello%s %s!', comma, cli.config.general.name)
+
+if __name__ == '__main__':
+    cli = MILC('My useful CLI tool.')
+    cli.entrypoint(main)
+    cli.add_argument('-c', '--comma', help='comma in output', default=True, action='store_boolean')
+    cli.add_argument('-n', '--name', help='Name to greet', default='World')
+    cli.run()
+```
+
+### With Decorators
+
+This example is equivalent to the function example above.
+
 ```python
 from milc import MILC
 
@@ -30,7 +53,7 @@ if __name__ == '__main__':
     cli.run()
 ```
 
-Output:
+### Output
 
 ```
 $ ./hello
@@ -73,12 +96,12 @@ optional arguments:
 
 # Documentation
 
-Documentation can be found in [docs/](docs/readme.md).
+Documentation can be found in [docs/](docs/README.md).
 
 # Why MILC?
 
 Because life is too short to integrate this stuff yourself, and writing
-good CLI's with comprehensive functionality is hard.
+good CLI's with comprehensive functionality is harder than it needs to be.
 
 Most of the other CLI frameworks are missing a piece of the puzzle. Maybe
 they have argument parsing but no config file story. Maybe they have a
@@ -89,7 +112,7 @@ else is doing in their own app. Why do we duplicate so much effort?
 MILC is my answer to that. It implements a common set of CLI tools that
 pretty much every project I have ever worked on either needed or would
 have benefited from. Included in MILC are answers to problems you didn't
-know you had:
+know you have:
 
 * Config file saving and parsing
 * Automatically overriding config options with CLI arguments
@@ -107,15 +130,18 @@ who are very glad these options are available when they need them.
 
 Because I believe in writing good CLI tools.
 
-In researching modules before writing MILC I saw variations of the same 
+In researching CLI libs before writing MILC I saw variations of the same 
 story over and over. "I started with {Click,Docopt,Whatever} but after a 
 while I ended up just going back to argparse." In pretty much every case 
 as the complexity of their program grew they needed to do things argparse 
 made easy and their framework made hard.
 
 MILC attempts to solve this by embracing the complexity of argparse. It 
-handles the drudgery of setting up argparse for you, but gives you the 
-means to control that complexity when you need to.
+handles the drudgery of setting up argparse for you, but gives you an 
+elegant means to control that complexity when you need to. When your
+CLI framework relies on parsing function signatures you are necessarily
+limited in what you can do. Function annotations make this a little 
+better but they are not a full solution to the problem.
 
 If you care about writing good CLI tools (and I hope you do) you will want
 more control over the behavior of your program than Click or Docopt give you.
@@ -127,14 +153,11 @@ why you didn't just use one of the existing options instead. The initial
 motivation for MILC was to provide a context manager, something the other
 frameworks I've found don't do.
 
-As I surveyed the other tools in this space I felt like there was a goldilox
-problem. Frameworks like Click or Getopt are like your average sedan, great
-for everyday use. There are a lot of simple frameworks like begins or plac
-which are like bicycles, easy to hop on and take short trips with. There are
-big expansive frameworks like Cement which are dump trucks or cargo haulers,
-able to handle any job you throw at them if with enough effort. But what I
-want is more like a cargo van. Big enough to haul around all the tools and
-cargo I need for most jobs but easy to drive around like a sedan.
+As I serveyed the other tools I found that most of them only solve part of
+the problem, not the whole problem. Those that solve the whole problem are
+very hard to use or get started with, or are otherwise very heavyweight. I
+wanted a comprehensive framework that was easy to get starting with and would
+grow as the needs of my program grew.
 
 Below is a list of the existing tools I have looked at and why I feel they
 don't fill the same need as MILC.
@@ -185,7 +208,8 @@ you inherently give up some flexibility. For example, with MILC you can
 have some arguments that use `action='store_true'` and others that use
 `action='store_boolean'`. With autocommand you have to use
 `@autocommand(add_nos=True)` which generates `--no-<arg>` flags for
-every argument that has a boolean as a default.
+every argument that has a boolean as a default, you can't mix boolean
+arguments and enable arguments.
 
 Autocommand does not support a configuration file or logging.
 
@@ -208,7 +232,7 @@ Cement is a very heavy MVC framework for building CLI tools. It includes all
 the functionality MILC provides and then some. If you're looking for an
 MVC framework for your tool this is the one to pick. 
 
-If you are looking for an MVC framework MILC probably isn't want you want.
+If you are looking for an MVC framework MILC probably isn't what you want.
 Use Cement instead.
 
 ### Cliar
@@ -242,7 +266,8 @@ modules.
 
 MILC does not insist upon a UTF-8 environment for Python 3 the way Click
 does. I understand Click's stance here but I'm hoping that the ecosystem has
-developed enough by now to make it no longer necessary. 
+developed enough by now to make it no longer necessary. Time will tell if
+my opinion changes or not.
 
 Whether you should use Click or MILC depends on the tradeoff you want to
 make. Would you rather use the python modules everyone's already familiar with
@@ -301,8 +326,7 @@ will not enjoy working with docopt.
 
 Docopt has poor error handling. You have to do your own argument validation,
 and even when Docopt knows the passed arguments are invalid it does not return
-a useful error message to the user. The DSL for argument definition makes
-it hard to compose Docopt programs.
+a useful error message to the user.
 
 Docopt does not support config files.
 
@@ -319,7 +343,9 @@ Fire does not support a configuration file or logging.
 
 <https://github.com/micheles/plac>
 
-I like his idea about scaling down, and it's part of what drove me. But I don't want to go without functionality to scale down, I want MILC to work well for very small CLI tools.
+I like his idea about scaling down, and it's part of what drove me. But I
+don't want to go without functionality to scale down. MILC's idea of scaling
+down is working well for small programs.
 
 Plac does not support a configuration file or logging.
 

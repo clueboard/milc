@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding=utf-8
 """milc - A CLI Framework
 
@@ -265,7 +265,7 @@ class MILC(object):
         cli = MILC('My useful CLI tool')
 
         def main(cli):
-            print('Hello, %s!' % cli.config.general.name)
+            cli.echo('Hello, %s!', cli.config.general.name)
 
     From here, you should setup your CLI environment. I typically prefer to
     do this behind a __main__ check.
@@ -284,7 +284,7 @@ class MILC(object):
         cli = MILC('My useful CLI tool')
 
         def main(cli):
-            print('Hello, %s!' % cli.config.general.name)
+            cli.echo('Hello, %s!', cli.config.general.name)
 
         if __name__ == '__main__':
             cli.entrypoint(main)
@@ -304,7 +304,7 @@ class MILC(object):
         @cli.argument('-n', '--name', help='Name to greet', default='World')
         @cli.entrypoint
         def main(cli):
-            print('Hello, %s!' % cli.config.general.name)
+            cli.echo('Hello, %s!', cli.config.general.name)
 
         if __name__ == '__main__':
             cli()
@@ -402,7 +402,7 @@ class MILC(object):
         # Release the lock
         self.release_lock()
 
-    def print(self, text, *args, **kwargs):
+    def echo(self, text, *args, **kwargs):
         """Print a string to stdout after formatting.
 
         ANSI color strings (such as {fg-blue}) will be converted into ANSI
@@ -796,12 +796,12 @@ if __name__ == '__main__':
         @cli.subcommand
         def pride(cli):
             '''Show off our ANSI colors.'''
-            cli.print('{bg_red}                    ')
-            cli.print('{bg_lightred_ex}                    ')
-            cli.print('{bg_lightyellow_ex}                    ')
-            cli.print('{bg_green}                    ')
-            cli.print('{bg_blue}                    ')
-            cli.print('{bg_magenta}                    ')
+            cli.echo('{bg_red}                    ')
+            cli.echo('{bg_lightred_ex}                    ')
+            cli.echo('{bg_lightyellow_ex}                    ')
+            cli.echo('{bg_green}                    ')
+            cli.echo('{bg_blue}                    ')
+            cli.echo('{bg_magenta}                    ')
 
         if __name__ == '__main__':
             # You can register subcommands using decorators as seen above,
@@ -810,3 +810,4 @@ if __name__ == '__main__':
             cli.goodbye.add_argument('-n', '--name', help='Name to bid farewell to', default='World')
 
             cli()  # Automatically picks between main(), hello() and goodbye()
+            print(sorted(ansi_colors.keys()))

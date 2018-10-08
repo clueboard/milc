@@ -1,0 +1,33 @@
+#!/usr/bin/env python3
+from milc import MILC
+
+cli = MILC('Greet a user.')
+
+@cli.argument('-n', '--name', help='Name to greet', default='World')
+@cli.entrypoint
+def main(cli):
+    cli.log.info('No subcommand specified!')
+    cli.print_usage()
+
+@cli.argument('--comma', help='comma in output', action='store_boolean', default=True)
+@cli.subcommand
+def hello(cli):
+    comma = ',' if cli.config.hello.comma else ''
+    cli.echo('{fg_green}Hello%s %s!', comma, cli.config.general.name)
+
+@cli.argument('-f', '--flag', help='Write it in a flag', action='store_true')
+@cli.subcommand
+def goodbye(cli):
+    if cli.config.goodbye.flag:
+        cli.log.debug('Drawing a flag.')
+        colors = ('{bg_red}', '{bg_lightred_ex}', '{bg_lightyellow_ex}', '{bg_green}', '{bg_blue}', '{bg_magenta}')
+        string = 'Goodbye, %s!' % cli.config.general.name
+        for i, letter in enumerate(string):
+            color = colors[i % len(colors)]
+            cli.echo(color + letter + ' '*39)
+    else:
+        cli.log.warning('Parting is such sweet sorrow.')
+        cli.echo('{fg_blue}Goodbye, %s!', cli.config.general.name)
+
+if __name__ == '__main__':
+    cli()

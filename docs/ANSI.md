@@ -5,70 +5,54 @@ text both for log output and when `print()`ing directly.
 
 ## Colorizing Log Output
 
-If you are using the built-in log facility it couldn't be easier- just add curly-braced delimited color names to your log strings. They will automatically output color or not as appropriate.
+If you are using the built-in log facility it couldn't be easier- just add
+curly-braced delimited color names to your log strings. They will
+automatically output color or not as appropriate.
 
 ### Colored Log Example
 
-    cli.log.error('{bg_red}{fg_white}Could not open file %s!', filename)
+```python
+cli.log.error('{bg_red}{fg_white}Could not open file %s!', filename)
+```
 
-## Colorizing print()
+## Colorizing Printed Output
 
-If you want to colorize output yourself you will find a dictionary of ANSI
-colors in `cli.ansi`. You can use this to colorize text in whatever way you'd
-like.
+You can use `cli.echo()` to print strings to stdout in the same way as
+`cli.log`. Just add the ANSI token below to your string to colorize your
+output.
 
-NOTE: Make sure you end all your printed output with
-`cli.ansi['style_reset_all']` or you may find yourself with a funky and/or
-broken terminal after your program exits.
+### Colored Print Example
 
-## Colored Print Example
-
-    text = '{bg_blue}{fg_white}|___|\\___|{style_reset_all} ' \
-           '{bg_red}{fg_white}SHARK ATTACK!{style_reset_all}'
-    print(text.format(**cli.ansi))
+```python
+text = '{bg_blue}{fg_white}|___|\\___|{style_reset_all} ' \
+       '{bg_red}{fg_white}SHARK ATTACK!'
+cli.echo(text)
+```
 
 ## Available Colors
 
 Colors prefixed with 'fg' will affect the foreground (text) color. Colors
-prefixed with 'bg' will affect the background color. Colors prefixed with
-style affect how bright the text will be, except for `{style_reset_all}`
-which resets the text back to the terminal's default colors.
+prefixed with 'bg' will affect the background color.
 
-* {fg_black}
-* {fg_blue}
-* {fg_cyan}
-* {fg_green}
-* {fg_lightblack_ex}
-* {fg_lightblue_ex}
-* {fg_lightcyan_ex}
-* {fg_lightgreen_ex}
-* {fg_lightmagenta_ex}
-* {fg_lightred_ex}
-* {fg_lightwhite_ex}
-* {fg_lightyellow_ex}
-* {fg_magenta}
-* {fg_red}
-* {fg_reset}
-* {fg_white}
-* {fg_yellow}
-* {bg_black}
-* {bg_blue}
-* {bg_cyan}
-* {bg_green}
-* {bg_lightblack_ex}
-* {bg_lightblue_ex}
-* {bg_lightcyan_ex}
-* {bg_lightgreen_ex}
-* {bg_lightmagenta_ex}
-* {bg_lightred_ex}
-* {bg_lightwhite_ex}
-* {bg_lightyellow_ex}
-* {bg_magenta}
-* {bg_red}
-* {bg_reset}
-* {bg_white}
-* {bg_yellow}
-* {style_bright}
-* {style_dim}
-* {style_normal}
-* {style_reset_all}
+| Color | Background | Extended Background | Foreground | Extended Foreground|
+|-------|------------|---------------------|------------|--------------------|
+| Black | {bg_black} | {bg_lightblack_ex} | {fg_black} | {fg_lightblack_ex} |
+| Blue | {bg_blue} | {bg_lightblue_ex} | {fg_blue} | {fg_lightblue_ex} |
+| Cyan | {bg_cyan} | {bg_lightcyan_ex} | {fg_cyan} | {fg_lightcyan_ex} |
+| Green | {bg_green} | {bg_lightgreen_ex} | {fg_green} | {fg_lightgreen_ex} |
+| Magenta | {bg_magenta} | {bg_lightmagenta_ex} | {fg_magenta} | {fg_lightmagenta_ex} |
+| Red | {bg_red} | {bg_lightred_ex} | {fg_red} | {fg_lightred_ex} |
+| White | {bg_white} | {bg_lightwhite_ex} | {fg_white} | {fg_lightwhite_ex} |
+| Yellow | {bg_yellow} | {bg_lightyellow_ex} | {fg_yellow} | {fg_lightyellow_ex} |
+
+There are also control sequences that can be used to change the behavior of
+ANSI output:
+
+| Control Sequences |
+|-------------------|
+| {style_bright} |
+| {style_dim} |
+| {style_normal} |
+| {style_reset_all} |
+| {bg_reset} |
+| {fg_reset} |
