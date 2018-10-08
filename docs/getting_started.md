@@ -251,16 +251,16 @@ running it with no arguments.
 
 We can demonstrate entering a subcommand here:
 
-![Hello Output](https://i.imgur.com/1G0YDd7.png)
+![Hello Output](https://i.imgur.com/a9RjE8S.png)
 
 So far so good. Now let's take a look at the help output:
 
-![Help Output](https://i.imgur.com/vox7jFv.png)
+![Help Output](https://i.imgur.com/MR5TbHv.png)
 
 Finally, let's combine it all together to demonstrate the use of both
 general and subcommand flags:
 
-![Flag Output](https://i.imgur.com/soEcAL7.png)
+![Flag Output](https://i.imgur.com/0aGFcKc.png)
 
 ## Doing More
 
