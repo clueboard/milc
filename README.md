@@ -19,15 +19,15 @@ all the features users expect from a modern CLI tool out of the box:
 This example is equivalent to the decorator example below.
 
 ```python
-from milc import MILC
+from milc import cli
 
 def main(cli):
     comma = ',' if cli.config.general.comma else ''
     cli.log.info('Hello%s %s!', comma, cli.config.general.name)
 
 if __name__ == '__main__':
-    cli = MILC('My useful CLI tool.')
     cli.entrypoint(main)
+    cli.description = 'My useful CLI tool.'
     cli.add_argument('-c', '--comma', help='comma in output', default=True, action='store_boolean')
     cli.add_argument('-n', '--name', help='Name to greet', default='World')
     cli.run()

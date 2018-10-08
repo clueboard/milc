@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # coding=utf-8
-"""milc - A CLI Framework
+"""MILC - A CLI Framework
 
 PYTHON_ARGCOMPLETE_OK
 
@@ -8,15 +8,9 @@ MILC is an opinionated framework for writing CLI apps. It optimizes for the
 most common unix tool pattern- small tools that are run from the command
 line but generally do not feature any user interaction while they run.
 
-Using MILC will give your script all of these features with little or no
-work on your part:
+For more details see the MILC documentation:
 
-* CLI Argument Parsing, with or without subcommands
-* Performance improvement from putting your code inside a function
-  <https://stackoverflow.com/questions/11241523/why-does-python-code-run-faster-in-a-function>
-* Config file support, with config options overridden by command line flags
-* Logging to stderr and/or a file
-* Thread safety! (Note: This needs more eyes looking at it.)
+    <https://github.com/skullydazed/milc/tree/master/docs>
 """
 from __future__ import division, print_function, unicode_literals
 import argparse
@@ -239,141 +233,11 @@ class SubparserWrapper(object):
 
 
 class MILC(object):
-    """# CLI Context Manager
-
-    This class wraps some standard python modules in nice ways for CLI tools.
-    It provides a Context Manager that can be used to quickly and easily
-    write tools that behave in the way endusers expect. It's meant to lightly
-    wrap standard python modules with just enough framework to make writing
-    simple scripts simple while allowing you to organically grow into large
-    complex programs with hundreds of options.
-
-    ## Simple Example:
-
-        cli = MILC('My useful CLI tool.')
-
-        @cli.argument('-n', '--name', help='Name to greet', default='World')
-        @cli.entrypoint
-        def main(cli):
-            cli.log.info('Hello, %s!', cli.config.general.name)
-
-        if __name__ == '__main__':
-            cli()
-
-    # Basics of a MILC app
-
-    Start by instaniating a MILC context manager and defining your entrypoint:
-
-        cli = MILC('My useful CLI tool')
-
-        def main(cli):
-            cli.echo('Hello, %s!', cli.config.general.name)
-
-    From here, you should setup your CLI environment. I typically prefer to
-    do this behind a __main__ check.
-
-        if __name__ == '__main__':
-            cli.entrypoint(main)
-            cli.add_argument('-n', '--name', help='Name to greet', default='World')
-
-    Finally, call `cli()` to dispatch to your entrypoint (or a subcommand, 
-    if one has been specified.)
-
-            cli()
-
-    ## Complete MILC script, using functions
-
-        cli = MILC('My useful CLI tool')
-
-        def main(cli):
-            cli.echo('Hello, %s!', cli.config.general.name)
-
-        if __name__ == '__main__':
-            cli.entrypoint(main)
-            cli.add_argument('-n', '--name', help='Name to greet', default='World')
-
-            cli()
-
-    # Using decorators instead
-
-    If you prefer you can use decorators instead. This can help as your program
-    grows by keeping the definition of arguments near the relevant entrypoint.
-    Not that due to the way decorators are evaluated you need to place all
-    `@cli.argument()` decorators above all other decorators.
-
-        cli = MILC('My useful CLI tool')
-
-        @cli.argument('-n', '--name', help='Name to greet', default='World')
-        @cli.entrypoint
-        def main(cli):
-            cli.echo('Hello, %s!', cli.config.general.name)
-
-        if __name__ == '__main__':
-            cli()
-
-    # Using Subcommands
-
-    A command pattern for CLI tools is to have subcommands. For example,
-    you see this in git with `git status` and `git pull`. MILC supports
-    this pattern using the built-in argparse subcommand functionality.
-
-    You can register subcommands by using the `cli.subcommand(func)`
-    function, or by decorating functions with `@cli.subcommand`. In
-    either case the subcommand name will be the same as the name of the
-    function.
-
-    You can access the underlying subcommand instance in two ways-
-
-        * Attribute access (`cli.<subcommand>`)
-        * Dictionary access (`cli.subcommands['<subcommand>']`)
-
-    You should generally prefer the attribute access. If there is a conflict
-    with an existing attribute or the name is not a legal attribute name you
-    will have to access it via the dictionary.
-
-    When subcommands are not in use `cli()` will always be the same as
-    `cli.entrypoint()`. When subcommands are in use `cli()` will be
-    pointed to the proper command to run. If no valid subcommand is given on
-    the command line it will point to `cli.entrypoint()`. If a valid
-    subcommand is supplied it will point to `<subcommand>()`.
-
-    Note: Python 2 does not support calling @cli.entrypoint when subcommands
-    are in use. If you need to call @cli.entrypoint when a subcommand is not
-    specified you will need to use python 3.
-
-    ## Subcommand Example
-
-        cli = MILC('My useful CLI tool with subcommands.')
-
-        @cli.argument('-c', '--comma', help='Include the comma in output', default=True, action='store_true')
-        @cli.entrypoint
-        def main(cli):
-            cli.log.info('Hello%s World!', cli.config.general.comma)
-
-        @cli.argument('-n', '--name', help='Name to greet', default='World')
-        @cli.subcommand
-        def hello(cli):
-            '''Description of hello subcommand here.'''
-            cli.log.info('Hello%s %s!', cli.config.general.comma, cli.config.hello.name)
-
-        def goodbye(cli):
-            '''This will show up in --help output.'''
-            cli.log.info('Goodbye%s %s!', cli.config.general.comma, cli.config.goodbye.name)
-
-        if __name__ == '__main__':
-            # You can register subcommands using decorators as seen above,
-            # or using functions like like this:
-            cli.subcommand(goodbye)
-            cli.goodbye.add_argument('-n', '--name', help='Name to bid farewell to', default='World')
-
-            cli.config.general.comma = ',' if cli.config.general.comma else ''
-            cli()  # Automatically picks between main(), hello() and goodbye()
-
-    # More Docs!
-
-    Details about the rest of the system can be found in the [docs/](docs/) directory.
+    """MILC - An Opinionated Batteries Included Framework
     """
     def __init__(self):
+        """Initialize the MILC object.
+        """
         # Setup a lock for thread safety
         self._lock = threading.RLock() if thread else None
 

@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""Example MILC program that shows off many features.
+
+PYTHON_ARGCOMPLETE_OK
+"""
 from milc import cli
 
 @cli.argument('-n', '--name', help='Name to greet', default='World')
