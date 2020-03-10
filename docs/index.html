@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MILC - An opinionated batteries-included python 3 CLI framework.</title>
+  <link rel="icon" type="image/png" href="gitbook/images/favicon.png">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="Description">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta property="og:title" content="MILC - An opinionated batteries-included python 3 CLI framework.">
+  <meta property="og:type" content="website">
+  <meta property="og:description" content="The full documentation of the open-source MILC.">
+  <!-- <meta property="og:url" content="https://docs.qmk.fm"> -->
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/buble.css" title="light">
+  <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/dark.css" media="(prefers-color-scheme: dark)">
+  <link rel="stylesheet" href="//unpkg.com/docsify-toc@1.0.0/dist/toc.css">
+  <link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    window.$docsify = {
+      basePath: '/',
+      name: 'MILC',
+      repo: 'clueboard/milc',
+      loadSidebar: '_summary.md',
+      mergeNavbar: true,
+      auto2top: true,
+      autoHeader: true,
+      formatUpdated: '{YYYY}/{MM}/{DD} {HH}:{mm}',
+      search: {
+        paths: 'auto',
+        placeholder: {
+          '/es/': 'Buscar',
+          '/zh-cn/': '搜索',
+          '/ja/': '検索',
+          '/pt-br/': 'Busca',
+          '/': 'Search'
+        },
+        noData: {
+          '/es/': '¡Ningún resultado!',
+          '/zh-cn/': '没有结果!',
+          '/ja/': '見つかりません!',
+          '/pt-br/': 'Nenhum resultado!',
+          '/': 'No results!'
+        },
+        depth: 6
+      },
+      markdown: {
+        smartypants: true,
+        smartLists: true,
+      },
+      copyCode: {
+        buttonText: {
+          '/zh-cn/': '点击复制',
+          '/ru/'   : 'Скопировать в буфер обмена',
+          '/de-de/': 'Klicken Sie zum Kopieren',
+          '/es/'   : 'Haga clic para copiar',
+          '/'      : 'Copy to clipboard'
+        },
+        errorText: {
+          '/zh-cn/': '错误',
+          '/ru/'   : 'ошибка',
+          '/'      : 'Error'
+        },
+        successText: {
+          '/zh-cn/': '复制',
+          '/ru/'   : 'Скопировано',
+          '/de-de/': 'Kopiert',
+          '/es/'   : 'Copiado',
+          '/'      : 'Copied'
+        }
+      },
+      toc: {
+        scope: '.markdown-section',
+        headings: 'h1, h2',
+        title: 'Table of Contents',
+      },
+      plugins: [
+        function (hook, vm) {
+          hook.beforeEach(function (html) {
+            if (/githubusercontent\.com/.test(vm.route.file)) {
+              url = vm.route.file
+                .replace('raw.githubusercontent.com', 'github.com')
+                .replace(/\/master/, '/blob/master')
+            } else {
+              url = 'https://github.com/clueboard/milc/edit/master/docs/' + vm.route.file
+            }
+            var editHtml = ':pencil2: [Edit this page](' + url + ')\n'
+            return html
+              + '\n\n----\n\n'
+              + editHtml
+          })
+        },
+      ]
+    }
+  </script>
+  <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+  <script src="//unpkg.com/docsify/lib/plugins/search.min.js"></script>
+  <script src="//unpkg.com/docsify/lib/plugins/emoji.min.js"></script>
+  <script src="//unpkg.com/docsify-copy-code@2"></script>
+  <script src="//unpkg.com/docsify-toc@1.0.0/dist/toc.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-bash.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-c.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-cpp.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-json.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-makefile.min.js"></script>
+  <script>
+    // Register the cache worker for offline viewing mode
+    // https://docsify.now.sh/pwa
+    if (typeof navigator.serviceWorker !== 'undefined') {
+      navigator.serviceWorker.register('sw.js')
+    }
+  </script>
+</body>
+</html>

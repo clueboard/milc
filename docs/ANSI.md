@@ -1,6 +1,6 @@
 # Working With ANSI In Your Script
 
-CLIM supports colorizing your output with ANSI colors. You can colorize the
+MILC supports colorizing your output with ANSI colors. You can colorize the
 text both for log output and when `print()`ing directly.
 
 ## Colorizing Log Output
