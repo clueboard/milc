@@ -12,30 +12,11 @@ all the features users expect from a modern CLI tool out of the box:
 * Labelling log output with colored emoji to easily distinguish message types
 * Thread safety
 
+# Documentation
+
+Documentation can be found in [docs/](docs/README.md).
+
 ## Short Example
-
-### With Functions
-
-This example is equivalent to the decorator example below.
-
-```python
-from milc import cli
-
-def main(cli):
-    comma = ',' if cli.config.general.comma else ''
-    cli.log.info('Hello%s %s!', comma, cli.config.general.name)
-
-if __name__ == '__main__':
-    cli.entrypoint(main)
-    cli.description = 'My useful CLI tool.'
-    cli.add_argument('-c', '--comma', help='comma in output', default=True, action='store_boolean')
-    cli.add_argument('-n', '--name', help='Name to greet', default='World')
-    cli.run()
-```
-
-### With Decorators
-
-This example is equivalent to the function example above.
 
 ```python
 from milc import MILC
@@ -94,10 +75,6 @@ optional arguments:
   --no-comma            Disable comma in output
 ```
 
-# Documentation
-
-Documentation can be found in [docs/](docs/README.md).
-
 # Why MILC?
 
 Because life is too short to integrate this stuff yourself, and writing
@@ -120,6 +97,7 @@ know you have:
 * Automatic log support
 * Built-in flags for formatting log messages and log date formats
 * Support for boolean arguments (define --foo and get --no-foo for free)
+* Battle tested and used by hundreds of users every single day
 
 You may not use all of these features yourself, but you will have users
 who are very glad these options are available when they need them.
@@ -130,17 +108,17 @@ who are very glad these options are available when they need them.
 
 Because I believe in writing good CLI tools.
 
-In researching CLI libs before writing MILC I saw variations of the same 
-story over and over. "I started with {Click,Docopt,Whatever} but after a 
-while I ended up just going back to argparse." In pretty much every case 
-as the complexity of their program grew they needed to do things argparse 
-made easy and their framework made hard.
+Before writing MILC I saw variations of the same story over and over. "I
+started with {Click,Docopt,Whatever} but after a while I ended up just
+going back to argparse." In pretty much every case as the complexity of
+their program grew they needed to do things argparse made easy and their
+framework made hard.
 
-MILC attempts to solve this by embracing the complexity of argparse. It 
-handles the drudgery of setting up argparse for you, but gives you an 
+MILC attempts to solve this by embracing the complexity of argparse. It
+handles the drudgery of setting up argparse for you, but gives you an
 elegant means to control that complexity when you need to. When your
 CLI framework relies on parsing function signatures you are necessarily
-limited in what you can do. Function annotations make this a little 
+limited in what you can do. Function annotations make this a little
 better but they are not a full solution to the problem.
 
 If you care about writing good CLI tools (and I hope you do) you will want
@@ -149,38 +127,35 @@ more control over the behavior of your program than Click or Docopt give you.
 ## Why Not Some Other CLI Framework Instead?
 
 Whenever you release a new framework the first question you'll be asked is
-why you didn't just use one of the existing options instead. The initial
-motivation for MILC was to provide a context manager, something the other
-frameworks I've found don't do.
+why you didn't just use one of the existing options instead.
 
 As I serveyed the other tools I found that most of them only solve part of
 the problem, not the whole problem. Those that solve the whole problem are
 very hard to use or get started with, or are otherwise very heavyweight. I
-wanted a comprehensive framework that was easy to get starting with and would
-grow as the needs of my program grew.
+wanted a comprehensive framework that was easy to get started with.
 
 Below is a list of the existing tools I have looked at and why I feel they
 don't fill the same need as MILC.
 
-| Name | Argument Parsing | Python 2 Support | Config File | Logging | Subcommands | Subcommand Config | Last PyPi Release |
-|------|------------------|------------------|-------------|---------|-------------|-------------------|-------------------|
-| MILC | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | Never |
-| [Argparse](#Argparse) | ✔ | ✔ | ✖ | ✖ | ✔ | ✖ | N/A |
-| ConfigParser | ✖ | ✔ | ✔ | ✖ | ✔ | ✖ | N/A |
-| logging | ✖ | ✔ | ✖ | ✔ | ✖ | ✖ | N/A |
-| [Argvard](#Argvard) | ✔ | ✔ | ✖ | ✖ | ✔ | ✖ | 2014 |
-| [Autocommand](#Autocommand) | ✔ | ✔ | ✖ | ✖ | ✔ | ✖ | 2017 |
-| [Begins](#Begins) | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | 2014 |
-| [Cement](#Cement) | ✔ | ✖ | ✔ | ✔ | ✔ | ✔ | 2018 |
-| [Cliar](#Cliar) | ✔ | ✖ | ✖ | ✖ | ✔ | ✖ | 2018 |
-| [Click](#Click) | ✔ | ✔ | ✖ | ✖ | ✔ | ✖ | 2018 |
-| [Clize](#Clize) | ✔ | ✖ | ✖ | ✖ | ✔ | ✖ | 2018 |
-| [Cogs](#Cogs) | ✔ | ✔ | ✖ | ✖ | ✔ | ✖ | 2018 |
-| [Defopt](#Defopt) | ✔ | ✔ | ✖ | ✖ | ✔ | ✖ | 2017 |
-| [Docopt](#Docopt) | ✔ | ✔ | ✖ | ✖ | ✔ | ✖ | 2014 |
-| [Fire](#Fire) | ✔ | ✔ | ✖ | ✖ | ✔ | ✖ | 2018 |
-| [Plac](#Plac) | ✔ | ✖ | ✖ | ✖ | ✖ | ✖ | 2018 |
-| [Optutils](#Optutils) | ✔ | ✔ | ✖ | ✖ | ✔ | ✖ | 2015 |
+| Name | Argument Parsing | Config File | Logging | Subcommands | Subcommand Config |
+|------|------------------|-------------|---------|-------------|-------------------|
+| MILC | ✔ | ✔ | ✔ | ✔ | ✔ |
+| [Argparse](#Argparse) | ✔ | ✔ | ✖ | ✔ | ✖ |
+| ConfigParser | ✖ | ✔ | ✖ | ✔ | ✖ |
+| logging | ✖ | ✔ | ✔ | ✖ | ✖ |
+| [Cement](#Cement) | ✔ | ✖ | ✔ | ✔ | ✔ |
+| [Cliar](#Cliar) | ✔ | ✖ | ✖ | ✔ | ✖ |
+| [Click](#Click) | ✔ | ✔ | ✖ | ✔ | ✖ |
+| [Clize](#Clize) | ✔ | ✖ | ✖ | ✔ | ✖ |
+| [Cogs](#Cogs) | ✔ | ✔ | ✖ | ✔ | ✖ |
+| [Defopt](#Defopt) | ✔ | ✔ | ✖ | ✔ | ✖ |
+| [Docopt](#Docopt) | ✔ | ✔ | ✖ | ✔ | ✖ |
+| [Fire](#Fire) | ✔ | ✔ | ✖ | ✔ | ✖ |
+| [Plac](#Plac) | ✔ | ✖ | ✖ | ✖ | ✖ |
+
+Note: This list was compiled in 2018. In 2020 I edited the list to remove
+dead projects but I not go searching for new projects. The time for justifying
+MILC's existance has passed.
 
 ### Argparse
 
@@ -189,48 +164,13 @@ it directly as an enduser is complicated and error-prone however. The common
 patterns mean you end up putting the definition of CLI arguments in a
 different place from the code that uses those arguments.
 
-### Argvard
-
-<https://github.com/DasIch/argvard>
-
-I like the argument parsing in Argvard a lot. It's almost exactly like 
-MILC's. However, it has not been maintained in 5 years.
-
-Argvard does not support a configuration file or logging.
-
-### Autocommand
-
-<https://github.com/Lucretiel/autocommand>
-
-Autocommand is one of the newer "use type annotation to infer arguments"
-modules. On the surface these seem good, but it leaves you in a place where
-you inherently give up some flexibility. For example, with MILC you can
-have some arguments that use `action='store_true'` and others that use
-`action='store_boolean'`. With autocommand you have to use
-`@autocommand(add_nos=True)` which generates `--no-<arg>` flags for
-every argument that has a boolean as a default, you can't mix boolean
-arguments and enable arguments.
-
-Autocommand does not support a configuration file or logging.
-
-### Begins
-
-<https://github.com/aliles/begins>
-
-Begins is very interesting. It implements a lot of the things I want in a
-lightweight way. But it still makes the app developer set up things like
-logging and config file support. MILC is opinionated, it thinks every CLI
-program should have that, along with ways for the end-user to control it.
-
-Begins does not support a configuration file or logging.
-
 ### Cement
 
 <https://builtoncement.com/>
 
 Cement is a very heavy MVC framework for building CLI tools. It includes all
 the functionality MILC provides and then some. If you're looking for an
-MVC framework for your tool this is the one to pick. 
+MVC framework for your tool this is the one to pick.
 
 If you are looking for an MVC framework MILC probably isn't what you want.
 Use Cement instead.
@@ -254,7 +194,7 @@ of Armin Ronacher's projects. :)
 
 Click is great, and I borrowed the decorator concept from Flask before I saw
 Click had done the same thing. It terms of how you use it there are a lot of
-simularities between Click and MILC. 
+simularities between Click and MILC.
 
 Where Click and MILC part ways is in the underlying implementation. MILC
 uses the recommended and built-in python modules whenver possible. Under the
@@ -283,11 +223,7 @@ and other functionality to Click.
 
 <https://github.com/epsy/clize>
 
-Clize does not properly support python 2 anymore, at least for the things
-that make Clize worth using. There are workarounds, but IMO those workarounds
-are not worth the effort. If you are python3 only Clize may be worth a look.
-It certainly has a nice approach with lots of mature and advanced 
-functionality. 
+Clize has a nice approach with lots of mature and advanced functionality.
 
 Clize uses function annotation to work, which may or may not fit with how you
 work. It also has a lot of arbitrary restrictions due to anotations, for
@@ -297,7 +233,7 @@ Clize does not support a configuration file or logging.
 
 ### Cogs
 
-<https://bitbucket.org/prometheus/cogs>
+<https://github.com/prometheusresearch/cogs>
 
 Cogs seems interesting, but has its own dedicated CLI tool named `cogs`. You
 don't create scripts directly but instead create python functions that `cogs`
@@ -348,13 +284,3 @@ don't want to go without functionality to scale down. MILC's idea of scaling
 down is working well for small programs.
 
 Plac does not support a configuration file or logging.
-
-### optutils
-
-<https://github.com/timtadh/optutils>
-
-There are some interesting ideas here, particularly integrating configuration
-files with CLI options. But there's no log file support, and the framework
-is incomplete.
-
-Optutils does not support logging.

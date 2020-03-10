@@ -11,11 +11,13 @@ def main(cli):
     cli.log.info('No subcommand specified!')
     cli.print_usage()
 
+
 @cli.argument('--comma', help='comma in output', action='store_boolean', default=True)
 @cli.subcommand('Say hello.')
 def hello(cli):
     comma = ',' if cli.config.hello.comma else ''
     cli.echo('{fg_green}Hello%s %s!', comma, cli.config.general.name)
+
 
 @cli.argument('-f', '--flag', help='Write it in a flag', action='store_true')
 @cli.subcommand('Say goodbye.')
@@ -30,6 +32,7 @@ def goodbye(cli):
     else:
         cli.log.warning('Parting is such sweet sorrow.')
         cli.echo('{fg_blue}Goodbye, %s!', cli.config.general.name)
+
 
 if __name__ == '__main__':
     cli()
