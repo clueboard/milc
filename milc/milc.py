@@ -182,7 +182,7 @@ class MILC(object):
         if '--config-file' in sys.argv:
             return Path(sys.argv[sys.argv.index('--config-file') + 1]).expanduser().resolve()
 
-        filedir = user_config_dir(appname='qmk', appauthor='QMK')
+        filedir = user_config_dir(appname=os.environ.get('MILC_APP_NAME', sys.argv[0]), appauthor=os.environ.get('MILC_APP_AUTHOR', sys.argv[0]))
         filename = '%s.ini' % self.prog_name
         return Path(filedir) / filename
 

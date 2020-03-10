@@ -3,6 +3,12 @@
 
 PYTHON_ARGCOMPLETE_OK
 """
+import os
+
+# Uncomment these to customize your config file location
+#os.environ['MILC_APP_NAME'] = 'example'
+#os.environ['MILC_APP_AUTHOR'] = 'MILC'
+
 from milc import cli
 
 @cli.argument('-n', '--name', help='Name to greet', default='World')
