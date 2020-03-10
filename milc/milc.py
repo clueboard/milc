@@ -1,28 +1,13 @@
 #!/usr/bin/env python3
 # coding=utf-8
-"""MILC - A CLI Framework
-
-PYTHON_ARGCOMPLETE_OK
-
-MILC is an opinionated framework for writing CLI apps. It optimizes for the
-most common unix tool pattern- small tools that are run from the command
-line but generally do not feature any user interaction while they run.
-
-For more details see the MILC documentation:
-
-    <https://github.com/clueboard/milc/tree/master/docs>
-"""
-from __future__ import division, print_function, unicode_literals
 import argparse
 import logging
 import os
-import re
 import shlex
 import sys
 from decimal import Decimal
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from time import sleep
 
 try:
     from ConfigParser import RawConfigParser
@@ -39,228 +24,8 @@ import argcomplete
 import colorama
 from appdirs import user_config_dir
 
-# Disable logging until we can configure it how the user wants
-logging.basicConfig(stream=os.devnull)
-
-# Log Level Representations
-EMOJI_LOGLEVELS = {
-    'CRITICAL': '{bg_red}{fg_white}¬_¬{style_reset_all}',
-    'ERROR': '{fg_red}☒{style_reset_all}',
-    'WARNING': '{fg_yellow}⚠{style_reset_all}',
-    'INFO': '{fg_blue}ℹ{style_reset_all}',
-    'DEBUG': '{fg_cyan}☐{style_reset_all}',
-    'NOTSET': '{style_reset_all}¯\\_(o_o)_/¯'
-}
-EMOJI_LOGLEVELS['FATAL'] = EMOJI_LOGLEVELS['CRITICAL']
-EMOJI_LOGLEVELS['WARN'] = EMOJI_LOGLEVELS['WARNING']
-UNICODE_SUPPORT = sys.stdout.encoding.lower().startswith('utf')
-
-# ANSI Color setup
-# Regex was gratefully borrowed from kfir on stackoverflow:
-# https://stackoverflow.com/a/45448194
-ansi_regex = r'\x1b(' \
-             r'(\[\??\d+[hl])|' \
-             r'([=<>a-kzNM78])|' \
-             r'([\(\)][a-b0-2])|' \
-             r'(\[\d{0,2}[ma-dgkjqi])|' \
-             r'(\[\d+;\d+[hfy]?)|' \
-             r'(\[;?[hf])|' \
-             r'(#[3-68])|' \
-             r'([01356]n)|' \
-             r'(O[mlnp-z]?)|' \
-             r'(/Z)|' \
-             r'(\d+)|' \
-             r'(\[\?\d;\d0c)|' \
-             r'(\d;\dR))'
-ansi_escape = re.compile(ansi_regex, flags=re.IGNORECASE)
-ansi_styles = (
-    ('fg', colorama.ansi.AnsiFore()),
-    ('bg', colorama.ansi.AnsiBack()),
-    ('style', colorama.ansi.AnsiStyle()),
-)
-ansi_colors = {}
-
-for prefix, obj in ansi_styles:
-    for color in [x for x in obj.__dict__ if not x.startswith('_')]:
-        ansi_colors[prefix + '_' + color.lower()] = getattr(obj, color)
-
-
-def format_ansi(text):
-    """Return a copy of text with certain strings replaced with ansi.
-    """
-    # Avoid .format() so we don't have to worry about the log content
-    for color in ansi_colors:
-        text = text.replace('{%s}' % color, ansi_colors[color])
-    return text + ansi_colors['style_reset_all']
-
-
-class ANSIFormatter(logging.Formatter):
-    """A log formatter that inserts ANSI color.
-    """
-    def format(self, record):
-        msg = super(ANSIFormatter, self).format(record)
-        return format_ansi(msg)
-
-
-class ANSIEmojiLoglevelFormatter(ANSIFormatter):
-    """A log formatter that makes the loglevel an emoji on UTF capable terminals.
-    """
-    def format(self, record):
-        if UNICODE_SUPPORT:
-            record.levelname = EMOJI_LOGLEVELS[record.levelname].format(**ansi_colors)
-        return super(ANSIEmojiLoglevelFormatter, self).format(record)
-
-
-class ANSIStrippingFormatter(ANSIFormatter):
-    """A log formatter that strips ANSI.
-    """
-    def format(self, record):
-        msg = super(ANSIStrippingFormatter, self).format(record)
-        return ansi_escape.sub('', msg)
-
-
-class Configuration(object):
-    """Represents the running configuration.
-
-    This class never raises IndexError, instead it will return None if a
-    section or option does not yet exist.
-    """
-    def __contains__(self, key):
-        return self._config.__contains__(key)
-
-    def __iter__(self):
-        return self._config.__iter__()
-
-    def __len__(self):
-        return self._config.__len__()
-
-    def __repr__(self):
-        return self._config.__repr__()
-
-    def keys(self):
-        return self._config.keys()
-
-    def items(self):
-        return self._config.items()
-
-    def values(self):
-        return self._config.values()
-
-    def __init__(self, *args, **kwargs):
-        self._config = {}
-
-    def __getattr__(self, key):
-        return self.__getitem__(key)
-
-    def __getitem__(self, key):
-        """Returns a config section, creating it if it doesn't exist yet.
-        """
-        if key not in self._config:
-            self.__dict__[key] = self._config[key] = ConfigurationSection(self)
-
-        return self._config[key]
-
-    def __setitem__(self, key, value):
-        self.__dict__[key] = value
-        self._config[key] = value
-
-    def __delitem__(self, key):
-        if key in self.__dict__ and key[0] != '_':
-            del self.__dict__[key]
-        if key in self._config:
-            del self._config[key]
-
-
-class ConfigurationSection(Configuration):
-    def __init__(self, parent, *args, **kwargs):
-        super(ConfigurationSection, self).__init__(*args, **kwargs)
-        self.parent = parent
-
-    def __getitem__(self, key):
-        """Returns a config value, pulling from the `user` section as a fallback.
-        This is called when the attribute is accessed either via the get method or through [ ] index.
-        """
-        if key in self._config and self._config.get(key) is not None:
-            return self._config[key]
-
-        elif key in self.parent.user:
-            return self.parent.user[key]
-
-        return None
-
-    def __getattr__(self, key):
-        """Returns the config value from the `user` section.
-        This is called when the attribute is accessed via dot notation but does not exists.
-        """
-        if key in self.parent.user:
-            return self.parent.user[key]
-
-        return None
-
-
-def get_argument_name(self, *args, **kwargs):
-    """Takes argparse arguments and returns the dest name.
-    """
-    try:
-        return self._arg_parser._get_optional_kwargs(*args, **kwargs)['dest']
-    except ValueError:
-        return self._arg_parser._get_positional_kwargs(*args, **kwargs)['dest']
-
-
-def handle_store_boolean(self, *args, **kwargs):
-    """Does the add_argument for action='store_boolean'.
-    """
-    disabled_args = None
-    disabled_kwargs = kwargs.copy()
-    disabled_kwargs['action'] = 'store_false'
-    disabled_kwargs['dest'] = get_argument_name(self, *args, **kwargs)
-    disabled_kwargs['help'] = 'Disable ' + kwargs['help']
-    kwargs['action'] = 'store_true'
-    kwargs['help'] = 'Enable ' + kwargs['help']
-
-    for flag in args:
-        if flag[:2] == '--':
-            disabled_args = ('--no-' + flag[2:],)
-            break
-
-    self.add_argument(*args, **kwargs)
-    self.add_argument(*disabled_args, **disabled_kwargs)
-
-    return (args, kwargs, disabled_args, disabled_kwargs)
-
-
-class SubparserWrapper(object):
-    """Wrap subparsers so we can track what options the user passed.
-    """
-    def __init__(self, cli, submodule, subparser):
-        self.cli = cli
-        self.submodule = submodule
-        self.subparser = subparser
-
-        for attr in dir(subparser):
-            if not hasattr(self, attr):
-                setattr(self, attr, getattr(subparser, attr))
-
-    def completer(self, completer):
-        """Add an arpcomplete completer to this subcommand.
-        """
-        self.subparser.completer = completer
-
-    def add_argument(self, *args, **kwargs):
-        """Add an argument for this subcommand.
-
-        This also stores the default for the argument in `self.cli.default_arguments`.
-        """
-        if 'action' in kwargs and kwargs['action'] == 'store_boolean':
-            # Store boolean will call us again with the enable/disable flag arguments
-            return handle_store_boolean(self.cli, *args, **kwargs)
-
-        self.cli.acquire_lock()
-        self.subparser.add_argument(*args, **kwargs)
-        if self.submodule not in self.cli.default_arguments:
-            self.cli.default_arguments[self.submodule] = {}
-        self.cli.default_arguments[self.submodule][get_argument_name(self.cli, *args, **kwargs)] = kwargs.get('default')
-        self.cli.release_lock()
+from .ansi import ANSIEmojiLoglevelFormatter, ANSIStrippingFormatter, ansi_colors, format_ansi
+from .configuration import Configuration, SubparserWrapper, get_argument_name, handle_store_boolean
 
 
 class MILC(object):
@@ -582,7 +347,7 @@ class MILC(object):
 
         # Housekeeping
         self.release_lock()
-        cli.log.info('Wrote configuration to %s', shlex.quote(str(self.config_file)))
+        self.log.info('Wrote configuration to %s', shlex.quote(str(self.config_file)))
 
     def __call__(self):
         """Execute the entrypoint function.
@@ -711,53 +476,3 @@ class MILC(object):
             print(exc_type)
             logging.exception(exc_val)
             exit(255)
-
-
-cli = MILC()
-
-if __name__ == '__main__':
-
-    @cli.argument('-c', '--comma', help='comma in output', default=True, action='store_boolean')
-    @cli.entrypoint('My useful CLI tool with subcommands.')
-    def main(cli):
-        comma = ',' if cli.config.general.comma else ''
-        cli.log.info('{bg_green}{fg_red}Hello%s World!', comma)
-
-    @cli.argument('-n', '--name', help='Name to greet', default='World')
-    @cli.subcommand('Description of hello subcommand here.')
-    def hello(cli):
-        comma = ',' if cli.config.general.comma else ''
-        cli.log.info('{fg_blue}Hello%s %s!', comma, cli.config.hello.name)
-
-    def goodbye(cli):
-        comma = ',' if cli.config.general.comma else ''
-        cli.log.info('{bg_red}Goodbye%s %s!', comma, cli.config.goodbye.name)
-
-    @cli.argument('-n', '--name', help='Name to greet', default='World')
-    @cli.subcommand('Think a bit before greeting the user.')
-    def thinking(cli):
-        comma = ',' if cli.config.general.comma else ''
-        spinner = cli.spinner(text='Just a moment...', spinner='earth')
-        spinner.start()
-        sleep(2)
-        spinner.stop()
-
-        with cli.spinner(text='Almost there!', spinner='moon'):
-            sleep(2)
-
-        cli.log.info('{fg_cyan}Hello%s %s!', comma, cli.config.thinking.name)
-
-    @cli.subcommand('Show off our ANSI colors.')
-    def pride(cli):
-        cli.echo('{bg_red}                    ')
-        cli.echo('{bg_lightred_ex}                    ')
-        cli.echo('{bg_lightyellow_ex}                    ')
-        cli.echo('{bg_green}                    ')
-        cli.echo('{bg_blue}                    ')
-        cli.echo('{bg_magenta}                    ')
-
-    # You can register subcommands using decorators as seen above, or using functions like like this:
-    cli.add_subcommand(goodbye, 'This will show up in --help output.')
-    cli.goodbye.add_argument('-n', '--name', help='Name to bid farewell to', default='World')
-
-    cli()  # Automatically picks between main(), hello() and goodbye()

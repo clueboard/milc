@@ -1,6 +1,6 @@
-# MILC - An Opinionated Batteries-Included Python CLI Framework
+# MILC - An Opinionated Batteries-Included Python 3 CLI Framework
 
-MILC is a framework for writing CLI applications in Python. It gives you
+MILC is a framework for writing CLI applications in Python 3. It gives you
 all the features users expect from a modern CLI tool out of the box:
 
 * CLI Argument Parsing, with or without subcommands
