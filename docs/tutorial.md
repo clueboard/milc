@@ -10,9 +10,8 @@ execution begins. A minimal MILC program looks like this:
 
 ```python
 #!/usr/bin/env python
-from milc import MILC
 
-cli = MILC('Greet a user.')
+from milc import cli
 
 @cli.entrypoint
 def main(cli):
