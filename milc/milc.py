@@ -25,7 +25,8 @@ import colorama
 from appdirs import user_config_dir
 
 from .ansi import ANSIEmojiLoglevelFormatter, ANSIStrippingFormatter, ansi_colors, format_ansi
-from .configuration import Configuration, SubparserWrapper, get_argument_name, handle_store_boolean
+from .configuration import Configuration, ConfigurationSection, SubparserWrapper, get_argument_name, handle_store_boolean
+from .attrdict import AttrDict
 
 
 class MILC(object):
@@ -99,7 +100,7 @@ class MILC(object):
         self.subcommands = {}
         self._subparsers = None
         self.argwarn = argcomplete.warn
-        self.args = None
+        self.args = AttrDict()
         self._arg_parser = argparse.ArgumentParser(**kwargs)
         self.set_defaults = self._arg_parser.set_defaults
         self.print_usage = self._arg_parser.print_usage
@@ -227,7 +228,9 @@ class MILC(object):
         argcomplete.autocomplete(self._arg_parser)
 
         self.acquire_lock()
-        self.args = self._arg_parser.parse_args()
+        args = vars(self._arg_parser.parse_args())
+        for key, value in vars(self._arg_parser.parse_args()).items():
+            self.args[key] = value
 
         if 'entrypoint' in self.args:
             self._entrypoint = self.args.entrypoint
@@ -273,7 +276,7 @@ class MILC(object):
         """Merge CLI arguments into self.config to create the runtime configuration.
         """
         self.acquire_lock()
-        for argument in vars(self.args):
+        for argument in self.args:
             if argument in ('subparsers', 'entrypoint'):
                 continue
 

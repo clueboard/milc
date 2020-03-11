@@ -1,57 +1,22 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
+from .attrdict import AttrDict
 
-class Configuration(object):
+
+class Configuration(AttrDict):
     """Represents the running configuration.
 
     This class never raises IndexError, instead it will return None if a
     section or option does not yet exist.
     """
-    def __contains__(self, key):
-        return self._config.__contains__(key)
-
-    def __iter__(self):
-        return self._config.__iter__()
-
-    def __len__(self):
-        return self._config.__len__()
-
-    def __repr__(self):
-        return self._config.__repr__()
-
-    def keys(self):
-        return self._config.keys()
-
-    def items(self):
-        return self._config.items()
-
-    def values(self):
-        return self._config.values()
-
-    def __init__(self, *args, **kwargs):
-        self._config = {}
-
-    def __getattr__(self, key):
-        return self.__getitem__(key)
-
     def __getitem__(self, key):
         """Returns a config section, creating it if it doesn't exist yet.
         """
-        if key not in self._config:
-            self.__dict__[key] = self._config[key] = ConfigurationSection(self)
+        if key not in self._data:
+            self.__dict__[key] = self._data[key] = ConfigurationSection(self)
 
-        return self._config[key]
-
-    def __setitem__(self, key, value):
-        self.__dict__[key] = value
-        self._config[key] = value
-
-    def __delitem__(self, key):
-        if key in self.__dict__ and key[0] != '_':
-            del self.__dict__[key]
-        if key in self._config:
-            del self._config[key]
+        return self._data[key]
 
 
 class ConfigurationSection(Configuration):
@@ -63,8 +28,8 @@ class ConfigurationSection(Configuration):
         """Returns a config value, pulling from the `user` section as a fallback.
         This is called when the attribute is accessed either via the get method or through [ ] index.
         """
-        if key in self._config and self._config.get(key) is not None:
-            return self._config[key]
+        if key in self._data and self._data.get(key) is not None:
+            return self._data[key]
 
         elif key in self.parent.user:
             return self.parent.user[key]
@@ -73,7 +38,7 @@ class ConfigurationSection(Configuration):
 
     def __getattr__(self, key):
         """Returns the config value from the `user` section.
-        This is called when the attribute is accessed via dot notation but does not exists.
+        This is called when the attribute is accessed via dot notation but does not exist.
         """
         if key in self.parent.user:
             return self.parent.user[key]

@@ -12,7 +12,6 @@ from milc import cli
 def docs(cli):
     """Spin up a local HTTPServer instance for the QMK docs.
     """
-    print('hello?')
     os.chdir('docs')
 
     with http.server.HTTPServer(('', cli.config.general.port), http.server.SimpleHTTPRequestHandler) as httpd:
