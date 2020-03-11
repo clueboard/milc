@@ -47,4 +47,4 @@ The possible values returned are:
 
 * `argument`
 * `config_file`
-* None
+* `None`
