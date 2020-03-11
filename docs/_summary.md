@@ -4,6 +4,7 @@
 * Feature Reference
     * [ANSI Color](ANSI.md)
     * [Argument Parsing](argument_parsing.md)
+    * [Configuration](configuration.md)
     * [Logging](logging.md)
 * [Subcommand Addons](subcommands.md)
     * [`config`](subcommand_config.md)
