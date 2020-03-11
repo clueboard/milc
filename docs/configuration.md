@@ -6,6 +6,8 @@ MILC supports a config file out of the box. The format and structure of this fil
 
 MILC uses [ConfigParser](https://docs.python.org/3/library/configparser.html) to store configuration values. We've mapped the section names to subcommands, and values passed as CLI arguments will be automatically populated to keys named after the argument.
 
+Configuration options for the main `cli.entrypoint()` are set in `cli.config.general`. If you do not have any subcommands you will find all of your config options here.
+
 # Reading Config Values
 
 You can read config values using either attribute or dictionary notation. If a key does not exist in the configuration you will get `None` as the value.
