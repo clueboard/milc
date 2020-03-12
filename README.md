@@ -140,18 +140,18 @@ don't fill the same need as MILC.
 | Name | Argument Parsing | Config File | Logging | Subcommands | Subcommand Config |
 |------|------------------|-------------|---------|-------------|-------------------|
 | MILC | ✔ | ✔ | ✔ | ✔ | ✔ |
-| [Argparse](#Argparse) | ✔ | ✔ | ✖ | ✔ | ✖ |
+| [Argparse](#Argparse) | ✔ | ✖ | ✖ | ✔ | ✖ |
 | ConfigParser | ✖ | ✔ | ✖ | ✔ | ✖ |
-| logging | ✖ | ✔ | ✔ | ✖ | ✖ |
-| [Cement](#Cement) | ✔ | ✖ | ✔ | ✔ | ✔ |
+| logging | ✖ | ✖ | ✔ | ✖ | ✖ |
+| [Cement](#Cement) | ✔ | ✔ | ✔ | ✔ | ✔ |
 | [Cliar](#Cliar) | ✔ | ✖ | ✖ | ✔ | ✖ |
-| [Click](#Click) | ✔ | ✔ | ✖ | ✔ | ✖ |
+| [Click](#Click) | ✔ | ✖ | ✖ | ✔ | ✖ |
 | [Clize](#Clize) | ✔ | ✖ | ✖ | ✔ | ✖ |
-| [Cogs](#Cogs) | ✔ | ✔ | ✖ | ✔ | ✖ |
-| [Defopt](#Defopt) | ✔ | ✔ | ✖ | ✔ | ✖ |
-| [Docopt](#Docopt) | ✔ | ✔ | ✖ | ✔ | ✖ |
-| [Fire](#Fire) | ✔ | ✔ | ✖ | ✔ | ✖ |
-| [Plac](#Plac) | ✔ | ✖ | ✖ | ✖ | ✖ |
+| [Cogs](#Cogs) | ✔ | ✖ | ✖ | ✔ | ✖ |
+| [Defopt](#Defopt) | ✔ | ✖ | ✖ | ✔ | ✖ |
+| [Docopt](#Docopt) | ✔ | ✖ | ✖ | ✔ | ✖ |
+| [Fire](#Fire) | ✔ | ✖ | ✖ | ✔ | ✖ |
+| [Plac](#Plac) | ✔ | ✖ | ✖ | ✔ | ✖ |
 
 Note: This list was compiled in 2018. In 2020 I edited the list to remove
 dead projects but I not go searching for new projects. The time for justifying
