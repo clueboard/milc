@@ -1,4 +1,4 @@
-# QMK CLI Configuration
+# MILC config subcommand
 
 This document explains how the available `config` subcommand works.
 
@@ -70,15 +70,15 @@ You can read configuration values for the entire configuration, a single key, or
 
 ### Whole Section Example
 
-    my_cli config compile
+    my_cli config general
 
 ### Single Key Example
 
-    my_cli config compile.keyboard
+    my_cli config general.verbose
 
 ### Multiple Keys Example
 
-    my_cli config user compile.keyboard compile.keymap
+    my_cli config user general.verbose general.log_format
 
 ## Deleting Configuration Values
 
@@ -87,8 +87,8 @@ You can delete a configuration value by setting it to the special string `None`.
 Example:
 
 ```
-$ my_cli config default.keymap=None
-default.keymap: default -> None
+$ my_cli config general.log_format None
+general.log_format: %H:%M:%S -> None
 ℹ Wrote configuration to '/Users/example/Library/Application Support/my_cli/my_cli.ini'
 ```
 
