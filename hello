@@ -11,6 +11,7 @@ import os
 
 from milc import cli
 
+
 @cli.argument('-c', '--comma', help='comma in output', default=True, action='store_boolean')
 @cli.argument('-n', '--name', help='Name to greet', default='World')
 @cli.entrypoint('Greet a user.')
@@ -18,6 +19,7 @@ def main(cli):
     comma = ',' if cli.config.general.comma else ''
     cli.log.debug('You used -v you lucky person!')
     cli.log.info('Hello%s %s!', comma, cli.config.general.name)
+
 
 if __name__ == '__main__':
     cli()

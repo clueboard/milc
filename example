@@ -11,6 +11,7 @@ import os
 
 from milc import cli
 
+
 @cli.argument('-n', '--name', help='Name to greet', default='World')
 @cli.entrypoint('Greet a user.')
 def main(cli):
