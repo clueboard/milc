@@ -1,7 +1,7 @@
 # Working With ANSI In Your Script
 
 MILC supports colorizing your output with ANSI colors. You can colorize the
-text both for log output and when `print()`ing directly.
+text both for log output and when `cli.echo()`ing directly.
 
 ## Colorizing Log Output
 
