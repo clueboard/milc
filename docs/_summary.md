@@ -1,12 +1,11 @@
 * [Home](README.md)
 * [Installation](installation.md)
 * [Tutorial](tutorial.md)
-* Feature Reference
+* Features
     * [ANSI Color](ANSI.md)
     * [Argument Parsing](argument_parsing.md)
     * [Configuration](configuration.md)
+    * [Config Subcommand](subcommand_config.md)
     * [Logging](logging.md)
     * [Thread Safety](threading.md)
     * [User Input](questions.md)
-* [Subcommand Addons](subcommands.md)
-    * [`config`](subcommand_config.md)
