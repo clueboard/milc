@@ -9,13 +9,16 @@ The entrypoint can be thought of as your `main()`, or the place where program
 execution begins. A minimal MILC program looks like this:
 
 ```python
-#!/usr/bin/env python
+#!/usr/bin/env python3
+"""Hello World implementation using MILC.
 
+PYTHON_ARGCOMPLETE_OK
+"""
 from milc import cli
 
-@cli.entrypoint
+@cli.entrypoint('Greet a user.')
 def main(cli):
-    cli.print('{fg_green}Hello, World!')
+    cli.log.info('Hello, World!')
 
 if __name__ == '__main__':
     cli()
@@ -23,7 +26,7 @@ if __name__ == '__main__':
 
 ## Entrypoints
 
-MILC does the work of setting up your execution environment, then it hands
+MILC does the work of setting up your execution environment then it hands
 off control to your entrypoint. There are two types of entrypoints in MILC-
 the root entrypoint and subcommand entrypoints. When you think of subcommands
 think of programs like git, where the first argument that doesn't start with
@@ -41,16 +44,22 @@ MILC provides 2 mechanisms for outputting text to the user, and which one you
 use depends a lot on the needs of your program. Both use the same API so
 switching between them should be simple.
 
-For writing to stdout you have `cli.print()`. This differs from the standard
-python `print()` in two important ways- It supports tokens for colorizing your
-text using ANSI, and it supports format strings in the same way as logging.
-For writing to stderr and/or log files you have `cli.log`. You can use these
-to output log messages at different levels so the CLI user can easily adjust
-how much output they get. ANSI color tokens are also supported in log messages
-on the console, and will be stripped out of log files for easy viewing.
+For writing to stdout you have `cli.echo()`. This differs from python
+`print()` in two important ways- It supports tokens for colorizing your text
+using [ANSI](ANSI.md) and it supports format strings in the same way as 
+[logging](https://docs.python.org/3/library/logging.html).  For writing to
+stderr and/or log files you have `cli.log`. You can use these to output log
+messages at different levels so the CLI user can easily adjust how much
+output they get. ANSI color tokens are also supported in log messages on the
+console, and will be stripped out of log files for easy viewing.
 
 You can still use python's built-in `print()` if you wish, but you will not
 get ANSI or string formatting support.
+
+More information:
+
+* [ANSI Color](ANSI.md)
+* [Logging](logging.md)
 
 ## Configuration and Argument Parsing
 
@@ -81,15 +90,17 @@ Building on our program from earlier we can make our program more flexible
 about who it is greeting by adding a new flag, `--name`, or `-n` for short:
 
 ```python
-#!/usr/bin/env python
-from milc import MILC
+#!/usr/bin/env python3
+"""Hello World implementation using MILC.
 
-cli = MILC('Greet a user.')
+PYTHON_ARGCOMPLETE_OK
+"""
+from milc import cli
 
 @cli.argument('-n', '--name', help='Name to greet', default='World')
-@cli.entrypoint
+@cli.entrypoint('Greet a user.')
 def main(cli):
-    cli.print('{fg_green}Hello, %s!', cli.config.general.name)
+    cli.log.info('Hello, %s!', cli.config.general.name)
 
 if __name__ == '__main__':
     cli()
@@ -97,8 +108,13 @@ if __name__ == '__main__':
 
 One important thing to note is that decorators are processed from the bottom
 to the top. You must place `@cli.entrypoint` directly above the function
-definition, and then place and `cli.argument()` decorators above that to
+definition, and then place any `cli.argument()` decorators above that to
 avoid a stack trace.
+
+More information:
+
+* [Argument Parsing](argument_parsing.md)
+* [Configuration](configuration.md)
 
 ## Subcommands
 
@@ -112,24 +128,30 @@ for you. To use it you designate functions as subcommand entrypoints using
 Let's extend our program from earlier to use subcommands:
 
 ```python
-#!/usr/bin/env python
-from milc import MILC
+#!/usr/bin/env python3
+"""Example MILC program that shows off many features.
 
-cli = MILC('Greet a user.')
+PYTHON_ARGCOMPLETE_OK
+"""
+
+from milc import cli
 
 @cli.argument('-n', '--name', help='Name to greet', default='World')
-@cli.entrypoint
+@cli.entrypoint('Greet a user.')
 def main(cli):
     cli.log.info('No subcommand specified!')
     cli.print_usage()
 
-@cli.subcommand
-def hello(cli):
-    cli.print('{fg_green}Hello, %s!', cli.config.general.name)
 
-@cli.subcommand
+@cli.subcommand('Say hello.')
+def hello(cli):
+    cli.echo('{fg_green}Hello, %s!', cli.config.general.name)
+
+
+@cli.subcommand('Say goodbye.')
 def goodbye(cli):
-    cli.print('{fg_blue}Goodbye, %s!', cli.config.general.name)
+    cli.echo('{fg_blue}Goodbye, %s!', cli.config.general.name)
+
 
 if __name__ == '__main__':
     cli()
@@ -144,25 +166,30 @@ entrypoint can be found in the `cli.config.general` section of the config.
 Let's finish up our program by adding some flags to hello and goodbye:
 
 ```python
-#!/usr/bin/env python
-from milc import MILC
+#!/usr/bin/env python3
+"""Example MILC program that shows off many features.
 
-cli = MILC('Greet a user.')
+PYTHON_ARGCOMPLETE_OK
+"""
+
+from milc import cli
 
 @cli.argument('-n', '--name', help='Name to greet', default='World')
-@cli.entrypoint
+@cli.entrypoint('Greet a user.')
 def main(cli):
     cli.log.info('No subcommand specified!')
     cli.print_usage()
 
+
 @cli.argument('--comma', help='comma in output', action='store_boolean', default=True)
-@cli.subcommand
+@cli.subcommand('Say hello.')
 def hello(cli):
     comma = ',' if cli.config.hello.comma else ''
-    cli.print('{fg_green}Hello%s %s!', comma, cli.config.general.name)
+    cli.echo('{fg_green}Hello%s %s!', comma, cli.config.general.name)
+
 
 @cli.argument('-f', '--flag', help='Write it in a flag', action='store_true')
-@cli.subcommand
+@cli.subcommand('Say goodbye.')
 def goodbye(cli):
     if cli.config.goodbye.flag:
         cli.log.debug('Drawing a flag.')
@@ -170,10 +197,11 @@ def goodbye(cli):
         string = 'Goodbye, %s!' % cli.config.general.name
         for i, letter in enumerate(string):
             color = colors[i % len(colors)]
-            cli.print(color + letter + ' '*39)
+            cli.echo(color + letter + ' '*39)
     else:
         cli.log.warning('Parting is such sweet sorrow.')
-        cli.print('{fg_blue}Goodbye, %s!', cli.config.general.name)
+        cli.echo('{fg_blue}Goodbye, %s!', cli.config.general.name)
+
 
 if __name__ == '__main__':
     cli()
