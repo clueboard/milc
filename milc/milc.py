@@ -25,7 +25,7 @@ import colorama
 from appdirs import user_config_dir
 
 from .ansi import ANSIEmojiLoglevelFormatter, ANSIStrippingFormatter, ansi_colors, format_ansi
-from .configuration import Configuration, ConfigurationSection, SubparserWrapper, get_argument_name, handle_store_boolean
+from .configuration import Configuration, SubparserWrapper, get_argument_name, handle_store_boolean
 from .attrdict import AttrDict
 
 
@@ -223,7 +223,6 @@ class MILC(object):
         argcomplete.autocomplete(self._arg_parser)
 
         self.acquire_lock()
-        args = vars(self._arg_parser.parse_args())
         for key, value in vars(self._arg_parser.parse_args()).items():
             self.args[key] = value
 
