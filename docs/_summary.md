@@ -9,3 +9,11 @@
     * [Logging](logging.md)
     * [Thread Safety](threading.md)
     * [User Input](questions.md)
+* API Reference
+    * [milc.ansi](api_ansi.md)
+    * [milc.attrdict](api_attrdict.md)
+    * [milc.configuration](api_configuration.md)
+    * [milc.emoji](api_emoji.md)
+    * [milc.milc](api_milc.md)
+    * [milc.questions](api_questions.md)
+    * [milc.subcommand.config](api_subcommand_config.md)

@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+"""Generate our documentation using pydoc-markdown
+
+PYTHON_ARGCOMPLETE_OK
+"""
+import os
+from pathlib import Path
+from subprocess import CalledProcessError, run
+
+# Uncomment these to customize your config file location
+os.environ['MILC_APP_NAME'] = 'generate_docs'
+os.environ['MILC_APP_AUTHOR'] = 'MILC'
+
+from milc import cli
+
+
+@cli.entrypoint('Generate documentation.')
+def main(cli):
+    for file in Path('milc').glob('**/*.py'):
+        if '__init__' in str(file):
+            continue
+
+        # Generate the markdown
+        filename = str(file)[5:-3]
+        filename = filename.replace('/', '.')
+        cmd = ['pydoc-markdown', '-I', 'milc', '-m', filename]
+        try:
+            result = run(cmd, capture_output=True, universal_newlines=True, check=True)
+        except CalledProcessError as e:
+            cli.log.error('Could not process file %s: %s', file.name, e)
+            for line in e.stderr.split('\n'):
+                cli.log.debug(line)
+            continue
+
+
+        # Write the markdown to a file
+        filename = filename.replace('.', '_')
+        doc_file = Path('docs/api_%s.md' % filename)
+        doc_file.write_text(result.stdout)
+
+
+if __name__ == '__main__':
+    cli()
