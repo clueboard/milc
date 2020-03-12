@@ -6,5 +6,7 @@
     * [Argument Parsing](argument_parsing.md)
     * [Configuration](configuration.md)
     * [Logging](logging.md)
+    * [Thread Safety](threading.md)
+    * [User Input](questions.md)
 * [Subcommand Addons](subcommands.md)
     * [`config`](subcommand_config.md)

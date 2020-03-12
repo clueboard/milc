@@ -50,3 +50,17 @@ The possible values returned are:
 * `argument`
 * `config_file`
 * `None`
+
+# Automatic Type Inference
+
+Under the hood all configuration options are stored as plain text. MILC converts your config values into appropriate data types when it can figure out how.
+
+* Booleans
+    * `yes`, `true`, and `on` evaluate to True.
+    * `no`, `false`, and `off` evaluate to False.
+* None
+    * Values set to None are considered deleted, and will be removed from the config file
+* Integers
+    * Numbers without a decimal are converted to `int()`
+* Decimal Numbers
+    * Numbers with a decimal are converted to `decimal.Decimal()`
