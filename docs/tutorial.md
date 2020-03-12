@@ -230,5 +230,4 @@ general and subcommand flags:
 # Doing More
 
 Our program does a lot in only a few lines, but there's a lot more you can
-do. Explore [the rest of the documentation](README.md) to see everything
-MILC can do.
+do. Explore the rest of the documentation to see everything MILC can do.
