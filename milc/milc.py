@@ -162,11 +162,11 @@ class MILC(object):
         self._subparsers = self._arg_parser.add_subparsers(title=title, dest='subparsers', **kwargs)
         self.release_lock()
 
-    def acquire_lock(self):
+    def acquire_lock(self, blocking=True):
         """Acquire the MILC lock for exclusive access to properties.
         """
         if self._lock:
-            self._lock.acquire()
+            self._lock.acquire(blocking)
 
     def release_lock(self):
         """Release the MILC lock.
@@ -213,11 +213,6 @@ class MILC(object):
 
         return argument_function
 
-    def arg_passed(self, arg):
-        """Returns True if arg was passed on the command line.
-        """
-        return self.default_arguments.get(arg) != self.args[arg]
-
     def parse_args(self):
         """Parse the CLI args.
         """
@@ -255,9 +250,9 @@ class MILC(object):
                     value = config.get(section, option)
 
                     # Coerce values into useful datatypes
-                    if value.lower() in ['1', 'yes', 'true', 'on']:
+                    if value.lower() in ['yes', 'true', 'on']:
                         value = True
-                    elif value.lower() in ['0', 'no', 'false', 'off']:
+                    elif value.lower() in ['no', 'false', 'off']:
                         value = False
                     elif value.lower() in ['none']:
                         continue
@@ -384,20 +379,27 @@ class MILC(object):
 
         return entrypoint_func
 
-    def add_subcommand(self, handler, description, name=None, hidden=False, **kwargs):
+    def add_subcommand(self, handler, description, hidden=False, **kwargs):
         """Register a subcommand.
 
-        If name is not provided we use `handler.__name__`.
-        """
+        Args:
 
+            handler
+                The function to exececute for this subcommand.
+
+            description
+                A one-line description to display in --help
+
+            hidden
+                When True don't display this command in --help
+        """
         if self._inside_context_manager:
             raise RuntimeError('You must run this before the with statement!')
 
         if self._subparsers is None:
             self.add_subparsers(metavar="")
 
-        if not name:
-            name = handler.__name__.replace("_", "-")
+        name = handler.__name__.replace("_", "-")
 
         self.acquire_lock()
         if not hidden:
@@ -412,6 +414,14 @@ class MILC(object):
 
     def subcommand(self, description, hidden=False, **kwargs):
         """Decorator to register a subcommand.
+
+        Args:
+
+            description
+                A one-line description to display in --help
+
+            hidden
+                When True don't display this command in --help
         """
         def subcommand_function(handler):
             return self.add_subcommand(handler, description, hidden=hidden, **kwargs)
