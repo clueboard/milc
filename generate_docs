@@ -32,7 +32,6 @@ def main(cli):
                 cli.log.debug(line)
             continue
 
-
         # Write the markdown to a file
         filename = filename.replace('.', '_')
         doc_file = Path('docs/api_%s.md' % filename)
