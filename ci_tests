@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+"""Run everything that needs to pass for CI to be green.
+
+PYTHON_ARGCOMPLETE_OK
+"""
+import os
+from pathlib import Path
+from subprocess import CalledProcessError, run
+
+# Uncomment these to customize your config file location
+os.environ['MILC_APP_NAME'] = 'ci_tests'
+os.environ['MILC_APP_AUTHOR'] = 'MILC'
+
+from milc import cli
+
+
+@cli.entrypoint('Run CI Tests...')
+def main(cli):
+    build_ok = True
+
+    cli.log.info('Running flake8...')
+    cmd = ['flake8']
+    result = run(cmd)
+    if result.returncode != 0:
+        build_ok = False
+
+    cli.log.info('Running yapf...')
+    cmd = ['yapf', '-q', '-r', '.']
+    result = run(cmd)
+    if result.returncode != 0:
+        build_ok = False
+        cli.log.error('Improperly formatted code. Please run this: yapf -i -r .')
+
+    return build_ok
+
+
+if __name__ == '__main__':
+    cli()
