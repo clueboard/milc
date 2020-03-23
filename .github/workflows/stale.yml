@@ -1,0 +1,19 @@
+name: Mark stale issues and pull requests
+
+on:
+  schedule:
+  - cron: "0 0 * * *"
+
+jobs:
+  stale:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/stale@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        days-before-stale: 180
+        days-before-close: 60
+        stale-issue-message: 'This issue has been idle for 6 months and will be closed in 2 months if the stale lable is not removed.'
+        stale-pr-message: 'This PR has been idle for 6 months and will be closed in 2 months if the stale lable is not removed.'
