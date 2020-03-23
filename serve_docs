@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 """Serve MILC documentation locally
+
+You can use this to preview your documentation changes live.
+
+Note: You may need to shift-reload twice to clear all caches for some changes.
 """
 import http.server
 import os

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Run everything that needs to pass for CI to be green.
 
+This is executed by GitHub actions against Python 3.5, 3.6, 3.7, and 3.8 on both Windows and Ubuntu.
+
 PYTHON_ARGCOMPLETE_OK
 """
 import os
