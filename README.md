@@ -14,7 +14,7 @@ all the features users expect from a modern CLI tool out of the box:
 
 # Documentation
 
-Documentation can be found in [docs/](docs/README.md).
+Full documentation is on the web: <https://milc.clueboard.co/>
 
 ## Short Example
 
@@ -101,6 +101,19 @@ know you have:
 
 You may not use all of these features yourself, but you will have users
 who are very glad these options are available when they need them.
+
+# Contributing
+
+Contributions are welcome! You don't need to open an issue first, if
+you've developed a new feature or fixed a bug in MILC simply open
+a PR and we'll review it.
+
+Please follow this checklist before submitting a PR:
+
+* [ ] Format your code: `yapf -i -r .`
+* [ ] Generate docs: `./generate_docs`
+* [ ] Add any new doc files to `docs/_summary.md`
+* [ ] Run tests: `./ci_tests`
 
 # FAQ
 
