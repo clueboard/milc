@@ -24,30 +24,25 @@ rm -f dist/*
 # Make sure we're current with master
 git pull --ff-only
 
-# Get our new version number
-bumpversion --dry-run --list patch | while read LINE; do
-	if echo $LINE | grep new_version=; then
-		new_version=$(echo $LINE | cut -f 2 -d =)
-	fi
-done
-
 # Generate the documentation
 ./generate_docs
 
-docs_good=1
-for doc in docs/api*.md; do
-	if ! grep -q "$(basename $doc)" docs/_summary.md; then
-       		echo "No _summary entry for ${doc}!"
-		docs_good=0
+if ! git status | grep 'working tree clean'; then
+	docs_good=1
+	for doc in docs/api*.md; do
+		if ! grep -q "$(basename $doc)" docs/_summary.md; then
+			echo "No _summary entry for ${doc}!"
+			docs_good=0
+		fi
+	done
+
+	if [ $docs_good -eq 0 ]; then
+		exit 2
 	fi
-done
 
-if [ $docs_good -eq 0 ]; then
-	exit 2
+	git add .
+	git commit -m"Generated API documentation."
 fi
-
-git add .
-git commit -m"Generated API documentation for version ${new_version}."
 
 # Increment the version number
 bumpversion patch
