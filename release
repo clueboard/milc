@@ -1,5 +1,5 @@
 #!/bin/sh
-# Increment the verison number and release a new version of qmk_cli.
+# Increment the verison number and release a new version of MILC.
 #
 # Required packages are in requirements-release.txt
 
