@@ -9,7 +9,7 @@ all the features users expect from a modern CLI tool out of the box:
 * ANSI color support- even on Windows- with [colorama](https://github.com/tartley/colorama)
 * Logging to stderr and/or a file, with ANSI colors
 * Easy method for printing to stdout with ANSI colors
-* Labelling log output with colored emoji to easily distinguish message types
+* Labeling log output with colored emoji to easily distinguish message types
 * Thread safety
 
 # Documentation
@@ -78,7 +78,7 @@ optional arguments:
 # Why MILC?
 
 Because life is too short to integrate this stuff yourself, and writing
-good CLI's with comprehensive functionality is harder than it needs to be.
+good CLIs with comprehensive functionality is harder than it needs to be.
 
 Most of the other CLI frameworks are missing a piece of the puzzle. Maybe
 they have argument parsing but no config file story. Maybe they have a
@@ -142,7 +142,7 @@ more control over the behavior of your program than Click or Docopt give you.
 Whenever you release a new framework the first question you'll be asked is
 why you didn't just use one of the existing options instead.
 
-As I serveyed the other tools I found that most of them only solve part of
+As I surveyed the other tools I found that most of them only solve part of
 the problem, not the whole problem. Those that solve the whole problem are
 very hard to use or get started with, or are otherwise very heavyweight. I
 wanted a comprehensive framework that was easy to get started with.
@@ -168,12 +168,12 @@ don't fill the same need as MILC.
 
 Note: This list was compiled in 2018. In 2020 I edited the list to remove
 dead projects but I not go searching for new projects. The time for justifying
-MILC's existance has passed.
+MILC's existence has passed.
 
 ### Argparse
 
 The built-in argparse module is amazing- MILC uses it under the hood. Using
-it directly as an enduser is complicated and error-prone however. The common
+it directly as an end-user is complicated and error-prone however. The common
 patterns mean you end up putting the definition of CLI arguments in a
 different place from the code that uses those arguments.
 
@@ -207,14 +207,14 @@ of Armin Ronacher's projects. :)
 
 Click is great, and I borrowed the decorator concept from Flask before I saw
 Click had done the same thing. It terms of how you use it there are a lot of
-simularities between Click and MILC.
+similarities between Click and MILC.
 
 Where Click and MILC part ways is in the underlying implementation. MILC
-uses the recommended and built-in python modules whenver possible. Under the
+uses the recommended and built-in Python modules whenever possible. Under the
 hood MILC is just argparse, logging, ConfigParser, and other standard modules
 abstracted just enough to make the right thing easy. Click on the other hand
 uses optparser, which has been deprecated in favor of argparser, and handles
-a lot of functionality itself rather than dispatching to included python
+a lot of functionality itself rather than dispatching to included Python
 modules.
 
 MILC does not insist upon a UTF-8 environment for Python 3 the way Click
@@ -223,7 +223,7 @@ developed enough by now to make it no longer necessary. Time will tell if
 my opinion changes or not.
 
 Whether you should use Click or MILC depends on the tradeoff you want to
-make. Would you rather use the python modules everyone's already familiar with
+make. Would you rather use the Python modules everyone's already familiar with
 or dive into a world of custom code that attempts to make everything cleaner
 overall? Do you want one cohesive system or do you want to pull together
 disparate plugins and modules to build the functionality you need?
@@ -239,7 +239,7 @@ and other functionality to Click.
 Clize has a nice approach with lots of mature and advanced functionality.
 
 Clize uses function annotation to work, which may or may not fit with how you
-work. It also has a lot of arbitrary restrictions due to anotations, for
+work. It also has a lot of arbitrary restrictions due to annotations, for
 example alt functions don't work with argument aliases.
 
 Clize does not support a configuration file or logging.
@@ -249,7 +249,7 @@ Clize does not support a configuration file or logging.
 <https://github.com/prometheusresearch/cogs>
 
 Cogs seems interesting, but has its own dedicated CLI tool named `cogs`. You
-don't create scripts directly but instead create python functions that `cogs`
+don't create scripts directly but instead create Python functions that `cogs`
 will call. This is not a paradigm that I want to use.
 
 Cogs does not include config file support.
@@ -258,7 +258,7 @@ Cogs does not include config file support.
 
 <https://github.com/evanunderscore/defopt>
 
-Defopt is a great tool for turning functions into CLI's. Had I found this
+Defopt is a great tool for turning functions into CLIs. Had I found this
 earlier I may not have written MILC at all. But I have written MILC, and
 there's some things I'm still not sure about. For example, I don't see a way
 to have script handle both subcommand and non-subcommand operation.
