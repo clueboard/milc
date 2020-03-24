@@ -1,0 +1,62 @@
+#!/bin/sh
+# Increment the verison number and release a new version of qmk_cli.
+#
+# Required packages are in requirements-release.txt
+
+set -e
+set -x
+
+PYPI_USERNAME=${PYPI_USERNAME:=skully}
+TWINE_USERNAME=$PYPI_USERNAME
+
+export TWINE_USERNAME
+
+# Install deps
+python3 -m pip install -r requirements-release.txt
+
+# Make sure the tree is clean
+unless git status | grep 'working tree clean'; then
+	echo '*** Working tree is not clean!'
+	exit 1
+fi
+rm -f dist/*
+
+# Make sure we're current with master
+git pull --ff-only
+
+# Get our new version number
+bumpversion --dry-run --list patch | while read LINE; do
+	if echo $LINE | grep new_version=; then
+		new_version=$(echo $LINE | cut -f 2 -d =)
+	fi
+done
+
+# Generate the documentation
+./generate_docs
+
+docs_good=1
+for doc in docs/api*.md; do
+	unless grep -q "$doc" docs/_summary.md; then
+       		echo "No _summary entry for ${doc}!"
+		docs_good=0
+	fi
+done
+
+if [ $docs_good -eq 0 ]; then
+	exit 2
+fi
+
+git add .
+git commit -m"Generated API documentation for version ${new_version}."
+
+# Increment the version number
+bumpversion patch
+
+# Push our work up
+git push origin master --tags
+
+# Build our package
+python3 setup.py sdist bdist_wheel
+
+# Upload to pypi
+twine upload dist/qmk-*

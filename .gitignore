@@ -2,3 +2,6 @@
 __pycache__
 *.swp
 *.pyc
+build
+dist
+milc.egg-info
