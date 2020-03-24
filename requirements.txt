@@ -1,0 +1,3 @@
+appdirs
+argcomplete
+colorama
