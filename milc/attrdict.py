@@ -29,7 +29,7 @@ class AttrDict(object):
         return self.__getitem__(key)
 
     def __getitem__(self, key):
-        """Returns a config section, creating it if it doesn't exist yet.
+        """Returns an item.
         """
         return self._data[key]
 

@@ -36,6 +36,13 @@ def main(cli):
         build_ok = False
         cli.log.error('Improperly formatted code. Please run this: yapf -i -r .')
 
+    cli.log.info('Running nose2 tests...')
+    cmd = ['nose2']
+    result = run(cmd)
+    if result.returncode != 0:
+        build_ok = False
+        cli.log.error('Tests are not passing! Please fix them before opening a PR.')
+
     return build_ok
 
 
