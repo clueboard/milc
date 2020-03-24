@@ -17,6 +17,7 @@ __VERSION__ = '1.0.1'
 import logging
 import os
 
+from .emoji import EMOJI_LOGLEVELS
 from .milc import MILC
 
 # Disable logging until we can configure it how the user wants
