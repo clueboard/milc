@@ -12,10 +12,10 @@ TWINE_USERNAME=$PYPI_USERNAME
 export TWINE_USERNAME
 
 # Install deps
-python3 -m pip install -r requirements-release.txt
+python3 -m pip install --upgrade -r requirements-release.txt
 
 # Make sure the tree is clean
-unless git status | grep 'working tree clean'; then
+if ! git status | grep 'working tree clean'; then
 	echo '*** Working tree is not clean!'
 	exit 1
 fi
@@ -36,7 +36,7 @@ done
 
 docs_good=1
 for doc in docs/api*.md; do
-	unless grep -q "$doc" docs/_summary.md; then
+	if ! grep -q "$doc" docs/_summary.md; then
        		echo "No _summary entry for ${doc}!"
 		docs_good=0
 	fi
