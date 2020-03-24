@@ -7,9 +7,9 @@ PYTHON_ARGCOMPLETE_OK
 """
 import os
 from pathlib import Path
+from shutil import rmtree
 from subprocess import CalledProcessError, run
 
-# Uncomment these to customize your config file location
 os.environ['MILC_APP_NAME'] = 'ci_tests'
 os.environ['MILC_APP_AUTHOR'] = 'MILC'
 
@@ -19,6 +19,9 @@ from milc import cli
 @cli.entrypoint('Run CI Tests...')
 def main(cli):
     build_ok = True
+
+    if Path('build').exists():
+        rmtree('build')
 
     cli.log.info('Running flake8...')
     cmd = ['flake8']
