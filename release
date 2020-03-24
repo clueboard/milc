@@ -36,7 +36,7 @@ done
 
 docs_good=1
 for doc in docs/api*.md; do
-	if ! grep -q "$doc" docs/_summary.md; then
+	if ! grep -q "$(basename $doc)" docs/_summary.md; then
        		echo "No _summary entry for ${doc}!"
 		docs_good=0
 	fi
