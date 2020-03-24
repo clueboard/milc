@@ -59,4 +59,4 @@ git push origin master --tags
 python3 setup.py sdist bdist_wheel
 
 # Upload to pypi
-twine upload dist/qmk-*
+twine upload dist/milc-*
