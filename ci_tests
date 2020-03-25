@@ -43,6 +43,9 @@ def main(cli):
         build_ok = False
         cli.log.error('Tests are not passing! Please fix them before opening a PR.')
 
+    if build_ok:
+        cli.log.info('{fg_green}All tests passed!')
+
     return build_ok
 
 

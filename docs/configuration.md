@@ -22,9 +22,9 @@ Dictionary:
 
 # Setting Config Values
 
-You can create new values by simply assigning to them. This works with either attribute or dictionary notation.
+You can create new values by simply assigning to them. This only with dictionary notation.
 
-    cli.config.general.verbose = True
+    cli.config['general']['verbose'] = True
 
 # Writing Configuration Files
 
