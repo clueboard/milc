@@ -12,9 +12,9 @@ from milc import cli
 
 
 @cli.argument('-p', '--port', default=8023, type=int, help='Port number to use.')
-@cli.entrypoint('Run a local webserver for QMK documentation.')
+@cli.entrypoint('Run a local webserver for MILC documentation.')
 def docs(cli):
-    """Spin up a local HTTPServer instance for the QMK docs.
+    """Spin up a local HTTPServer instance for the MILC docs.
     """
     os.chdir('docs')
 
