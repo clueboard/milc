@@ -18,7 +18,7 @@ A dictionary that can also be accessed by attribute.
  | __getitem__(key)
 ```
 
-Returns a config section, creating it if it doesn't exist yet.
+Returns an item.
 
 <a name=".attrdict.SparseAttrDict"></a>
 ### SparseAttrDict
