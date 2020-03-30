@@ -56,7 +56,7 @@ class MILC(object):
 
         # Figure out our program name
         self.prog_name = sys.argv[0][:-3] if sys.argv[0].endswith('.py') else sys.argv[0]
-        self.prog_name = self.prog_name.split('/')[-1]
+        self.prog_name = os.environ.get('MILC_APP_NAME', os.path.basename(self.prog_name))
 
         # Initialize all the things
         self.read_config_file()
@@ -183,7 +183,7 @@ class MILC(object):
         if '--config-file' in sys.argv:
             return Path(sys.argv[sys.argv.index('--config-file') + 1]).expanduser().resolve()
 
-        filedir = user_config_dir(appname=os.environ.get('MILC_APP_NAME', sys.argv[0]), appauthor=os.environ.get('MILC_APP_AUTHOR', sys.argv[0]))
+        filedir = user_config_dir(appname=self.prog_name, appauthor=os.environ.get('MILC_APP_AUTHOR', self.prog_name.upper()))
         filename = '%s.ini' % self.prog_name
         return Path(filedir) / filename
 
@@ -319,7 +319,7 @@ class MILC(object):
 
         # Generate a sanitized version of our running configuration
         config = RawConfigParser()
-        for section_name, section in self.config._config.items():
+        for section_name, section in self.config.items():
             config.add_section(section_name)
             for option_name, value in section.items():
                 if section_name == 'general':
