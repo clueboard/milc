@@ -43,6 +43,8 @@ class MILC(object):
 
         # Define some basic info
         self.acquire_lock()
+        self._config_store_true = []
+        self._config_store_false = []
         self._description = None
         self._entrypoint = None
         self._inside_context_manager = False
@@ -290,19 +292,21 @@ class MILC(object):
                     raise RuntimeError('Could not find argument in `self.default_arguments`. This should be impossible!')
                     exit(1)
 
-                # Merge this argument into self.config
-                if argument in self.default_arguments['general'] or argument in self.default_arguments[entrypoint_name]:
-                    arg_value = getattr(self.args, argument)
-                    if arg_value is not None:
-                        self.config[section][argument] = arg_value
-                        self.config_source[section][argument] = 'argument'
+                # Determine the arg value and source
+                arg_value = getattr(self.args, argument)
+                if argument in self._config_store_true and arg_value:
+                    passed_on_cmdline = True
+                elif argument in self._config_store_false and not arg_value:
+                    passed_on_cmdline = True
+                elif arg_value is not None:
+                    passed_on_cmdline = True
                 else:
-                    if argument not in self.config[entrypoint_name]:
-                        # Check if the argument exist for this section
-                        arg = getattr(self.args, argument)
-                        if arg is not None:
-                            self.config[section][argument] = arg
-                            self.config_source[section][argument] = 'argument'
+                    passed_on_cmdline = False
+
+                # Merge this argument into self.config
+                if passed_on_cmdline and (argument in self.default_arguments['general'] or argument in self.default_arguments[entrypoint_name] or argument not in self.config[entrypoint_name]):
+                    self.config[section][argument] = arg_value
+                    self.config_source[section][argument] = 'argument'
 
         self.release_lock()
 

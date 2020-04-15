@@ -65,15 +65,24 @@ class SubparserWrapper(object):
 
         This also stores the default for the argument in `self.cli.default_arguments`.
         """
-        if 'action' in kwargs and kwargs['action'] == 'store_boolean':
+        if kwargs.get('action') == 'store_boolean':
             # Store boolean will call us again with the enable/disable flag arguments
             return handle_store_boolean(self.cli, *args, **kwargs)
 
         self.cli.acquire_lock()
+        argument_name = self.cli.get_argument_name(*args, **kwargs)
         self.subparser.add_argument(*args, **kwargs)
+
+        if kwargs.get('action') == 'store_false':
+            self.cli._config_store_false.append(argument_name)
+
+        if kwargs.get('action') == 'store_true':
+            self.cli._config_store_true.append(argument_name)
+
         if self.submodule not in self.cli.default_arguments:
             self.cli.default_arguments[self.submodule] = {}
-        self.cli.default_arguments[self.submodule][get_argument_name(self.cli, *args, **kwargs)] = kwargs.get('default')
+
+        self.cli.default_arguments[self.submodule][argument_name] = kwargs.get('default')
         self.cli.release_lock()
 
 
