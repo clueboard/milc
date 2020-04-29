@@ -70,7 +70,7 @@ class SubparserWrapper(object):
             return handle_store_boolean(self.cli, *args, **kwargs)
 
         self.cli.acquire_lock()
-        argument_name = self.cli.get_argument_name(*args, **kwargs)
+        argument_name = get_argument_name(self.cli, *args, **kwargs)
         self.subparser.add_argument(*args, **kwargs)
 
         if kwargs.get('action') == 'store_false':
