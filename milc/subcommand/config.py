@@ -83,31 +83,29 @@ def config(cli):
     # Process config_tokens
     save_config = False
 
-    for argument in cli.args.configs:
-        # Split on space in case they quoted multiple config tokens
-        for config_token in argument.split(' '):
-            section, option, value = parse_config_token(config_token)
+    for config_token in cli.args.configs:
+        section, option, value = parse_config_token(config_token)
 
-            # Validation
-            if option and '.' in option:
-                cli.log.error('Config keys may not have more than one period! "%s" is not valid.', config_token)
-                return False
+        # Validation
+        if option and '.' in option:
+            cli.log.error('Config keys may not have more than one period! "%s" is not valid.', config_token)
+            return False
 
-            # Do what the user wants
-            if section and option and value:
-                # Write a configuration option
-                set_config(section, option, value)
-                if not cli.args.read_only:
-                    save_config = True
+        # Do what the user wants
+        if section and option and value:
+            # Write a configuration option
+            set_config(section, option, value)
+            if not cli.args.read_only:
+                save_config = True
 
-            elif section and option:
-                # Display a single key
-                print_config(section, option)
+        elif section and option:
+            # Display a single key
+            print_config(section, option)
 
-            elif section:
-                # Display an entire section
-                for key in cli.config[section]:
-                    print_config(section, key)
+        elif section:
+            # Display an entire section
+            for key in cli.config[section]:
+                print_config(section, key)
 
     # Ending actions
     if save_config:

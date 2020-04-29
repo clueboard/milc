@@ -10,6 +10,7 @@ import os
 #os.environ['MILC_APP_AUTHOR'] = 'MILC'
 
 from milc import cli
+from milc.subcommand import config
 
 
 @cli.argument('-n', '--name', help='Name to greet', default='World')

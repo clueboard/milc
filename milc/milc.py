@@ -326,7 +326,7 @@ class MILC(object):
         """
         # Generate a sanitized version of our running configuration
         sane_config = RawConfigParser()
-        for section_name, section in config._config.items():
+        for section_name, section in config.items():
             sane_config.add_section(section_name)
             for option_name, value in section.items():
                 if section_name == 'general':
