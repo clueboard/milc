@@ -125,7 +125,16 @@ Parse the CLI args.
 #### read\_config\_file
 
 ```python
- | read_config_file()
+ | read_config_file(config_file)
+```
+
+Read in the configuration file and return Configuration objects for it and the config_source.
+
+<a name=".milc.MILC.initialize_config"></a>
+#### initialize\_config
+
+```python
+ | initialize_config()
 ```
 
 Read in the configuration file and store it in self.config.
@@ -138,6 +147,15 @@ Read in the configuration file and store it in self.config.
 ```
 
 Merge CLI arguments into self.config to create the runtime configuration.
+
+<a name=".milc.MILC.write_config_option"></a>
+#### write\_config\_option
+
+```python
+ | write_config_option(section, option)
+```
+
+Save a single config option to the config file.
 
 <a name=".milc.MILC.save_config"></a>
 #### save\_config
