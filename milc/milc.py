@@ -139,7 +139,7 @@ class MILC(object):
         self.log_print = True
         self.log_print_to = sys.stderr
         self.log_print_level = logging.INFO
-        self.log_file_level = logging.DEBUG
+        self.log_file_level = logging.INFO
         self.log_level = logging.INFO
         self.log = logging.getLogger(self.__class__.__name__)
         self.log.setLevel(logging.DEBUG)
@@ -474,6 +474,7 @@ class MILC(object):
 
         if self.config['general']['verbose']:
             self.log_print_level = logging.DEBUG
+            self.log_file_level = logging.DEBUG
 
         self.log_file = self.config['general']['log_file'] or self.log_file
         self.log_file_format = self.config['general']['log_file_fmt']
