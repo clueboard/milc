@@ -151,6 +151,7 @@ class MILC(object):
         self.add_argument('--datetime-fmt', default='%Y-%m-%d %H:%M:%S', help='Format string for datetimes')
         self.add_argument('--log-fmt', default='%(levelname)s %(message)s', help='Format string for printed log output')
         self.add_argument('--log-file-fmt', default='[%(levelname)s] [%(asctime)s] [file:%(pathname)s] [line:%(lineno)d] %(message)s', help='Format string for log file.')
+        self.add_argument('--log-file-level', default='info', choices=['debug', 'info', 'warning', 'error', 'critical'], help='Logging level for log file.')
         self.add_argument('--log-file', help='File to write log messages to')
         self.add_argument('--color', action='store_boolean', default=True, help='color in output')
         self.add_argument('--config-file', help='The location for the configuration file')
@@ -474,11 +475,11 @@ class MILC(object):
 
         if self.config['general']['verbose']:
             self.log_print_level = logging.DEBUG
-            self.log_file_level = logging.DEBUG
 
         self.log_file = self.config['general']['log_file'] or self.log_file
         self.log_file_format = self.config['general']['log_file_fmt']
         self.log_file_format = ANSIStrippingFormatter(self.config['general']['log_file_fmt'], self.config['general']['datetime_fmt'])
+        self.log_file_level = getattr(logging, self.config['general']['log_file_level'].upper())
         self.log_format = self.config['general']['log_fmt']
 
         if self.config.general.color:
