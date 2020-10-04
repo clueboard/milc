@@ -18,7 +18,8 @@ from milc import cli
 def main(cli):
     comma = ',' if cli.config.general.comma else ''
     cli.log.debug('You used -v you lucky person!')
-    cli.log.info('Hello%s %s!', comma, cli.config.general.name)
+    cli.log.info('Hello%s %s, from cli.log.info!', comma, cli.config.general.name)
+    cli.echo('{fg_red}Hello%s %s, from cli.echo!', comma, cli.config.general.name)
 
 
 if __name__ == '__main__':
