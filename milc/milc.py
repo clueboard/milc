@@ -76,7 +76,7 @@ class MILC(object):
     def echo(self, text, *args, **kwargs):
         """Print colorized text to stdout.
 
-        ANSI color strings (such as {fg-blue}) will be converted into ANSI
+        ANSI color strings (such as {fg_blue}) will be converted into ANSI
         escape sequences, and the ANSI reset sequence will be added to all
         strings.
 
@@ -510,7 +510,7 @@ class MILC(object):
         self._inside_context_manager = True
         self.release_lock()
 
-        colorama.init()
+        colorama.init(strip=self.config.general.color)
         self.parse_args()
         self.merge_args_into_config()
         self.setup_logging()
