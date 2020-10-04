@@ -34,7 +34,7 @@ A log formatter that makes the loglevel an emoji on UTF capable terminals.
 ### ANSIStrippingFormatter
 
 ```python
-class ANSIStrippingFormatter(ANSIFormatter)
+class ANSIStrippingFormatter(ANSIEmojiLoglevelFormatter)
 ```
 
 A log formatter that strips ANSI.
