@@ -24,7 +24,7 @@ import argcomplete
 import colorama
 from appdirs import user_config_dir
 
-from .ansi import ANSIEmojiLoglevelFormatter, ANSIStrippingFormatter, ansi_colors, format_ansi
+from .ansi import ANSIEmojiLoglevelFormatter, ANSIStrippingFormatter, ansi_colors, ansi_escape, format_ansi
 from .configuration import Configuration, SubparserWrapper, get_argument_name, handle_store_boolean
 from .attrdict import AttrDict
 
@@ -87,6 +87,9 @@ class MILC(object):
 
         args = args or kwargs
         text = format_ansi(text)
+
+        if not self.config.general.color:
+            text = ansi_escape.sub('', text)
 
         print(text % args)
 
