@@ -3,10 +3,12 @@
 import argparse
 import logging
 import os
+import subprocess
 import shlex
 import sys
 from decimal import Decimal
 from pathlib import Path
+from platform import platform
 from tempfile import NamedTemporaryFile
 
 try:
@@ -24,7 +26,7 @@ import argcomplete
 import colorama
 from appdirs import user_config_dir
 
-from .ansi import ANSIEmojiLoglevelFormatter, ANSIStrippingFormatter, ansi_colors, ansi_escape, format_ansi
+from .ansi import ANSIEmojiLoglevelFormatter, ANSIStrippingEmojiLoglevelFormatter, ANSIStrippingFormatter, ansi_colors, ansi_escape, format_ansi
 from .configuration import Configuration, SubparserWrapper, get_argument_name, handle_store_boolean
 from .attrdict import AttrDict
 
@@ -54,11 +56,12 @@ class MILC(object):
         self.config_file = None
         self.default_arguments = {}
         self.version = 'unknown'
-        self.release_lock()
+        self.platform = platform()
 
         # Figure out our program name
         self.prog_name = sys.argv[0][:-3] if sys.argv[0].endswith('.py') else sys.argv[0]
         self.prog_name = os.environ.get('MILC_APP_NAME', os.path.basename(self.prog_name))
+        self.release_lock()
 
         # Initialize all the things
         self.initialize_config()
@@ -92,6 +95,23 @@ class MILC(object):
             text = ansi_escape.sub('', text)
 
         print(text % args)
+
+    def run(self, command, *args, **kwargs):
+        """Run a command with subprocess.run
+
+        The *args and **kwargs arguments get passed directly to `subprocess.run`.
+        """
+        if isinstance(command, str):
+            raise TypeError('`command` must be a non-text sequence such as list or tuple.')
+
+        if 'windows' in self.platform.lower():
+            safecmd = map(shlex.quote, command)
+            safecmd = ' '.join(safecmd)
+            command = [os.environ['SHELL'], '-c', safecmd]
+
+        self.log.debug('Running command: %s', command)
+
+        return subprocess.run(command, *args, **kwargs)
 
     def initialize_argparse(self):
         """Prepare to process arguments from sys.argv.
@@ -476,19 +496,17 @@ class MILC(object):
 
         self.acquire_lock()
 
-        if self.config['general']['verbose']:
+        if self.config.general.verbose:
             self.log_print_level = logging.DEBUG
 
-        self.log_file = self.config['general']['log_file'] or self.log_file
-        self.log_file_format = self.config['general']['log_file_fmt']
-        self.log_file_format = ANSIStrippingFormatter(self.config['general']['log_file_fmt'], self.config['general']['datetime_fmt'])
-        self.log_file_level = getattr(logging, self.config['general']['log_file_level'].upper())
-        self.log_format = self.config['general']['log_fmt']
+        self.log_file = self.config.general.log_file or self.log_file
+        self.log_file_format = ANSIStrippingFormatter(self.config.general.log_file_fmt, self.config.general.datetime_fmt)
+        self.log_file_level = getattr(logging, self.config.general.log_file_level.upper())
 
         if self.config.general.color:
-            self.log_format = ANSIEmojiLoglevelFormatter(self.args.log_fmt, self.config.general.datetime_fmt)
+            self.log_format = ANSIEmojiLoglevelFormatter(self.config.general.log_fmt, self.config.general.datetime_fmt)
         else:
-            self.log_format = ANSIStrippingFormatter(self.args.log_fmt, self.config.general.datetime_fmt)
+            self.log_format = ANSIStrippingEmojiLoglevelFormatter(self.config.general.log_fmt, self.config.general.datetime_fmt)
 
         if self.log_file:
             self.log_file_handler = logging.FileHandler(self.log_file, self.log_file_mode)
