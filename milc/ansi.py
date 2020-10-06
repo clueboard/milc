@@ -47,27 +47,51 @@ def format_ansi(text):
     return text + ansi_colors['style_reset_all']
 
 
-class ANSIFormatter(logging.Formatter):
-    """A log formatter that inserts ANSI color.
+class ANSIFormatterMixin(object):
+    """A log formatter mixin that inserts ANSI color.
     """
     def format(self, record):
-        msg = super(ANSIFormatter, self).format(record)
+        msg = super(ANSIFormatterMixin, self).format(record)
         return format_ansi(msg)
 
 
-class ANSIEmojiLoglevelFormatter(ANSIFormatter):
-    """A log formatter that makes the loglevel an emoji on UTF capable terminals.
+class ANSIStrippingMixin(object):
+    """A log formatter mixin that strips ANSI.
+    """
+    def format(self, record):
+        msg = super(ANSIStrippingMixin, self).format(record)
+        record.levelname = ansi_escape.sub('', record.levelname)
+        return ansi_escape.sub('', msg)
+
+
+class EmojiLoglevelMixin(object):
+    """A log formatter mixin that makes the loglevel an emoji on UTF capable terminals.
     """
     def format(self, record):
         if UNICODE_SUPPORT:
             record.levelname = EMOJI_LOGLEVELS[record.levelname].format(**ansi_colors)
-        return super(ANSIEmojiLoglevelFormatter, self).format(record)
+        return super(EmojiLoglevelMixin, self).format(record)
 
 
-class ANSIStrippingFormatter(ANSIEmojiLoglevelFormatter):
-    """A log formatter that strips ANSI.
+class ANSIFormatter(ANSIFormatterMixin, logging.Formatter):
+    """A log formatter that colorizes output.
     """
-    def format(self, record):
-        msg = super(ANSIStrippingFormatter, self).format(record)
-        record.levelname = ansi_escape.sub('', record.levelname)
-        return ansi_escape.sub('', msg)
+    pass
+
+
+class ANSIStrippingFormatter(ANSIStrippingMixin, ANSIFormatterMixin, logging.Formatter):
+    """A log formatter that strips ANSI
+    """
+    pass
+
+
+class ANSIEmojiLoglevelFormatter(EmojiLoglevelMixin, ANSIFormatterMixin, logging.Formatter):
+    """A log formatter that adds Emoji and ANSI
+    """
+    pass
+
+
+class ANSIStrippingEmojiLoglevelFormatter(ANSIStrippingMixin, EmojiLoglevelMixin, ANSIFormatterMixin, logging.Formatter):
+    """A log formatter that adds Emoji and strips ANSI
+    """
+    pass
