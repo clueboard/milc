@@ -52,7 +52,4 @@ def test_hello_no_color_log_file():
 def test_hello_no_color_verbose():
     result = check_command('./hello', '--no-color', '-v')
     check_returncode(result)
-    #print(repr(result.stdout))
     assert result.stdout == '☐ You used -v you lucky person!\nℹ Hello, World, from cli.log.info!\nHello, World, from cli.echo!\n'
-
-
