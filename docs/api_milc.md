@@ -1,11 +1,8 @@
-<a name=".milc"></a>
-## milc
+<a name="milc"></a>
+# milc
 
-!/usr/bin/env python3
-coding=utf-8
-
-<a name=".milc.MILC"></a>
-### MILC
+<a name="milc.MILC"></a>
+## MILC Objects
 
 ```python
 class MILC(object)
@@ -13,7 +10,7 @@ class MILC(object)
 
 MILC - An Opinionated Batteries Included Framework
 
-<a name=".milc.MILC.__init__"></a>
+<a name="milc.MILC.__init__"></a>
 #### \_\_init\_\_
 
 ```python
@@ -25,7 +22,7 @@ Initialize the MILC object.
 version
     The version string to associate with your CLI program
 
-<a name=".milc.MILC.echo"></a>
+<a name="milc.MILC.echo"></a>
 #### echo
 
 ```python
@@ -40,7 +37,18 @@ strings.
 
 If *args or **kwargs are passed they will be used to %-format the strings.
 
-<a name=".milc.MILC.initialize_argparse"></a>
+<a name="milc.MILC.run"></a>
+#### run
+
+```python
+ | run(command, *args, **kwargs)
+```
+
+Run a command with subprocess.run
+
+The *args and **kwargs arguments get passed directly to `subprocess.run`.
+
+<a name="milc.MILC.initialize_argparse"></a>
 #### initialize\_argparse
 
 ```python
@@ -49,7 +57,7 @@ If *args or **kwargs are passed they will be used to %-format the strings.
 
 Prepare to process arguments from sys.argv.
 
-<a name=".milc.MILC.completer"></a>
+<a name="milc.MILC.completer"></a>
 #### completer
 
 ```python
@@ -58,7 +66,7 @@ Prepare to process arguments from sys.argv.
 
 Add an argcomplete completer to this subcommand.
 
-<a name=".milc.MILC.add_argument"></a>
+<a name="milc.MILC.add_argument"></a>
 #### add\_argument
 
 ```python
@@ -67,7 +75,7 @@ Add an argcomplete completer to this subcommand.
 
 Wrapper to add arguments and track whether they were passed on the command line.
 
-<a name=".milc.MILC.initialize_logging"></a>
+<a name="milc.MILC.initialize_logging"></a>
 #### initialize\_logging
 
 ```python
@@ -76,7 +84,7 @@ Wrapper to add arguments and track whether they were passed on the command line.
 
 Prepare the defaults for the logging infrastructure.
 
-<a name=".milc.MILC.acquire_lock"></a>
+<a name="milc.MILC.acquire_lock"></a>
 #### acquire\_lock
 
 ```python
@@ -85,7 +93,7 @@ Prepare the defaults for the logging infrastructure.
 
 Acquire the MILC lock for exclusive access to properties.
 
-<a name=".milc.MILC.release_lock"></a>
+<a name="milc.MILC.release_lock"></a>
 #### release\_lock
 
 ```python
@@ -94,7 +102,7 @@ Acquire the MILC lock for exclusive access to properties.
 
 Release the MILC lock.
 
-<a name=".milc.MILC.find_config_file"></a>
+<a name="milc.MILC.find_config_file"></a>
 #### find\_config\_file
 
 ```python
@@ -103,7 +111,7 @@ Release the MILC lock.
 
 Locate the config file.
 
-<a name=".milc.MILC.argument"></a>
+<a name="milc.MILC.argument"></a>
 #### argument
 
 ```python
@@ -112,7 +120,7 @@ Locate the config file.
 
 Decorator to call self.add_argument or self.<subcommand>.add_argument.
 
-<a name=".milc.MILC.parse_args"></a>
+<a name="milc.MILC.parse_args"></a>
 #### parse\_args
 
 ```python
@@ -121,7 +129,7 @@ Decorator to call self.add_argument or self.<subcommand>.add_argument.
 
 Parse the CLI args.
 
-<a name=".milc.MILC.read_config_file"></a>
+<a name="milc.MILC.read_config_file"></a>
 #### read\_config\_file
 
 ```python
@@ -130,7 +138,7 @@ Parse the CLI args.
 
 Read in the configuration file and return Configuration objects for it and the config_source.
 
-<a name=".milc.MILC.initialize_config"></a>
+<a name="milc.MILC.initialize_config"></a>
 #### initialize\_config
 
 ```python
@@ -139,7 +147,7 @@ Read in the configuration file and return Configuration objects for it and the c
 
 Read in the configuration file and store it in self.config.
 
-<a name=".milc.MILC.merge_args_into_config"></a>
+<a name="milc.MILC.merge_args_into_config"></a>
 #### merge\_args\_into\_config
 
 ```python
@@ -148,7 +156,7 @@ Read in the configuration file and store it in self.config.
 
 Merge CLI arguments into self.config to create the runtime configuration.
 
-<a name=".milc.MILC.write_config_option"></a>
+<a name="milc.MILC.write_config_option"></a>
 #### write\_config\_option
 
 ```python
@@ -157,7 +165,7 @@ Merge CLI arguments into self.config to create the runtime configuration.
 
 Save a single config option to the config file.
 
-<a name=".milc.MILC.save_config"></a>
+<a name="milc.MILC.save_config"></a>
 #### save\_config
 
 ```python
@@ -166,7 +174,7 @@ Save a single config option to the config file.
 
 Save the current configuration to the config file.
 
-<a name=".milc.MILC.__call__"></a>
+<a name="milc.MILC.__call__"></a>
 #### \_\_call\_\_
 
 ```python
@@ -175,7 +183,7 @@ Save the current configuration to the config file.
 
 Execute the entrypoint function.
 
-<a name=".milc.MILC.entrypoint"></a>
+<a name="milc.MILC.entrypoint"></a>
 #### entrypoint
 
 ```python
@@ -184,7 +192,7 @@ Execute the entrypoint function.
 
 Set the entrypoint for when no subcommand is provided.
 
-<a name=".milc.MILC.add_subcommand"></a>
+<a name="milc.MILC.add_subcommand"></a>
 #### add\_subcommand
 
 ```python
@@ -205,7 +213,7 @@ Register a subcommand.
   hidden
   When True don't display this command in --help
 
-<a name=".milc.MILC.subcommand"></a>
+<a name="milc.MILC.subcommand"></a>
 #### subcommand
 
 ```python
@@ -223,7 +231,7 @@ Decorator to register a subcommand.
   hidden
   When True don't display this command in --help
 
-<a name=".milc.MILC.setup_logging"></a>
+<a name="milc.MILC.setup_logging"></a>
 #### setup\_logging
 
 ```python
