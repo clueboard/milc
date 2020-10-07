@@ -17,6 +17,7 @@ __VERSION__ = '1.0.7'
 import logging
 import os
 
+from .ansi import format_ansi  # FIXME: Remove when qmk_firmware no longer needs it
 from .emoji import EMOJI_LOGLEVELS
 from .milc import MILC
 
