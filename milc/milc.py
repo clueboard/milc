@@ -96,22 +96,55 @@ class MILC(object):
 
         print(text % args)
 
-    def run(self, command, *args, **kwargs):
-        """Run a command with subprocess.run
+    def run(self, command, capture_output=True, combined_output=False, text=True, **kwargs):
+        """Run a command using `subprocess.run`, but using some different defaults.
 
-        The *args and **kwargs arguments get passed directly to `subprocess.run`.
+        Unlike subprocess.run you must supply a sequence of arguments. You can use `shlex.split()` to build this from a string.
+
+        The **kwargs arguments get passed directly to `subprocess.run`.
+
+        Args:
+            command
+                A sequence where the first item is the command to run, and any remaining items are arguments to pass.
+
+            capture_output
+                Set to False to have output written to the terminal instead of being available in the returned `subprocess.CompletedProcess` instance.
+
+            combined_output
+                When true STDERR will be written to STDOUT. Equivalent to the shell construct `2>&1`.
+
+            text
+                Set to False to disable encoding and get `bytes()` from `.stdout` and `.stderr`.
         """
+        # Sanity Checking
         if isinstance(command, str):
             raise TypeError('`command` must be a non-text sequence such as list or tuple.')
 
+        if not capture_output and combined_output:
+            raise ValueError("Can't use capture_output=False and combined_output=True at the same time.")
+
+        # On some windows platforms (msys2, possibly others) you have to execute the command through a subshell.
         if 'windows' in self.platform.lower():
             safecmd = map(shlex.quote, command)
             safecmd = ' '.join(safecmd)
             command = [os.environ['SHELL'], '-c', safecmd]
 
+        # Argument Processing
+        if capture_output:
+            kwargs['stdout'] = subprocess.PIPE
+            kwargs['stderr'] = subprocess.PIPE
+
+        if combined_output:
+            kwargs['stderr'] = subprocess.STDOUT
+
+        if text:
+            kwargs['universal_newlines'] = True
+            kwargs['text'] = True
+
+        # Run the command
         self.log.debug('Running command: %s', command)
 
-        return subprocess.run(command, *args, **kwargs)
+        return subprocess.run(command, **kwargs)
 
     def initialize_argparse(self):
         """Prepare to process arguments from sys.argv.

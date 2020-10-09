@@ -7,6 +7,7 @@
     * [Configuration](configuration.md)
     * [Config Subcommand](subcommand_config.md)
     * [Logging](logging.md)
+    * [Subprocesses](subprocesses.md)
     * [Thread Safety](threading.md)
     * [User Input](questions.md)
 * API Reference

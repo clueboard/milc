@@ -1,10 +1,9 @@
-from subprocess import PIPE, STDOUT
 from milc import cli
 
 
 def check_command(command, *args):
     cmd = [command] + list(args)
-    return cli.run(cmd, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
+    return cli.run(cmd, combined_output=True)
 
 
 def check_returncode(result, expected=0):
