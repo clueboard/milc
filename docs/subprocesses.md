@@ -18,7 +18,7 @@ p = cli.run(git_cmd)
 
 This will return a [subprocess.CompletedProcess](https://docs.python.org/3/library/subprocess.html#subprocess.CompletedProcess) instance. You can examine attributes such as `p.returncode`, `p.stderr`, and `p.stdout` to see the fate of the process.
 
-## Supperted Arguments
+## Supported Arguments
 
 | Argument | Default | Description |
 |----------|---------|-------------|
