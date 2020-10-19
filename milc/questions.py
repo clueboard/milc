@@ -20,8 +20,8 @@ def yesno(prompt, *args, default=None, **kwargs):
     If you add `--yes` and `--no` arguments to your program the user can answer questions by passing command line flags.
 
     ```python
-        @add_argument('-y', '--yes', action='store_true', arg_only=True, help='Answer yes to all questions.')
-        @add_argument('-n', '--no', action='store_true', arg_only=True, help='Answer no to all questions.')
+    @add_argument('-y', '--yes', action='store_true', arg_only=True, help='Answer yes to all questions.')
+    @add_argument('-n', '--no', action='store_true', arg_only=True, help='Answer no to all questions.')
     ```
     """
     if not args and kwargs:
@@ -33,11 +33,12 @@ def yesno(prompt, *args, default=None, **kwargs):
     if 'yes' in cli.args and cli.args.yes:
         return True
 
-    if default is not None:
-        if default:
-            prompt = prompt + ' [Y/n] '
-        else:
-            prompt = prompt + ' [y/N] '
+    if default is None:
+        prompt = prompt + ' [y/n] '
+    elif default:
+        prompt = prompt + ' [Y/n] '
+    else:
+        prompt = prompt + ' [y/N] '
 
     while True:
         cli.echo('')
