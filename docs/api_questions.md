@@ -24,8 +24,8 @@ Returns `True` for a yes and `False` for a no.
 If you add `--yes` and `--no` arguments to your program the user can answer questions by passing command line flags.
 
 ```python
-    @add_argument('-y', '--yes', action='store_true', arg_only=True, help='Answer yes to all questions.')
-    @add_argument('-n', '--no', action='store_true', arg_only=True, help='Answer no to all questions.')
+@add_argument('-y', '--yes', action='store_true', arg_only=True, help='Answer yes to all questions.')
+@add_argument('-n', '--no', action='store_true', arg_only=True, help='Answer no to all questions.')
 ```
 
 <a name="questions.question"></a>
