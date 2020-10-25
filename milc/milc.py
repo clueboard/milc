@@ -161,9 +161,23 @@ class MILC(object):
         self.args = AttrDict()
         self._arg_parser = argparse.ArgumentParser(**kwargs)
         self.set_defaults = self._arg_parser.set_defaults
-        self.print_usage = self._arg_parser.print_usage
-        self.print_help = self._arg_parser.print_help
         self.release_lock()
+
+    def print_help(self, *args, **kwargs):
+        """Print a help message for the main program or subcommand, depending on context.
+        """
+        if self._entrypoint.__name__ in self.subcommands:
+            return self.subcommands[self._entrypoint.__name__].print_help(*args, **kwargs)
+
+        return self._arg_parser.print_help(*args, **kwargs)
+
+    def print_usage(self, *args, **kwargs):
+        """Print brief description of how the main program or subcommand is invoked, depending on context.
+        """
+        if self._entrypoint.__name__ in self.subcommands:
+            return self.subcommands[self._entrypoint.__name__].print_usage(*args, **kwargs)
+
+        return self._arg_parser.print_usage(*args, **kwargs)
 
     def completer(self, completer):
         """Add an argcomplete completer to this subcommand.
@@ -453,7 +467,7 @@ class MILC(object):
         return self._entrypoint(self)
 
     def entrypoint(self, description):
-        """Set the entrypoint for when no subcommand is provided.
+        """Decorator that marks the entrypoint for simple scripts without subcommands.
         """
         if self._inside_context_manager:
             raise RuntimeError('You must run this before cli()!')
