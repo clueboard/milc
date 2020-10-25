@@ -73,6 +73,24 @@ The **kwargs arguments get passed directly to `subprocess.run`.
 
 Prepare to process arguments from sys.argv.
 
+<a name="milc.MILC.print_help"></a>
+#### print\_help
+
+```python
+ | print_help(*args, **kwargs)
+```
+
+Print a help message for the main program or subcommand, depending on context.
+
+<a name="milc.MILC.print_usage"></a>
+#### print\_usage
+
+```python
+ | print_usage(*args, **kwargs)
+```
+
+Print brief description of how the main program or subcommand is invoked, depending on context.
+
 <a name="milc.MILC.completer"></a>
 #### completer
 
@@ -206,7 +224,7 @@ Execute the entrypoint function.
  | entrypoint(description)
 ```
 
-Set the entrypoint for when no subcommand is provided.
+Decorator that marks the entrypoint for simple scripts without subcommands.
 
 <a name="milc.MILC.add_subcommand"></a>
 #### add\_subcommand
