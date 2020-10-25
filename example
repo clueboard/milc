@@ -20,9 +20,22 @@ def main(cli):
     cli.print_usage()
 
 
+@cli.argument('--print-usage', action='store_true', help='Show a usage summary')
+@cli.argument('--print-help', action='store_true', help='Alias for --help')
 @cli.argument('--comma', help='comma in output', action='store_boolean', default=True)
 @cli.subcommand('Say hello.')
 def hello(cli):
+    """Say hello.
+    """
+    # print_usage and print_help are here to help us test.
+    if cli.config.hello.print_usage:
+        cli.print_usage()
+        return True
+
+    if cli.config.hello.print_help:
+        cli.print_help()
+        return True
+
     comma = ',' if cli.config.hello.comma else ''
     cli.echo('{fg_green}Hello%s %s!', comma, cli.config.general.name)
 
