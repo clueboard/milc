@@ -34,7 +34,7 @@ from .attrdict import AttrDict
 class MILC(object):
     """MILC - An Opinionated Batteries Included Framework
     """
-    def __init__(self):
+    def __init__(self, version='unknown'):
         """Initialize the MILC object.
 
             version
@@ -55,7 +55,7 @@ class MILC(object):
         self.config = self.config_source = None
         self.config_file = None
         self.default_arguments = {}
-        self.version = 'unknown'
+        self.version = version
         self.platform = platform()
 
         # Figure out our program name
