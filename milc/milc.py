@@ -139,7 +139,6 @@ class MILC(object):
 
         if text:
             kwargs['universal_newlines'] = True
-            kwargs['text'] = True
 
         # Run the command
         self.log.debug('Running command: %s', command)
