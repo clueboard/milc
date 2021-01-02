@@ -14,7 +14,7 @@ MILC - An Opinionated Batteries Included Framework
 #### \_\_init\_\_
 
 ```python
- | __init__()
+ | __init__(version='unknown')
 ```
 
 Initialize the MILC object.
