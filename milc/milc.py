@@ -375,6 +375,7 @@ class MILC(object):
             if argument not in self.arg_only or section not in self.arg_only[argument]:
                 # Determine the arg value and source
                 arg_value = getattr(self.args, argument)
+                passed_on_cmdline = False
 
                 if section in self.subcommands:
                     default_value = self.subcommands[section].get_default(argument)
@@ -388,10 +389,6 @@ class MILC(object):
                 elif arg_value is not None:
                     if self.config[section][argument] is None or arg_value != default_value:
                         passed_on_cmdline = True
-                    else:
-                        passed_on_cmdline = False
-                else:
-                    passed_on_cmdline = False
 
                 # Merge this argument into self.config
                 if passed_on_cmdline and (argument in self.default_arguments['general'] or argument in self.default_arguments[entrypoint_name] or argument not in self.config[entrypoint_name]):
