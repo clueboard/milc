@@ -324,9 +324,9 @@ class MILC(object):
                     value = raw_config.get(section, option)
 
                     # Coerce values into useful datatypes
-                    if value.lower() in ['1', 'yes', 'true', 'on']:
+                    if value.lower() in ['yes', 'true', 'on']:
                         value = True
-                    elif value.lower() in ['0', 'no', 'false', 'off']:
+                    elif value.lower() in ['no', 'false', 'off']:
                         value = False
                     elif value.lower() in ['none']:
                         continue
@@ -375,14 +375,20 @@ class MILC(object):
             if argument not in self.arg_only or section not in self.arg_only[argument]:
                 # Determine the arg value and source
                 arg_value = getattr(self.args, argument)
+                passed_on_cmdline = False
+
+                if section in self.subcommands:
+                    default_value = self.subcommands[section].get_default(argument)
+                else:
+                    default_value = self._arg_parser.get_default(argument)
+
                 if argument in self._config_store_true and arg_value:
                     passed_on_cmdline = True
                 elif argument in self._config_store_false and not arg_value:
                     passed_on_cmdline = True
                 elif arg_value is not None:
-                    passed_on_cmdline = True
-                else:
-                    passed_on_cmdline = False
+                    if self.config[section][argument] is None or arg_value != default_value:
+                        passed_on_cmdline = True
 
                 # Merge this argument into self.config
                 if passed_on_cmdline and (argument in self.default_arguments['general'] or argument in self.default_arguments[entrypoint_name] or argument not in self.config[entrypoint_name]):
