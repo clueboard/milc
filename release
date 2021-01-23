@@ -6,6 +6,19 @@
 set -e
 set -x
 
+case "$1" in
+	major)
+		BUMPVERSION_TYPE=major
+	;;
+	minor)
+		BUMPVERSION_TYPE=minor
+	;;
+	*)
+		BUMPVERSION_TYPE=${BUMPVERSION_TYPE:-patch}
+	;;
+esac
+
+
 PYPI_USERNAME=${PYPI_USERNAME:=skully}
 TWINE_USERNAME=$PYPI_USERNAME
 
@@ -45,7 +58,7 @@ if ! git status | grep 'working tree clean'; then
 fi
 
 # Increment the version number
-bumpversion patch
+bumpversion $BUMPVERSION_TYPE
 
 # Push our work up
 git push origin master --tags
