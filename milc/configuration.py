@@ -67,7 +67,7 @@ class SubparserWrapper(object):
         """
         if kwargs.get('action') == 'store_boolean':
             # Store boolean will call us again with the enable/disable flag arguments
-            return handle_store_boolean(self.cli, *args, **kwargs)
+            return handle_store_boolean(self, *args, **kwargs)
 
         self.cli.acquire_lock()
         argument_name = get_argument_name(self.cli, *args, **kwargs)
@@ -101,7 +101,7 @@ def handle_store_boolean(self, *args, **kwargs):
     disabled_args = None
     disabled_kwargs = kwargs.copy()
     disabled_kwargs['action'] = 'store_false'
-    disabled_kwargs['dest'] = get_argument_name(self, *args, **kwargs)
+    disabled_kwargs['dest'] = get_argument_name(getattr(self, 'cli', self), *args, **kwargs)
     disabled_kwargs['help'] = 'Disable ' + kwargs['help']
     kwargs['action'] = 'store_true'
     kwargs['help'] = 'Enable ' + kwargs['help']
