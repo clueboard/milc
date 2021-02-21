@@ -2,6 +2,7 @@
 """
 import sys
 import re
+import os
 import logging
 import colorama
 
@@ -51,6 +52,7 @@ class ANSIFormatterMixin(object):
     """A log formatter mixin that inserts ANSI color.
     """
     def format(self, record):
+        os.system('') # workaround for ansi colors - https://stackoverflow.com/a/51524239
         msg = super(ANSIFormatterMixin, self).format(record)
         return format_ansi(msg)
 
