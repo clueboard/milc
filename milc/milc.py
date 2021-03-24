@@ -249,15 +249,13 @@ class MILC(object):
     def find_config_file(self):
         """Locate the config file.
         """
-        if self.config_file:
-            return self.config_file
-
         if '--config-file' in sys.argv:
             return Path(sys.argv[sys.argv.index('--config-file') + 1]).expanduser().resolve()
 
         filedir = user_config_dir(appname=self.prog_name, appauthor=os.environ.get('MILC_APP_AUTHOR', self.prog_name.upper()))
         filename = '%s.ini' % self.prog_name
-        return Path(filedir) / filename
+
+        return Path(filedir, filename).resolve()
 
     def argument(self, *args, **kwargs):
         """Decorator to call self.add_argument or self.<subcommand>.add_argument.
