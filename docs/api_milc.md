@@ -14,13 +14,10 @@ MILC - An Opinionated Batteries Included Framework
 #### \_\_init\_\_
 
 ```python
- | __init__(version='unknown')
+ | __init__()
 ```
 
 Initialize the MILC object.
-
-version
-    The version string to associate with your CLI program
 
 <a name="milc.MILC.echo"></a>
 #### echo
@@ -90,15 +87,6 @@ Print a help message for the main program or subcommand, depending on context.
 ```
 
 Print brief description of how the main program or subcommand is invoked, depending on context.
-
-<a name="milc.MILC.completer"></a>
-#### completer
-
-```python
- | completer(completer)
-```
-
-Add an argcomplete completer to this subcommand.
 
 <a name="milc.MILC.add_argument"></a>
 #### add\_argument
