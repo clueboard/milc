@@ -26,7 +26,7 @@ import argcomplete
 import colorama
 from appdirs import user_config_dir
 
-from .ansi import ANSIEmojiLoglevelFormatter, ANSIStrippingEmojiLoglevelFormatter, ANSIStrippingFormatter, ansi_colors, ansi_escape, format_ansi
+from .ansi import MILCFormatter, ansi_colors, ansi_config, ansi_escape, format_ansi
 from .configuration import Configuration, SubparserWrapper, get_argument_name, handle_store_boolean
 from .attrdict import AttrDict
 
@@ -222,7 +222,8 @@ class MILC(object):
         self.add_argument('--log-file-fmt', default='[%(levelname)s] [%(asctime)s] [file:%(pathname)s] [line:%(lineno)d] %(message)s', help='Format string for log file.')
         self.add_argument('--log-file-level', default='info', choices=['debug', 'info', 'warning', 'error', 'critical'], help='Logging level for log file.')
         self.add_argument('--log-file', help='File to write log messages to')
-        self.add_argument('--color', action='store_boolean', default=True, help='color in output')
+        self.add_argument('--color', action='store_boolean', default=ansi_config['color'], help='color in output')
+        self.add_argument('--unicode', action='store_boolean', default=ansi_config['unicode'], help='unicode loglevels')
         self.add_argument('--config-file', help='The location for the configuration file')
         self.arg_only['config_file'] = ['general']
 
@@ -549,14 +550,13 @@ class MILC(object):
         if self.config.general.verbose:
             self.log_print_level = logging.DEBUG
 
-        self.log_file = self.config.general.log_file or self.log_file
-        self.log_file_format = ANSIStrippingFormatter(self.config.general.log_file_fmt, self.config.general.datetime_fmt)
-        self.log_file_level = getattr(logging, self.config.general.log_file_level.upper())
+        ansi_config['color'] = self.config.general.color
+        ansi_config['unicode'] = self.config.general.unicode
 
-        if self.config.general.color:
-            self.log_format = ANSIEmojiLoglevelFormatter(self.config.general.log_fmt, self.config.general.datetime_fmt)
-        else:
-            self.log_format = ANSIStrippingEmojiLoglevelFormatter(self.config.general.log_fmt, self.config.general.datetime_fmt)
+        self.log_file = self.config.general.log_file or self.log_file
+        self.log_file_format = MILCFormatter(self.config.general.log_file_fmt, self.config.general.datetime_fmt)
+        self.log_file_level = getattr(logging, self.config.general.log_file_level.upper())
+        self.log_format = MILCFormatter(self.config.general.log_fmt, self.config.general.datetime_fmt)
 
         if self.log_file:
             self.log_file_handler = logging.FileHandler(self.log_file, self.log_file_mode)

@@ -7,7 +7,10 @@ import colorama
 
 from .emoji import EMOJI_LOGLEVELS
 
-UNICODE_SUPPORT = sys.stdout.encoding.lower().startswith('utf')
+ansi_config = {
+    'color': True,
+    'unicode': sys.stdout.encoding.lower().startswith('utf'),
+}
 
 # Regex was gratefully borrowed from kfir on stackoverflow:
 # https://stackoverflow.com/a/45448194
@@ -44,54 +47,21 @@ def format_ansi(text):
     # Avoid .format() so we don't have to worry about the log content
     for color in ansi_colors:
         text = text.replace('{%s}' % color, ansi_colors[color])
-    return text + ansi_colors['style_reset_all']
+
+    text = text + ansi_colors['style_reset_all']
+
+    if ansi_config['color']:
+        return text
+
+    return ansi_escape.sub('', text)
 
 
-class ANSIFormatterMixin(object):
-    """A log formatter mixin that inserts ANSI color.
+class MILCFormatter(logging.Formatter):
+    """Formats log records per the MILC configuration.
     """
     def format(self, record):
-        msg = super(ANSIFormatterMixin, self).format(record)
+        if ansi_config['unicode'] and record.levelname in EMOJI_LOGLEVELS:
+            record.levelname = format_ansi(EMOJI_LOGLEVELS[record.levelname])
+
+        msg = super().format(record)
         return format_ansi(msg)
-
-
-class ANSIStrippingMixin(object):
-    """A log formatter mixin that strips ANSI.
-    """
-    def format(self, record):
-        msg = super(ANSIStrippingMixin, self).format(record)
-        record.levelname = ansi_escape.sub('', record.levelname)
-        return ansi_escape.sub('', msg)
-
-
-class EmojiLoglevelMixin(object):
-    """A log formatter mixin that makes the loglevel an emoji on UTF capable terminals.
-    """
-    def format(self, record):
-        if UNICODE_SUPPORT:
-            record.levelname = EMOJI_LOGLEVELS[record.levelname].format(**ansi_colors)
-        return super(EmojiLoglevelMixin, self).format(record)
-
-
-class ANSIFormatter(ANSIFormatterMixin, logging.Formatter):
-    """A log formatter that colorizes output.
-    """
-    pass
-
-
-class ANSIStrippingFormatter(ANSIStrippingMixin, ANSIFormatterMixin, logging.Formatter):
-    """A log formatter that strips ANSI
-    """
-    pass
-
-
-class ANSIEmojiLoglevelFormatter(EmojiLoglevelMixin, ANSIFormatterMixin, logging.Formatter):
-    """A log formatter that adds Emoji and ANSI
-    """
-    pass
-
-
-class ANSIStrippingEmojiLoglevelFormatter(ANSIStrippingMixin, EmojiLoglevelMixin, ANSIFormatterMixin, logging.Formatter):
-    """A log formatter that adds Emoji and strips ANSI
-    """
-    pass
