@@ -4,6 +4,7 @@
 * [Tutorial](tutorial.md)
 * Features
     * [ANSI Color](ANSI.md)
+    * [Argument Completion](argcomplete.md)
     * [Argument Parsing](argument_parsing.md)
     * [Configuration](configuration.md)
     * [Config Subcommand](subcommand_config.md)
