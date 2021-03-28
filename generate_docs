@@ -5,37 +5,61 @@ PYTHON_ARGCOMPLETE_OK
 """
 import os
 from pathlib import Path
-from subprocess import CalledProcessError, run
+from subprocess import CalledProcessError
 
-# Uncomment these to customize your config file location
 os.environ['MILC_APP_NAME'] = 'generate_docs'
 os.environ['MILC_APP_AUTHOR'] = 'MILC'
+summary_demarc = '<!-- DO NOT ADD OR CHANGE ANYTHING BELOW THIS LINE -->'
 
 from milc import cli
 
 
+@cli.argument('--commit', arg_only=True, action='store_true', help='Commit changes to git.')
 @cli.entrypoint('Generate documentation.')
 def main(cli):
+    doc_path = Path('docs')
+    doc_files = []
+
     for file in Path('milc').glob('**/*.py'):
-        if '__init__' in str(file):
+        if file.name == '__init__.py':
             continue
 
         # Generate the markdown
-        filename = str(file)[5:-3]
-        filename = filename.replace('/', '.')
-        cmd = ['pydoc-markdown', '-I', 'milc', '-m', filename]
+        module_name = str(file)[5:-3]
+        module_name = module_name.replace('/', '.')
+        cmd = ['pydoc-markdown', '-I', 'milc', '-m', module_name]
+
         try:
-            result = run(cmd, capture_output=True, universal_newlines=True, check=True)
+            result = cli.run(cmd, check=True)
         except CalledProcessError as e:
             cli.log.error('Could not process file %s: %s', file.name, e)
+
             for line in e.stderr.split('\n'):
                 cli.log.debug(line)
+
             continue
 
         # Write the markdown to a file
-        filename = filename.replace('.', '_')
-        doc_file = Path('docs/api_%s.md' % filename)
+        filename = f"api_{module_name.replace('.', '_')}.md"
+        doc_files.append((module_name, filename))
+        doc_file = doc_path / filename
         doc_file.write_text(result.stdout)
+
+    # Rebuild _summary.md
+    summary_file = doc_path / '_summary.md'
+    summary_text = summary_file.read_text(encoding='utf-8')
+    summary_end = summary_text.index(summary_demarc)
+    new_summary = [
+        summary_text[:summary_end],
+        summary_demarc,
+    ]
+
+    for module, doc_file in sorted(doc_files):
+        new_summary.append(f"    * [{module}]({doc_file})")
+
+    if cli.args.commit:
+        cli.run(['git', 'add', 'docs'], capture_output=False)
+        cli.run(['git', 'commit', '-m', '[ci] Updated API documentation'], capture_output=False)
 
 
 if __name__ == '__main__':
