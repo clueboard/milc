@@ -6,8 +6,9 @@ PYTHON_ARGCOMPLETE_OK
 import os
 
 # Uncomment these to customize your config file location
-#os.environ['MILC_APP_NAME'] = 'example'
-#os.environ['MILC_APP_AUTHOR'] = 'MILC'
+os.environ['MILC_APP_NAME'] = 'example'
+os.environ['MILC_APP_VERSION'] = '1.2.1'
+os.environ['MILC_APP_AUTHOR'] = 'MILC'
 
 from milc import cli
 from milc.subcommand import config

@@ -4,6 +4,7 @@ This is a list of breaking changes that have been made to MILC. If your script s
 
 # Version 1.3.0
 
+* You can now set the program version number with `os.environ['MILC_APP_VERSION'] = '1.2.3'`
 * New global arguments: --unicode and --no-unicode
 * ANSIFormatter, ANSIStrippingFormatter, ANSIEmojiLoglevelFormatter, and ANSIStrippingEmojiLoglevelFormatter have been removed in favor of `format_ansi()` being color aware. The new `MILCFormatter` is being used in its place.
 

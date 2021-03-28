@@ -1,4 +1,5 @@
 import os
+import re
 from tempfile import mkstemp
 
 from .common import check_command, check_returncode
@@ -8,6 +9,12 @@ def test_example():
     result = check_command('./example', '-h')
     check_returncode(result)
     assert '{config,hello,goodbye}' in result.stdout
+
+
+def test_example_version():
+    result = check_command('./example', '--version')
+    check_returncode(result)
+    assert re.match(r'[0-9]*\.[0-9]*\.[0-9]*', result.stdout)
 
 
 def test_example_config():

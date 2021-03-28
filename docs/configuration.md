@@ -34,8 +34,14 @@ Use `cli.save_config()` to save the user's configuration file. It will be writte
 
 MILC uses [appdirs](https://github.com/ActiveState/appdirs) to determine the configuration file location. You can set your application's name and author by setting environment variables:
 
-    os.environ['MILC_APP_NAME'] = sys.argv[0]
-    os.environ['MILC_AUTHOR_NAME'] = sys.argv[0]
+    os.environ['MILC_APP_NAME'] = 'hello'
+    os.environ['MILC_AUTHOR_NAME'] = 'Hello Author'
+
+This will (usually) result in the following config file locations:
+
+* Linux: `~/.local/share/hello`
+* macOS: `~/Library/Application Support/hello`
+* Windows: `C:\Documents and Settings\<User>\Application Data\Local Settings\Hello Author\hello`
 
 # Where Did A Value Come From?
 

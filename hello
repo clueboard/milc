@@ -7,6 +7,7 @@ import os
 
 # Uncomment these to customize your config file location
 #os.environ['MILC_APP_NAME'] = 'hello'
+#os.environ['MILC_APP_VERSION'] = '0.0.1'
 #os.environ['MILC_APP_AUTHOR'] = 'MILC'
 
 from milc import cli
