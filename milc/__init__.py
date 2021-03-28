@@ -6,7 +6,7 @@ PYTHON_ARGCOMPLETE_OK
 
 MILC is an opinionated framework for writing CLI apps. It optimizes for the
 most common unix tool pattern- small tools that are run from the command
-line but generally do not feature any user interaction while they run.
+line and generally do not feature any user interaction while they run.
 
 For more details see the MILC documentation:
 
@@ -17,7 +17,6 @@ __VERSION__ = '1.2.1'
 import logging
 import os
 
-from .ansi import format_ansi  # FIXME: Remove when qmk_firmware no longer needs it
 from .emoji import EMOJI_LOGLEVELS
 from .milc import MILC
 

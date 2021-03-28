@@ -1,4 +1,5 @@
 * [Home](README.md)
+* [Breaking Changes](breaking_changes.md)
 * [Installation](installation.md)
 * [Tutorial](tutorial.md)
 * Features

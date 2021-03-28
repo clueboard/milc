@@ -6,6 +6,9 @@
 set -e
 set -x
 
+echo "This script has been deprecated. Use the github action instead."
+exit
+
 case "$1" in
 	major)
 		BUMPVERSION_TYPE=major

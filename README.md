@@ -12,6 +12,10 @@ all the features users expect from a modern CLI tool out of the box:
 * Labeling log output with colored emoji to easily distinguish message types
 * Thread safety
 
+# Breaking Changes
+
+MILC follows [Semantic Versioning](https://semver.org/). You can see a list of why we made major or minor releases on the [Breaking Changes](https://milc.clueboard.co/#/breaking_changes) page.
+
 # Documentation
 
 Full documentation is on the web: <https://milc.clueboard.co/>
