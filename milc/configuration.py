@@ -69,9 +69,19 @@ class SubparserWrapper(object):
             # Store boolean will call us again with the enable/disable flag arguments
             return handle_store_boolean(self, *args, **kwargs)
 
+        completer = None
+
+        if kwargs.get('completer'):
+            completer = kwargs['completer']
+            del(kwargs['completer'])
+
         self.cli.acquire_lock()
         argument_name = get_argument_name(self.cli, *args, **kwargs)
-        self.subparser.add_argument(*args, **kwargs)
+
+        if completer:
+            self.subparser.add_argument(*args, **kwargs).completer = completer
+        else:
+            self.subparser.add_argument(*args, **kwargs)
 
         if kwargs.get('action') == 'store_false':
             self.cli._config_store_false.append(argument_name)

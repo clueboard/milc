@@ -174,20 +174,25 @@ class MILC(object):
 
         return self._arg_parser.print_usage(*args, **kwargs)
 
-    def completer(self, completer):
-        """Add an argcomplete completer to this subcommand.
-        """
-        self._arg_parser.completer = completer
-
     def add_argument(self, *args, **kwargs):
         """Wrapper to add arguments and track whether they were passed on the command line.
         """
         if 'action' in kwargs and kwargs['action'] == 'store_boolean':
             return handle_store_boolean(self, *args, **kwargs)
 
+        completer = None
+
+        if kwargs.get('completer'):
+            completer = kwargs['completer']
+            del(kwargs['completer'])
+
         self.acquire_lock()
 
-        self._arg_parser.add_argument(*args, **kwargs)
+        if completer:
+            self._arg_parser.add_argument(*args, **kwargs).completer = completer
+        else:
+            self._arg_parser.add_argument(*args, **kwargs)
+
         if 'general' not in self.default_arguments:
             self.default_arguments['general'] = {}
         self.default_arguments['general'][get_argument_name(self, *args, **kwargs)] = kwargs.get('default')

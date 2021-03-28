@@ -14,6 +14,12 @@ from milc import cli
 from milc.subcommand import config
 
 
+def EnvironCompleter(**kwargs):
+    """Example argument completer.
+    """
+    return os.environ
+
+
 @cli.argument('-n', '--name', help='Name to greet', default='World')
 @cli.entrypoint('Greet a user.')
 def main(cli):
@@ -41,6 +47,7 @@ def hello(cli):
     cli.echo('{fg_green}Hello%s %s!', comma, cli.config.general.name)
 
 
+@cli.argument('-e', '--env', completer=EnvironCompleter, help='Environment Variable')
 @cli.argument('-f', '--flag', help='Write it in a flag', action='store_true')
 @cli.subcommand('Say goodbye.')
 def goodbye(cli):
