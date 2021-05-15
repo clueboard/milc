@@ -183,7 +183,7 @@ class MILC(object):
 
         completer = kwargs.get('completer')
 
-        if completer:
+        if 'completer' in kwargs:
             del kwargs['completer']
 
         self.acquire_lock()
