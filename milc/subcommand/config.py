@@ -6,7 +6,10 @@ from milc import cli
 def print_config(section, key):
     """Print a single config setting to stdout.
     """
-    cli.echo('%s.%s{fg_cyan}={fg_reset}%s', section, key, cli.config[section][key])
+    if cli.config_source[section][key] == 'config_file':
+        cli.echo('%s.%s{fg_blue}={fg_reset}%s', section, key, cli.config[section][key])
+    else:
+        cli.echo('{fg_cyan}%s.%s=%s', section, key, cli.config[section][key])
 
 
 def show_config():
@@ -14,7 +17,8 @@ def show_config():
     """
     for section in cli.config:
         for key in cli.config[section]:
-            print_config(section, key)
+            if cli.config_source[section][key] == 'config_file' or cli.config.config.all:
+                print_config(section, key)
 
 
 def parse_config_token(config_token):
@@ -55,8 +59,10 @@ def set_config(section, option, value):
             del cli.config[section][option]
         else:
             cli.config[section][option] = value
+            cli.config_source[section][option] = 'config_file'
 
 
+@cli.argument('-a', '--all', action='store_true', help='Operate in read-only mode.')
 @cli.argument('-ro', '--read-only', arg_only=True, action='store_true', help='Operate in read-only mode.')
 @cli.argument('configs', nargs='*', arg_only=True, help='Configuration options to read or write.')
 @cli.subcommand("Read and write configuration settings.")
@@ -105,7 +111,8 @@ def config(cli):
         elif section:
             # Display an entire section
             for key in cli.config[section]:
-                print_config(section, key)
+                if cli.config_source[section][key] == 'config_file':
+                    print_config(section, key)
 
     # Ending actions
     if save_config:
