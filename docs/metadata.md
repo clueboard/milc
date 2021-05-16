@@ -10,7 +10,7 @@ set_metadata('Florzelbop', '1.0.0', 'Jane Doe')
 from milc import cli
 ```
 
-You must only do this once, and you should do it as early in your program's execution as possible.
+You should only do this once, and you should do it as early in your program's execution as possible.
 
 ## Environment based setup
 

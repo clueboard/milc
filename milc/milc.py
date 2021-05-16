@@ -264,7 +264,8 @@ class MILC(object):
             raise RuntimeError('You must run this before the with statement!')
 
         def argument_function(handler):
-            subcommand_name = handler.__name__.replace("_", "-")
+            config_name = handler.__name__
+            subcommand_name = config_name.replace("_", "-")
             arg_name = get_argument_name(self, *args, **kwargs)
 
             if kwargs.get('arg_only'):
@@ -275,12 +276,12 @@ class MILC(object):
                 del kwargs['arg_only']
             else:
                 if arg_name not in self.default_arguments:
-                    self.default_arguments[subcommand_name] = {}
+                    self.default_arguments[config_name] = {}
 
-                self.default_arguments[subcommand_name][arg_name] = kwargs.get('default')
+                self.default_arguments[config_name][arg_name] = kwargs.get('default')
 
-                if self.config[subcommand_name][arg_name] is None:
-                    self.config[subcommand_name][arg_name] = kwargs.get('default')
+                if self.config[config_name][arg_name] is None:
+                    self.config[config_name][arg_name] = kwargs.get('default')
 
             if handler is self._entrypoint:
                 self.add_argument(*args, **kwargs)

@@ -59,7 +59,6 @@ The possible values returned are:
   * The value was read from the config file
 * `'default'`
   * This is the default value
-* `None`
 
 # Automatic Type Inference
 

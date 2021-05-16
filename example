@@ -26,6 +26,13 @@ def main(cli):
     cli.print_usage()
 
 
+@cli.argument('-n', '--name', help='Name to greet', default='World')
+@cli.subcommand('Subcommand with dash in the name.')
+def dashed_hello(cli):
+    print(dir(cli.config))
+    cli.log.info('Hello, dashed-subcommand %s!', cli.config.dashed_hello.name)
+
+
 @cli.argument('--print-usage', action='store_true', help='Show a usage summary')
 @cli.argument('--print-help', action='store_true', help='Alias for --help')
 @cli.argument('--comma', help='comma in output', action='store_boolean', default=True)

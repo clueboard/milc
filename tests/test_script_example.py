@@ -8,7 +8,7 @@ from .common import check_command, check_returncode
 def test_example():
     result = check_command('./example', '-h')
     check_returncode(result)
-    assert '{config,hello,goodbye}' in result.stdout
+    assert '{config,dashed-hello,hello,goodbye}' in result.stdout
 
 
 def test_example_version():
