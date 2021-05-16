@@ -4,7 +4,7 @@ This is a list of breaking changes that have been made to MILC. If your script s
 
 # Version 1.4.0
 
-* The `config` subcommand now filters out configuration that has not been explicity set. The new `--all` flag will allow you to see all possible configuration options and their default values.
+* The `config` subcommand now filters out configuration that has not been explicitly set. The new `--all` flag will allow you to see all possible configuration options and their default values.
 
 # Version 1.3.0
 
