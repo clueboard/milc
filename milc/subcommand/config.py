@@ -15,8 +15,8 @@ def print_config(section, key):
 def show_config():
     """Print the current configuration to stdout.
     """
-    for section in cli.config:
-        for key in cli.config[section]:
+    for section in sorted(cli.config):
+        for key in sorted(cli.config[section]):
             if cli.config_source[section][key] == 'config_file' or cli.config.config.all:
                 print_config(section, key)
 
