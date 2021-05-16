@@ -37,7 +37,7 @@ def test_example_config():
         # Make sure we get them back
         result = check_command('./example', '--no-color', '--config-file', tempfile, 'config')
         check_returncode(result)
-        assert result.stdout == 'user.comma=True\nhello.comma=True\ngeneral.name=Test\n'
+        assert result.stdout == 'general.name=Test\nhello.comma=True\nuser.comma=True\n'
 
     finally:
         os.remove(tempfile)
@@ -84,12 +84,10 @@ def test_example_hello_no_color_no_unicode_no_comma():
 def test_example_dashed_hello():
     result = check_command('./example', 'dashed-hello')
     check_returncode(result)
-    print(repr(result.stdout))
     assert result.stdout == 'Hello, dashed-subcommand World!\n'
 
 
 def test_example_dashed_hello_dashed_name():
     result = check_command('./example', 'dashed-hello', '--dashed-name', 'Tester')
     check_returncode(result)
-    print(repr(result.stdout))
     assert result.stdout == 'Hello, dashed-subcommand Tester!\n'
