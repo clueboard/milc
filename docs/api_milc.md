@@ -14,7 +14,7 @@ MILC - An Opinionated Batteries Included Framework
 #### \_\_init\_\_
 
 ```python
- | __init__()
+ | __init__(name, version, author)
 ```
 
 Initialize the MILC object.
@@ -212,7 +212,7 @@ Execute the entrypoint function.
  | entrypoint(description)
 ```
 
-Decorator that marks the entrypoint for simple scripts without subcommands.
+Decorator that marks the entrypoint used when a subcommand is not supplied.
 
 <a name="milc.MILC.add_subcommand"></a>
 #### add\_subcommand
