@@ -79,3 +79,17 @@ def test_example_hello_no_color_no_unicode_no_comma():
     result = check_command('./example', '--no-color', '--no-unicode', 'hello', '--no-comma')
     check_returncode(result)
     assert result.stdout == 'Hello World!\n'
+
+
+def test_example_dashed_hello():
+    result = check_command('./example', 'dashed-hello')
+    check_returncode(result)
+    print(repr(result.stdout))
+    assert result.stdout == 'Hello, dashed-subcommand World!\n'
+
+
+def test_example_dashed_hello_dashed_name():
+    result = check_command('./example', 'dashed-hello', '--dashed-name', 'Tester')
+    check_returncode(result)
+    print(repr(result.stdout))
+    assert result.stdout == 'Hello, dashed-subcommand Tester!\n'

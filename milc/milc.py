@@ -359,7 +359,7 @@ class MILC(object):
         """Merge CLI arguments into self.config to create the runtime configuration.
         """
         self.acquire_lock()
-        subcommand_name = self._subcommand.__name__.replace('_', '-') if self._subcommand else None
+        subcommand_name = self._subcommand.__name__ if self._subcommand else None
 
         for argument in self.args:
             if argument in ('subparsers', 'entrypoint'):
