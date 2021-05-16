@@ -34,7 +34,7 @@ from .attrdict import AttrDict
 class MILC(object):
     """MILC - An Opinionated Batteries Included Framework
     """
-    def __init__(self):
+    def __init__(self, name, version, author):
         """Initialize the MILC object.
         """
         # Setup a lock for thread safety
@@ -42,6 +42,8 @@ class MILC(object):
 
         # Define some basic info
         self.acquire_lock()
+        self.version = version
+        self.author = author
         self._config_store_true = []
         self._config_store_false = []
         self._description = None
@@ -50,14 +52,10 @@ class MILC(object):
         self._inside_context_manager = False
         self.ansi = ansi_colors
         self.arg_only = {}
-        self.config = self.config_source = None
         self.config_file = None
         self.default_arguments = {}
         self.platform = platform()
-
-        # Figure out our program name
-        self.prog_name = sys.argv[0][:-3] if sys.argv[0].endswith('.py') else sys.argv[0]
-        self.prog_name = os.environ.get('MILC_APP_NAME', os.path.basename(self.prog_name))
+        self.prog_name = name
         self.release_lock()
 
         # Initialize all the things
@@ -216,7 +214,7 @@ class MILC(object):
         logging.root.setLevel(logging.DEBUG)
         self.release_lock()
 
-        self.add_argument('-V', '--version', version=os.environ.get('MILC_APP_VERSION', 'unknown'), action='version', help='Display the version and exit')
+        self.add_argument('-V', '--version', version=self.version, action='version', help='Display the version and exit')
         self.add_argument('-v', '--verbose', action='store_true', help='Make the logging more verbose')
         self.add_argument('--datetime-fmt', default='%Y-%m-%d %H:%M:%S', help='Format string for datetimes')
         self.add_argument('--log-fmt', default='%(levelname)s %(message)s', help='Format string for printed log output')
@@ -254,7 +252,7 @@ class MILC(object):
         if '--config-file' in sys.argv:
             return Path(sys.argv[sys.argv.index('--config-file') + 1]).expanduser().resolve()
 
-        filedir = user_config_dir(appname=self.prog_name, appauthor=os.environ.get('MILC_APP_AUTHOR', self.prog_name.upper()))
+        filedir = user_config_dir(appname=self.prog_name, appauthor=self.author or self.prog_name.upper())
         filename = '%s.ini' % self.prog_name
 
         return Path(filedir, filename).resolve()

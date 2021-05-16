@@ -1,16 +1,19 @@
 # MILC Metadata
 
-There is some information that MILC needs before you import the module. You can set os environment variables to provide this information.
+In order to initialize some things, such as the configuration file location and the version number reported by `--version`, MILC needs to know some basic information before you import `cli`. If you need to set the program's name, author name, and/or version number do it like this:
 
-## Version Number
+```python
+from milc import set_metadata
 
-You can set the application's version number with the `MILC_APP_VERSION` environment variable.
+set_metadata('Florzelbop', '1.0.0', 'Jane Doe')
 
-    os.environ['MILC_APP_VERSION'] = '1.2.3'
+from milc import cli
+```
 
-## Application Name and Author Name
+You must only do this once, and you should do it as early in your program's execution as possible.
 
-You can set the application's name and author name, which are used when determining the configuration file location, with `MILC_APP_NAME` and `MILC_AUTHOR_NAME`.
+## Environment based setup
 
-    os.environ['MILC_APP_NAME'] = 'Florzelbop'
-    os.environ['MILC_AUTHOR_NAME'] = 'Jane Doe'
+Earlier versions of MILC used the environment variables `MILC_APP_NAME`, `MILC_APP_VERSION`, and `MILC_AUTHOR_NAME` to set this information. While this is supported in MILC 1.4.x it will throw a `DeprecationWarning` and will be removed in a later version of MILC.
+
+You can supress this warning by setting the environment variable `MILC_IGNORE_DEPRECATED`.

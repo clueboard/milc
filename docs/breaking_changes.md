@@ -5,6 +5,7 @@ This is a list of breaking changes that have been made to MILC. If your script s
 # Version 1.4.0
 
 * The `config` subcommand now filters out configuration that has not been explicitly set. The new `--all` flag will allow you to see all possible configuration options and their default values.
+* Setting program metadata through environment variables has been deprecated. In its place is the new `set_metadata()` function. See [Metadata](metadata.md) for more detail.
 
 # Version 1.3.0
 

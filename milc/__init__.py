@@ -16,11 +16,46 @@ __VERSION__ = '1.3.0'
 
 import logging
 import os
+import sys
+import warnings
 
 from .emoji import EMOJI_LOGLEVELS
 from .milc import MILC
 
-# Disable logging until we can configure it how the user wants
-logging.basicConfig(stream=os.devnull)
 
-cli = MILC()
+def argv_name():
+    """Returns the name of our program by examining argv.
+    """
+    return sys.argv[0][:-3] if sys.argv[0].endswith('.py') else sys.argv[0]
+
+
+APP_NAME = os.environ.get('MILC_APP_NAME') or argv_name()
+APP_VERSION = os.environ.get('MILC_APP_VERSION', 'unknown')
+APP_AUTHOR = os.environ.get('MILC_APP_AUTHOR', 'unknown')
+
+if 'MILC_IGNORE_DEPRECATED' not in os.environ:
+    for name in ('MILC_APP_NAME', 'MILC_APP_VERSION', 'MILC_APP_AUTHOR'):
+        if name in os.environ:
+            warnings.warn(f'Using {name} is deprecated and will not be supported in the future, please use set_metadata() instead.', stacklevel=2)
+
+logging.basicConfig(stream=os.devnull)  # Disable logging until we can configure it how the user wants
+
+cli = MILC(APP_NAME, APP_VERSION, APP_AUTHOR)
+
+
+def set_metadata(*, name=APP_NAME, author=APP_AUTHOR, version=APP_VERSION):
+    """Set metadata about your program.
+
+    This allows you to set the application's name, version, and/or author
+    before executing your entrypoint. It's best to run this only once, and
+    it must be run before you call `cli()`.
+    """
+    global APP_NAME, APP_VERSION, APP_AUTHOR, cli
+
+    if cli._inside_context_manager:
+        raise RuntimeError('You must run set_metadata() before cli()!')
+
+    APP_NAME = name
+    APP_VERSION = version
+    APP_AUTHOR = author
+    cli = MILC(name, version, author)

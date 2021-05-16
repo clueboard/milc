@@ -53,8 +53,12 @@ Sometimes you need to know how a configuration value was set. You can use `cli.c
 
 The possible values returned are:
 
-* `argument`
-* `config_file`
+* `'argument'`
+  * The value was passed as an argument
+* `'config_file'`
+  * The value was read from the config file
+* `'default'`
+  * This is the default value
 * `None`
 
 # Automatic Type Inference
