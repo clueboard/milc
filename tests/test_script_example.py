@@ -37,7 +37,6 @@ def test_example_config():
         # Make sure we get them back
         result = check_command('./example', '--no-color', '--config-file', tempfile, 'config')
         check_returncode(result)
-        print(repr(result.stdout))
         assert result.stdout == 'user.comma=True\nhello.comma=True\ngeneral.name=Test\n'
 
     finally:
