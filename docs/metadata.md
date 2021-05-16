@@ -12,6 +12,8 @@ from milc import cli
 
 You should only do this once, and you should do it as early in your program's execution as possible.
 
+!> Do not import `set_metadata` and `cli` at the same time! When you run `set_metadata` the `cli` object will be replaced, but your existing import will continue to reference the old `cli` object.
+
 ## Environment based setup
 
 Earlier versions of MILC used the environment variables `MILC_APP_NAME`, `MILC_APP_VERSION`, and `MILC_AUTHOR_NAME` to set this information. While this is supported in MILC 1.4.x it will throw a `DeprecationWarning` and will be removed in a later version of MILC.
