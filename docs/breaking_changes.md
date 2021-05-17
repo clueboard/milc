@@ -2,6 +2,10 @@
 
 This is a list of breaking changes that have been made to MILC. If your script stops working after a minor or major version upgrade this document will tell you how to fix it.
 
+# Version 1.4.0
+
+* The `config` subcommand now filters out configuration that has not been explicitly set. The new `--all` flag will allow you to see all possible configuration options and their default values.
+
 # Version 1.3.0
 
 * You can now set the program version number with `os.environ['MILC_APP_VERSION'] = '1.2.3'`

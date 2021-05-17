@@ -26,7 +26,7 @@ def test_example_config():
         # Check initial state
         result = check_command('./example', '--no-color', '--config-file', tempfile, 'config')
         check_returncode(result)
-        assert result.stdout == 'general.verbose=False\ngeneral.datetime_fmt=%Y-%m-%d %H:%M:%S\ngeneral.log_fmt=%(levelname)s %(message)s\ngeneral.log_file_fmt=[%(levelname)s] [%(asctime)s] [file:%(pathname)s] [line:%(lineno)d] %(message)s\ngeneral.log_file_level=info\ngeneral.color=False\ngeneral.unicode=True\ngeneral.name=World\n'
+        assert result.stdout == ''
 
         # Set some values in the configuration
         result = check_command('./example', '--no-color', '--config-file', tempfile, 'config', 'general.name=Test', 'user.comma=true')
@@ -37,7 +37,7 @@ def test_example_config():
         # Make sure we get them back
         result = check_command('./example', '--no-color', '--config-file', tempfile, 'config')
         check_returncode(result)
-        assert result.stdout == 'general.verbose=False\ngeneral.datetime_fmt=%Y-%m-%d %H:%M:%S\ngeneral.log_fmt=%(levelname)s %(message)s\ngeneral.log_file_fmt=[%(levelname)s] [%(asctime)s] [file:%(pathname)s] [line:%(lineno)d] %(message)s\ngeneral.log_file_level=info\ngeneral.color=False\ngeneral.unicode=True\ngeneral.name=Test\nuser.comma=True\n'
+        assert result.stdout == 'user.comma=True\nhello.comma=True\ngeneral.name=Test\n'
 
     finally:
         os.remove(tempfile)

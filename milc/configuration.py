@@ -73,7 +73,7 @@ class SubparserWrapper(object):
 
         if kwargs.get('completer'):
             completer = kwargs['completer']
-            del(kwargs['completer'])
+            del kwargs['completer']
 
         self.cli.acquire_lock()
         argument_name = get_argument_name(self.cli, *args, **kwargs)

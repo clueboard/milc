@@ -46,6 +46,7 @@ class MILC(object):
         self._config_store_false = []
         self._description = None
         self._entrypoint = None
+        self._subcommand = None
         self._inside_context_manager = False
         self.ansi = ansi_colors
         self.arg_only = {}
@@ -161,16 +162,16 @@ class MILC(object):
     def print_help(self, *args, **kwargs):
         """Print a help message for the main program or subcommand, depending on context.
         """
-        if self._entrypoint.__name__ in self.subcommands:
-            return self.subcommands[self._entrypoint.__name__].print_help(*args, **kwargs)
+        if self._subcommand:
+            return self.subcommands[self._subcommand.__name__].print_help(*args, **kwargs)
 
         return self._arg_parser.print_help(*args, **kwargs)
 
     def print_usage(self, *args, **kwargs):
         """Print brief description of how the main program or subcommand is invoked, depending on context.
         """
-        if self._entrypoint.__name__ in self.subcommands:
-            return self.subcommands[self._entrypoint.__name__].print_usage(*args, **kwargs)
+        if self._subcommand:
+            return self.subcommands[self._subcommand.__name__].print_usage(*args, **kwargs)
 
         return self._arg_parser.print_usage(*args, **kwargs)
 
@@ -180,11 +181,10 @@ class MILC(object):
         if 'action' in kwargs and kwargs['action'] == 'store_boolean':
             return handle_store_boolean(self, *args, **kwargs)
 
-        completer = None
+        completer = kwargs.get('completer')
 
-        if kwargs.get('completer'):
-            completer = kwargs['completer']
-            del(kwargs['completer'])
+        if 'completer' in kwargs:
+            del kwargs['completer']
 
         self.acquire_lock()
 
@@ -267,15 +267,22 @@ class MILC(object):
 
         def argument_function(handler):
             subcommand_name = handler.__name__.replace("_", "-")
+            arg_name = get_argument_name(self, *args, **kwargs)
 
             if kwargs.get('arg_only'):
-                arg_name = get_argument_name(self, *args, **kwargs)
-
                 if arg_name not in self.arg_only:
                     self.arg_only[arg_name] = []
 
                 self.arg_only[arg_name].append(handler.__name__)
                 del kwargs['arg_only']
+            else:
+                if arg_name not in self.default_arguments:
+                    self.default_arguments[subcommand_name] = {}
+
+                self.default_arguments[subcommand_name][arg_name] = kwargs.get('default')
+
+                if self.config[subcommand_name][arg_name] is None:
+                    self.config[subcommand_name][arg_name] = kwargs.get('default')
 
             if handler is self._entrypoint:
                 self.add_argument(*args, **kwargs)
@@ -304,7 +311,7 @@ class MILC(object):
             self.args[key] = value
 
         if 'entrypoint' in self.args:
-            self._entrypoint = self.args.entrypoint
+            self._subcommand = self.args.entrypoint
 
         self.release_lock()
 
@@ -353,24 +360,17 @@ class MILC(object):
         """Merge CLI arguments into self.config to create the runtime configuration.
         """
         self.acquire_lock()
+        subcommand_name = self._subcommand.__name__.replace('_', '-') if self._subcommand else None
+
         for argument in self.args:
             if argument in ('subparsers', 'entrypoint'):
                 continue
 
             # Find the argument's section
-            # Underscores in command's names are converted to dashes during initialization.
-            # TODO(Erovia) Find a better solution
-            entrypoint_name = self._entrypoint.__name__.replace("_", "-")
-            if entrypoint_name in self.default_arguments and argument in self.default_arguments[entrypoint_name]:
-                argument_found = True
-                section = self._entrypoint.__name__
             if argument in self.default_arguments['general']:
-                argument_found = True
                 section = 'general'
-
-            if not argument_found:
-                raise RuntimeError('Could not find argument in `self.default_arguments`. This should be impossible!')
-                exit(1)
+            else:
+                section = subcommand_name
 
             if argument not in self.arg_only or section not in self.arg_only[argument]:
                 # Determine the arg value and source
@@ -386,12 +386,11 @@ class MILC(object):
                     passed_on_cmdline = True
                 elif argument in self._config_store_false and not arg_value:
                     passed_on_cmdline = True
-                elif arg_value is not None:
-                    if self.config[section][argument] is None or arg_value != default_value:
-                        passed_on_cmdline = True
+                elif arg_value is not None and (self.config[section][argument] is None or arg_value != default_value):
+                    passed_on_cmdline = True
 
                 # Merge this argument into self.config
-                if passed_on_cmdline and (argument in self.default_arguments['general'] or argument in self.default_arguments[entrypoint_name] or argument not in self.config[entrypoint_name]):
+                if passed_on_cmdline:
                     self.config[section][argument] = arg_value
                     self.config_source[section][argument] = 'argument'
 
@@ -405,10 +404,7 @@ class MILC(object):
         for section_name, section in config.items():
             sane_config.add_section(section_name)
             for option_name, value in section.items():
-                if section_name == 'general':
-                    if option_name in ['config_file']:
-                        continue
-                if value is not None:
+                if self.config_source[section_name][option_name] == 'config_file' and value is not None:
                     sane_config.set(section_name, option_name, str(value))
 
         config_dir = self.config_file.parent
@@ -466,13 +462,15 @@ class MILC(object):
             with self:
                 return self.__call__()
 
-        if not self._entrypoint:
-            raise RuntimeError('No entrypoint provided!')
+        if self._subcommand:
+            return self._subcommand(self)
+        elif self._entrypoint:
+            return self._entrypoint(self)
 
-        return self._entrypoint(self)
+        raise RuntimeError('No entrypoint provided!')
 
     def entrypoint(self, description):
-        """Decorator that marks the entrypoint for simple scripts without subcommands.
+        """Decorator that marks the entrypoint used when a subcommand is not supplied.
         """
         if self._inside_context_manager:
             raise RuntimeError('You must run this before cli()!')
