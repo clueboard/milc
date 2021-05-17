@@ -111,19 +111,16 @@ def question(prompt, *args, default=None, confirm=False, answer_type=str, valida
     | answer_type | Specify a type function for the answer. Will re-prompt the user if the function raises any errors. Common choices here include int, float, and decimal.Decimal. |
     | validate | This is an optional function that can be used to validate the answer. It should return True or False and have the following signature:<br><br>`def function_name(answer, *args, **kwargs):` |
     """
-    if not args and kwargs:
-        args = kwargs
-
     if not cli.interactive:
         return default
 
     if default is not None:
         prompt = '%s [%s] ' % (prompt, default)
-    elif prompt[-1] != ' ':
+    elif prompt and prompt[-1] != ' ':
         prompt += ' '
 
     while True:
-        answer = input(format_ansi(prompt % args))
+        answer = input(format_ansi(prompt % (args or kwargs)))
 
         if answer:
             if validate is not None and not validate(answer, *args, **kwargs):
