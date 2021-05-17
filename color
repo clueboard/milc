@@ -7,6 +7,7 @@ from milc import cli
 
 colors = ('black', 'blue', 'cyan', 'green', 'magenta', 'red', 'white', 'yellow')
 
+
 @cli.entrypoint('Show all the colors available to us.')
 def main(cli):
     cli.echo('|Normal   |   FG   | ExtFG  |   BG   | ExtBG  |')
