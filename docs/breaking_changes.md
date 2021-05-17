@@ -6,7 +6,7 @@ This is a list of breaking changes that have been made to MILC. If your script s
 
 * The `config` subcommand now filters out configuration that has not been explicitly set. The new `--all` flag will allow you to see all possible configuration options and their default values.
 * Setting program metadata through environment variables has been deprecated. In its place is the new `set_metadata()` function. See [Metadata](metadata.md) for more detail.
-* MILC now tracks whether a script is running interactively or not with `cli.interactive`. You can pass `--interactive` to force a script into interactive mode even when stdout is not a TTY. `milc.questions` will always return the default answer when running non-interactively, unless `--yes` or `--no` are passed.
+* MILC now tracks whether a script is running interactively or not with `cli.intercative`. You can pass `--interactive` to force a script into interactive mode even when stdout is not a TTY. `milc.questions` will always return the default answer when running non-interactively, unless `--yes` or `--no` are passed.
 
 # Version 1.3.0
 
