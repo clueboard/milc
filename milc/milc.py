@@ -56,6 +56,7 @@ class MILC(object):
         self.default_arguments = {}
         self.platform = platform()
         self.prog_name = name
+        self.interactive = sys.stdout.isatty()
         self.release_lock()
 
         # Initialize all the things
@@ -223,6 +224,7 @@ class MILC(object):
         self.add_argument('--log-file', help='File to write log messages to')
         self.add_argument('--color', action='store_boolean', default=ansi_config['color'], help='color in output')
         self.add_argument('--unicode', action='store_boolean', default=ansi_config['unicode'], help='unicode loglevels')
+        self.add_argument('--interactive', action='store_true', help='Force interactive mode even when stdout is not a tty.')
         self.add_argument('--config-file', help='The location for the configuration file')
         self.arg_only['config_file'] = ['general']
 
@@ -582,6 +584,10 @@ class MILC(object):
         colorama.init()
         self.parse_args()
         self.merge_args_into_config()
+
+        if self.config.general.interactive:
+            self.interactive = True
+
         self.setup_logging()
 
         return self
