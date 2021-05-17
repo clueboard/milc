@@ -26,6 +26,14 @@ def test_Configuration_dictionary():
     assert config['a']['c'] is None
 
 
+def test_Configuration_dictionary_write():
+    """Test that Configuration dictionary writes can be read as attributes.
+    """
+    config = milc.configuration.Configuration()
+    config['a']['a'] = True
+    assert config.a.a is True
+
+
 def test_Configuration_attribute():
     """Test Configuration attribute access
     """
@@ -34,6 +42,14 @@ def test_Configuration_attribute():
     assert config.a.a is True
     assert config.a.b is False
     assert config.a.c is None
+
+
+def test_Configuration_attribute_write():
+    """Test that Configuration attribute writes can be read as a dictionary method.
+    """
+    config = milc.configuration.Configuration()
+    config.a.a = True
+    assert config['a']['a'] is True
 
 
 def test_Configuration_iteration():
