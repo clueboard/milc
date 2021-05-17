@@ -27,6 +27,9 @@ def yesno(prompt, *args, default=None, **kwargs):
     if not args and kwargs:
         args = kwargs
 
+    if not cli.interactive:
+        return False
+
     if 'no' in cli.args and cli.args.no:
         return False
 
