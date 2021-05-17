@@ -2,6 +2,7 @@
 
 These functions can be used to query the user for information.
 """
+from getpass import getpass
 
 from .ansi import format_ansi
 from . import cli
@@ -44,9 +45,7 @@ def yesno(prompt, *args, default=None, **kwargs):
         prompt = prompt + ' [y/N] '
 
     while True:
-        cli.echo('')
         answer = input(format_ansi(prompt % args))
-        cli.echo('')
 
         if not answer and prompt is not None:
             return default
@@ -56,6 +55,39 @@ def yesno(prompt, *args, default=None, **kwargs):
 
         elif answer.lower() in ['n', 'no']:
             return False
+
+
+def password(prompt='Enter password:', *args, confirm=False, confirm_prompt='Confirm password:', validate=None, **kwargs):
+    """Securely receive a password from the user.
+
+    | Argument | Description |
+    |----------|-------------|
+    | prompt | The prompt to present to the user. Can include ANSI and format strings like milc's `cli.echo()`. |
+    | confirm | Prompt the user to type the password again and make sure they match. |
+    | confirm_prompt | The prompt to present to the user. Can include ANSI and format strings like milc's `cli.echo()`. |
+    | validate | This is an optional function that can be used to validate the password, EG to check complexity. It should return True or False and have the following signature:<br><br>`def function_name(answer):` |
+    """
+    if not cli.interactive:
+        return None
+
+    if not args and kwargs:
+        args = kwargs
+
+    while True:
+        pw = getpass(format_ansi(prompt % args))
+
+        if pw:
+            if validate is not None and not validate(pw):
+                continue
+
+            elif confirm:
+                if password(confirm_prompt, *args, *kwargs) == pw:
+                    return pw
+                else:
+                    cli.log.error('Passwords do not match!')
+
+            else:
+                return pw
 
 
 def question(prompt, *args, default=None, confirm=False, answer_type=str, validate=None, **kwargs):
@@ -79,9 +111,7 @@ def question(prompt, *args, default=None, confirm=False, answer_type=str, valida
         prompt = '%s [%s] ' % (prompt, default)
 
     while True:
-        cli.echo('')
         answer = input(format_ansi(prompt % args))
-        cli.echo('')
 
         if answer:
             if validate is not None and not validate(answer, *args, **kwargs):
@@ -132,15 +162,11 @@ def choice(heading, options, *args, default=None, confirm=False, prompt='Please 
 
     while True:
         # Prompt for an answer.
-        cli.echo('')
         cli.echo(heading % args)
-        cli.echo('')
         for i, option in enumerate(options, 1):
             cli.echo('\t{fg_cyan}%d.{fg_reset} %s', i, option)
 
-        cli.echo('')
         answer = input(format_ansi(prompt))
-        cli.echo('')
 
         # If the user types in one of the options exactly use that
         if answer in options:
