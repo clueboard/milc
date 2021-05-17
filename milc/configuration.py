@@ -11,7 +11,7 @@ class Configuration(AttrDict):
         """Returns a config section, creating it if it doesn't exist yet.
         """
         if key not in self._data:
-            self.__dict__[key] = self._data[key] = ConfigurationSection(self)
+            self._data[key] = ConfigurationSection(self)
 
         return self._data[key]
 
@@ -19,7 +19,7 @@ class Configuration(AttrDict):
 class ConfigurationSection(Configuration):
     def __init__(self, parent, *args, **kwargs):
         super(ConfigurationSection, self).__init__(*args, **kwargs)
-        self.parent = parent
+        self._parent = parent
 
     def __getitem__(self, key):
         """Returns a config value, pulling from the `user` section as a fallback.
@@ -28,8 +28,8 @@ class ConfigurationSection(Configuration):
         if key in self._data and self._data.get(key) is not None:
             return self._data[key]
 
-        elif key in self.parent.user:
-            return self.parent.user[key]
+        elif key in self._parent.user:
+            return self._parent.user[key]
 
         return None
 
@@ -37,10 +37,18 @@ class ConfigurationSection(Configuration):
         """Returns the config value from the `user` section.
         This is called when the attribute is accessed via dot notation but does not exist.
         """
-        if key in self.parent.user:
-            return self.parent.user[key]
+        if key[0] != '_' and key in self._parent['user']:
+            return self._parent['user'][key]
 
         return None
+
+    def __setattr__(self, key, value):
+        """Sets dictionary value when an attribute is set.
+        """
+        super().__setattr__(key, value)
+
+        if key[0] != '_':
+            self._data[key] = value
 
 
 class SubparserWrapper(object):

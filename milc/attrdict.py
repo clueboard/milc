@@ -34,12 +34,10 @@ class AttrDict(object):
         return self._data[key]
 
     def __setitem__(self, key, value):
-        self.__dict__[key] = value
         self._data[key] = value
+        self.__setattr__(key, value)
 
     def __delitem__(self, key):
-        if key in self.__dict__ and key[0] != '_':
-            del self.__dict__[key]
         if key in self._data:
             del self._data[key]
 
@@ -54,6 +52,6 @@ class SparseAttrDict(AttrDict):
         """Returns an item, creating it if it doesn't already exist
         """
         if key not in self._data:
-            self.__dict__[key] = self._data[key] = None
+            self._data[key] = None
 
         return self._data[key]
