@@ -20,8 +20,8 @@ def yesno(prompt, *args, default=None, **kwargs):
     If you add `--yes` and `--no` arguments to your program the user can answer questions by passing command line flags.
 
     ```python
-    @add_argument('-y', '--yes', action='store_true', arg_only=True, help='Answer yes to all questions.')
-    @add_argument('-n', '--no', action='store_true', arg_only=True, help='Answer no to all questions.')
+    @cli.argument('-y', '--yes', action='store_true', arg_only=True, help='Answer yes to all questions.')
+    @cli.argument('-n', '--no', action='store_true', arg_only=True, help='Answer no to all questions.')
     ```
     """
     if not args and kwargs:
@@ -32,6 +32,9 @@ def yesno(prompt, *args, default=None, **kwargs):
 
     if 'yes' in cli.args and cli.args.yes:
         return True
+
+    if not cli.interactive:
+        return False
 
     if default is None:
         prompt = prompt + ' [y/n] '
@@ -68,6 +71,9 @@ def question(prompt, *args, default=None, confirm=False, answer_type=str, valida
     """
     if not args and kwargs:
         args = kwargs
+
+    if not cli.interactive:
+        return default
 
     if default is not None:
         prompt = '%s [%s] ' % (prompt, default)
@@ -118,6 +124,9 @@ def choice(heading, options, *args, default=None, confirm=False, prompt='Please 
     if not args and kwargs:
         args = kwargs
 
+    if not cli.interactive:
+        return default
+
     if prompt and default:
         prompt = prompt + ' [%s] ' % (default + 1,)
 
@@ -145,7 +154,7 @@ def choice(heading, options, *args, default=None, confirm=False, prompt='Please 
                 answer = int(answer) - 1
             except Exception:
                 # Normally we would log the exception here, but in the interest of clean UI we do not.
-                cli.log.error('Invalid choice: %s', answer + 1)
+                cli.log.error('Invalid choice: %s', answer)
                 continue
 
         # Validate the answer

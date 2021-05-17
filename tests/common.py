@@ -1,9 +1,9 @@
 from milc import cli
 
 
-def check_command(command, *args):
+def check_command(command, *args, input=None):
     cmd = [command] + list(args)
-    return cli.run(cmd, combined_output=True)
+    return cli.run(cmd, combined_output=True, input=input)
 
 
 def check_returncode(result, expected=0):
