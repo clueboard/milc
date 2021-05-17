@@ -10,6 +10,7 @@ from subprocess import CalledProcessError
 summary_demarc = '<!-- DO NOT ADD OR CHANGE ANYTHING BELOW THIS LINE -->'
 
 from milc import set_metadata
+
 set_metadata(name='generate_docs', author='MILC', version='1.3.0')
 from milc import cli
 
