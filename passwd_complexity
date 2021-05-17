@@ -16,7 +16,7 @@ def main(cli):
     c_digits = 0
     c_punctuation = 0
     c_other = 0
-    pw = password(confirm=True)
+    pw = password('Password to check:')
 
     for char in pw:
         if char in ascii_lowercase:

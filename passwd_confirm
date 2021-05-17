@@ -1,0 +1,21 @@
+#!/usr/bin/env python3
+"""Given two passwords make sure they match.
+
+PYTHON_ARGCOMPLETE_OK
+"""
+from string import ascii_lowercase, ascii_uppercase, digits, punctuation
+
+from milc import cli
+from milc.questions import password
+
+
+@cli.entrypoint('Check that two passwords match.')
+def main(cli):
+    pw = password(confirm=True, confirm_limit=1)
+    if pw is None:
+        return False
+    return True
+
+
+if __name__ == '__main__':
+    cli()

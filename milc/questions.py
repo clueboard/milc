@@ -47,7 +47,7 @@ def yesno(prompt, *args, default=None, **kwargs):
     while True:
         answer = input(format_ansi(prompt % args))
 
-        if not answer and prompt is not None:
+        if not answer and default is not None:
             return default
 
         elif answer.lower() in ['y', 'yes']:
@@ -57,14 +57,15 @@ def yesno(prompt, *args, default=None, **kwargs):
             return False
 
 
-def password(prompt='Enter password:', *args, confirm=False, confirm_prompt='Confirm password:', validate=None, **kwargs):
-    """Securely receive a password from the user.
+def password(prompt='Enter password:', *args, confirm=False, confirm_prompt='Confirm password:', confirm_limit=3, validate=None, **kwargs):
+    """Securely receive a password from the user. Returns the password or None.
 
     | Argument | Description |
     |----------|-------------|
     | prompt | The prompt to present to the user. Can include ANSI and format strings like milc's `cli.echo()`. |
     | confirm | Prompt the user to type the password again and make sure they match. |
     | confirm_prompt | The prompt to present to the user. Can include ANSI and format strings like milc's `cli.echo()`. |
+    | confirm_limit | Number of attempts to confirm before giving up. Default: 3 |
     | validate | This is an optional function that can be used to validate the password, EG to check complexity. It should return True or False and have the following signature:<br><br>`def function_name(answer):` |
     """
     if not cli.interactive:
@@ -73,7 +74,14 @@ def password(prompt='Enter password:', *args, confirm=False, confirm_prompt='Con
     if not args and kwargs:
         args = kwargs
 
-    while True:
+    if prompt[-1] != ' ':
+        prompt += ' '
+
+    if confirm_prompt[-1] != ' ':
+        confirm_prompt += ' '
+
+    i = 0
+    while not confirm_limit or i < confirm_limit:
         pw = getpass(format_ansi(prompt % args))
 
         if pw:
@@ -81,13 +89,15 @@ def password(prompt='Enter password:', *args, confirm=False, confirm_prompt='Con
                 continue
 
             elif confirm:
-                if password(confirm_prompt, *args, *kwargs) == pw:
+                if getpass(format_ansi(confirm_prompt % args)) == pw:
                     return pw
                 else:
                     cli.log.error('Passwords do not match!')
 
             else:
                 return pw
+
+            i += 1
 
 
 def question(prompt, *args, default=None, confirm=False, answer_type=str, validate=None, **kwargs):
@@ -109,6 +119,8 @@ def question(prompt, *args, default=None, confirm=False, answer_type=str, valida
 
     if default is not None:
         prompt = '%s [%s] ' % (prompt, default)
+    elif prompt[-1] != ' ':
+        prompt += ' '
 
     while True:
         answer = input(format_ansi(prompt % args))
@@ -159,6 +171,8 @@ def choice(heading, options, *args, default=None, confirm=False, prompt='Please 
 
     if prompt and default:
         prompt = prompt + ' [%s] ' % (default + 1,)
+    elif prompt[-1] != ' ':
+        prompt += ' '
 
     while True:
         # Prompt for an answer.
@@ -178,9 +192,11 @@ def choice(heading, options, *args, default=None, confirm=False, prompt='Please 
         else:
             try:
                 answer = int(answer) - 1
-            except Exception:
-                # Normally we would log the exception here, but in the interest of clean UI we do not.
+            except Exception as e:
                 cli.log.error('Invalid choice: %s', answer)
+                cli.log.debug('Could not convert %s to int: %s: %s', answer, e.__class__.__name__, e)
+                if cli.config.general.verbose:
+                    cli.log.exception(e)
                 continue
 
         # Validate the answer
