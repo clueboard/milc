@@ -43,7 +43,7 @@ Set a config key in the running config.
 #### config
 
 ```python
-@cli.argument('-a', '--all', action='store_true', help='Operate in read-only mode.')
+@cli.argument('-a', '--all', action='store_true', help='Show all configuration options.')
 @cli.argument('-ro', '--read-only', arg_only=True, action='store_true', help='Operate in read-only mode.')
 @cli.argument('configs', nargs='*', arg_only=True, help='Configuration options to read or write.')
 @cli.subcommand("Read and write configuration settings.")
