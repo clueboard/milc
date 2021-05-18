@@ -1,3 +1,4 @@
 appdirs
 argcomplete
 colorama
+halo
