@@ -11,6 +11,7 @@ all the features users expect from a modern CLI tool out of the box:
 * Easy method for printing to stdout with ANSI colors
 * Labeling log output with colored emoji to easily distinguish message types
 * Thread safety
+* More than 60 built-in [spinners](https://github.com/manrajgrover/py-spinners) with the ability to add your own
 
 # Breaking Changes
 
@@ -43,7 +44,7 @@ if __name__ == '__main__':
 ```
 $ ./hello
 ℹ Hello, World!
-$ ./hello --no-color
+$ ./hello --no-unicode
 INFO Hello, World!
 $ ./hello --no-comma
 ℹ Hello World!
@@ -121,7 +122,11 @@ Please follow this checklist before submitting a PR:
 
 # FAQ
 
-## Why add_argument() instead of parsing function signatures?
+## What does MILC stand for?
+
+MILC was originally the CLI Context Manager, or CLI Manager, but CLICM was too close to [click](https://click.palletsprojects.com/) and CLIM was already taken on PyPi. Reversing CLIM gave me a name I liked and had opportunities for puns, so I went with it.
+
+## Why decorators instead of parsing function signatures?
 
 Because I believe in writing good CLI tools.
 
