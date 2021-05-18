@@ -2,6 +2,7 @@
 
 These functions can be used to query the user for information.
 """
+from getpass import getpass
 
 from .ansi import format_ansi
 from . import cli
@@ -44,11 +45,9 @@ def yesno(prompt, *args, default=None, **kwargs):
         prompt = prompt + ' [y/N] '
 
     while True:
-        cli.echo('')
         answer = input(format_ansi(prompt % args))
-        cli.echo('')
 
-        if not answer and prompt is not None:
+        if not answer and default is not None:
             return default
 
         elif answer.lower() in ['y', 'yes']:
@@ -56,6 +55,49 @@ def yesno(prompt, *args, default=None, **kwargs):
 
         elif answer.lower() in ['n', 'no']:
             return False
+
+
+def password(prompt='Enter password:', *args, confirm=False, confirm_prompt='Confirm password:', confirm_limit=3, validate=None, **kwargs):
+    """Securely receive a password from the user. Returns the password or None.
+
+    | Argument | Description |
+    |----------|-------------|
+    | prompt | The prompt to present to the user. Can include ANSI and format strings like milc's `cli.echo()`. |
+    | confirm | Prompt the user to type the password again and make sure they match. |
+    | confirm_prompt | The prompt to present to the user. Can include ANSI and format strings like milc's `cli.echo()`. |
+    | confirm_limit | Number of attempts to confirm before giving up. Default: 3 |
+    | validate | This is an optional function that can be used to validate the password, EG to check complexity. It should return True or False and have the following signature:<br><br>`def function_name(answer):` |
+    """
+    if not cli.interactive:
+        return None
+
+    if not args and kwargs:
+        args = kwargs
+
+    if prompt[-1] != ' ':
+        prompt += ' '
+
+    if confirm_prompt[-1] != ' ':
+        confirm_prompt += ' '
+
+    i = 0
+    while not confirm_limit or i < confirm_limit:
+        pw = getpass(format_ansi(prompt % args))
+
+        if pw:
+            if validate is not None and not validate(pw):
+                continue
+
+            elif confirm:
+                if getpass(format_ansi(confirm_prompt % args)) == pw:
+                    return pw
+                else:
+                    cli.log.error('Passwords do not match!')
+
+            else:
+                return pw
+
+            i += 1
 
 
 def question(prompt, *args, default=None, confirm=False, answer_type=str, validate=None, **kwargs):
@@ -69,19 +111,16 @@ def question(prompt, *args, default=None, confirm=False, answer_type=str, valida
     | answer_type | Specify a type function for the answer. Will re-prompt the user if the function raises any errors. Common choices here include int, float, and decimal.Decimal. |
     | validate | This is an optional function that can be used to validate the answer. It should return True or False and have the following signature:<br><br>`def function_name(answer, *args, **kwargs):` |
     """
-    if not args and kwargs:
-        args = kwargs
-
     if not cli.interactive:
         return default
 
     if default is not None:
         prompt = '%s [%s] ' % (prompt, default)
+    elif prompt and prompt[-1] != ' ':
+        prompt += ' '
 
     while True:
-        cli.echo('')
-        answer = input(format_ansi(prompt % args))
-        cli.echo('')
+        answer = input(format_ansi(prompt % (args or kwargs)))
 
         if answer:
             if validate is not None and not validate(answer, *args, **kwargs):
@@ -129,18 +168,16 @@ def choice(heading, options, *args, default=None, confirm=False, prompt='Please 
 
     if prompt and default:
         prompt = prompt + ' [%s] ' % (default + 1,)
+    elif prompt[-1] != ' ':
+        prompt += ' '
 
     while True:
         # Prompt for an answer.
-        cli.echo('')
         cli.echo(heading % args)
-        cli.echo('')
         for i, option in enumerate(options, 1):
             cli.echo('\t{fg_cyan}%d.{fg_reset} %s', i, option)
 
-        cli.echo('')
         answer = input(format_ansi(prompt))
-        cli.echo('')
 
         # If the user types in one of the options exactly use that
         if answer in options:
@@ -152,9 +189,11 @@ def choice(heading, options, *args, default=None, confirm=False, prompt='Please 
         else:
             try:
                 answer = int(answer) - 1
-            except Exception:
-                # Normally we would log the exception here, but in the interest of clean UI we do not.
+            except Exception as e:
                 cli.log.error('Invalid choice: %s', answer)
+                cli.log.debug('Could not convert %s to int: %s: %s', answer, e.__class__.__name__, e)
+                if cli.config.general.verbose:
+                    cli.log.exception(e)
                 continue
 
         # Validate the answer
