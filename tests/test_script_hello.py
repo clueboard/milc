@@ -4,7 +4,8 @@ from .common import check_command, check_returncode
 def test_hello():
     result = check_command('./hello')
     check_returncode(result)
-    assert result.stdout == '\x1b[34mℹ\x1b[0m Hello, World, from cli.log.info!\x1b[0m\nHello, World, from cli.echo!\n'
+    assert 'Hello, World, from cli.log.info!' in result.stdout
+    assert 'Hello, World, from cli.echo!' in result.stdout
 
 
 def test_hello_help():
