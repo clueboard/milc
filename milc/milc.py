@@ -639,11 +639,11 @@ class MILC(object):
 
         There are 3 basic ways to use this:
 
-        * Instaniating a spinner and then using `.start()` and `.stop()` on your object.
+        * Instantiating a spinner and then using `.start()` and `.stop()` on your object.
         * Using a context manager (`with cli.spinner(...):`)
         * Decorate a function (`@cli.spinner(...)`)
 
-        #### Instaniating a spinner
+        #### Instantiating a spinner
 
         ```python
         spinner = cli.spinner(text='Loading', spinner='dots')
