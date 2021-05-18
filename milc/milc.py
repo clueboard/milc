@@ -25,6 +25,8 @@ except ImportError:
 import argcomplete
 import colorama
 from appdirs import user_config_dir
+from halo import Halo
+from spinners.spinners import Spinners
 
 from .ansi import MILCFormatter, ansi_colors, ansi_config, ansi_escape, format_ansi
 from .configuration import Configuration, SubparserWrapper, get_argument_name, handle_store_boolean
@@ -48,6 +50,7 @@ class MILC(object):
         self._config_store_false = []
         self._description = None
         self._entrypoint = None
+        self._spinners = {}
         self._subcommand = None
         self._inside_context_manager = False
         self.ansi = ansi_colors
@@ -75,7 +78,7 @@ class MILC(object):
     def echo(self, text, *args, **kwargs):
         """Print colorized text to stdout.
 
-        ANSI color strings (such as {fg-blue}) will be converted into ANSI
+        ANSI color strings (such as {fg_blue}) will be converted into ANSI
         escape sequences, and the ANSI reset sequence will be added to all
         strings.
 
@@ -601,3 +604,115 @@ class MILC(object):
             print(exc_type)
             logging.exception(exc_val)
             exit(255)
+
+    def is_spinner(self, name):
+        """Returns true if name is a valid spinner.
+        """
+        return name in Spinners.__members__ or name in self._spinners
+
+    def add_spinner(self, name, spinner):
+        """Adds a new spinner to the list of spinners.
+
+        A spinner is a dictionary with two keys:
+
+            interval
+                An integer that sets how long (in ms) to wait between frames.
+
+            frames
+                A list of frames for this spinner
+        """
+        if self.is_spinner(name):
+            raise ValueError(f'Spinner "{name}" already exists!')
+
+        if not isinstance(spinner, dict):
+            raise ValueError('The spinner must be a dictionary!')
+
+        if 'interval' not in spinner or 'frames' not in spinner:
+            raise ValueError('The spinner must have `interval` and `frames` keys!')
+
+        self._spinners[name] = spinner
+
+    def spinner(self, text, *args, spinner=None, animation='ellipsed', placement='left', color='blue', interval=-1, stream=sys.stdout, enabled=True, **kwargs):
+        """Create a spinner object for showing activity to the user.
+
+        This uses halo <https://github.com/ManrajGrover/halo> behind the scenes, most of the arguments map to Halo objects 1:1.
+
+        There are 3 basic ways to use this:
+
+        * Instantiating a spinner and then using `.start()` and `.stop()` on your object.
+        * Using a context manager (`with cli.spinner(...):`)
+        * Decorate a function (`@cli.spinner(...)`)
+
+        #### Instantiating a spinner
+
+        ```python
+        spinner = cli.spinner(text='Loading', spinner='dots')
+        spinner.start()
+
+        # Do something here
+
+        spinner.stop()
+        ```
+
+        #### Using a context manager
+
+        ```python
+        with cli.spinner(text='Loading', spinner='dots'):
+            # Do something here
+        ```
+
+        #### Decorate a function
+
+        ```python
+        @cli.spinner(text='Loading', spinner='dots')
+        def long_running_function():
+            # Do something here
+        ```
+
+        ### Arguments
+
+            text
+                The text to display next to the spinner. ANSI color strings
+                (such as {fg_blue}) will be converted into ANSI escape
+                sequences, and the ANSI reset sequence will be added to the
+                end of the string.
+
+                If *args or **kwargs are passed they will be used to
+                %-format the text.
+
+            spinner
+                The name of the spinner to use. Available names are here:
+                <https://raw.githubusercontent.com/sindresorhus/cli-spinners/dac4fc6571059bb9e9bc204711e9dfe8f72e5c6f/spinners.json>
+
+            animation
+                The animation to apply to the text if it doesn't fit the
+                terminal. One of `ellipsed`, `bounce`, `marquee`.
+
+            placement
+                Which side of the text to display the spinner on. One of
+                `left`, `right`.
+
+            color
+                Color of the spinner. One of `blue`, `grey`, `red`, `green`,
+                `yellow`, `magenta`, `cyan`, `white`
+
+            interval
+                How long in ms to wait between frames. Defaults to the spinner interval (recommended.)
+
+            stream
+                Stream to write the output. Defaults to sys.stdout.
+
+            enabled
+                Enable or disable the spinner. Defaults to `True`.
+        """
+        if isinstance(spinner, str) and spinner in self._spinners:
+            spinner = self._spinners[spinner]
+
+        return Halo(
+            text=format_ansi(text % (args or kwargs)),
+            spinner=spinner if spinner else 'line',  # FIXME: Grab one of the ascii spinners at random instead of line
+            animation=None if animation == 'ellipsed' else animation,
+            placement=placement,
+            color=color,
+            interval=interval,
+        )

@@ -1,0 +1,75 @@
+#!/usr/bin/env python3
+"""Test and show off the spinner methods.
+
+PYTHON_ARGCOMPLETE_OK
+"""
+from time import sleep
+
+from milc import set_metadata
+
+set_metadata(name='spinner', author='MILC', version='1.3.0')
+
+from milc import cli
+
+
+@cli.argument('-n', '--name', help='Name to greet', default='World')
+@cli.entrypoint('Show off spinners.')
+def main(cli):
+    cli.log.info('No subcommand specified!')
+    cli.print_usage()
+
+
+@cli.subcommand('Instaniated.')
+def instaniated(cli):
+    spinner = cli.spinner(text='Loading', spinner='dots')
+    spinner.start()
+    sleep(2)
+    spinner.stop()
+
+
+@cli.subcommand('Context Manager.')
+def context_manager(cli):
+    with cli.spinner(text='Loading', spinner='dots'):
+        sleep(2)
+
+
+@cli.spinner(text='Loading', spinner='dots')
+def long_running_function():
+    sleep(2)
+
+
+@cli.subcommand('Decorated Function.')
+def decorated(cli):
+    long_running_function()
+
+
+@cli.subcommand('Custom Spinner.')
+def custom_spinner(cli):
+    my_spinner = {
+        'interval': 100,
+        'frames': [
+            '.      ',
+            '.o     ',
+            '.oO    ',
+            '.oO0   ',
+            '.oO0() ',
+            '.oO0( )',
+            '.oO0() ',
+            '.oO0   ',
+            '.oO    ',
+            '.o     ',
+            '.      ',
+        ]
+    }
+
+    cli.add_spinner('my_spinner', my_spinner)
+
+    with cli.spinner(text='Loaded by dict', spinner=my_spinner):
+        sleep(2)
+
+    with cli.spinner(text='Loaded by name', spinner='my_spinner'):
+        sleep(2)
+
+
+if __name__ == '__main__':
+    cli()
