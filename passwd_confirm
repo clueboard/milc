@@ -3,8 +3,6 @@
 
 PYTHON_ARGCOMPLETE_OK
 """
-from string import ascii_lowercase, ascii_uppercase, digits, punctuation
-
 from milc import cli
 from milc.questions import password
 
@@ -13,9 +11,10 @@ from milc.questions import password
 def main(cli):
     pw = password(confirm=True, confirm_limit=1)
     if pw is None:
-        return False
-    return True
+        return 1
+
+    return 0
 
 
 if __name__ == '__main__':
-    cli()
+    exit(cli())

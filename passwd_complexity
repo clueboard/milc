@@ -18,6 +18,10 @@ def main(cli):
     c_other = 0
     pw = password('Password to check:')
 
+    if not pw:
+        cli.log.error('No password provided!')
+        return 1
+
     for char in pw:
         if char in ascii_lowercase:
             c_lower += 1
@@ -33,7 +37,8 @@ def main(cli):
     num_types = (c_lower > 0) + (c_upper > 0) + (c_digits > 0) + (c_punctuation > 0) + (c_other > 0)
     cli.log.info('Found %d characters in the password!', len(pw))
     cli.log.info('Found characters in %d different character classes!', num_types)
+    return 0
 
 
 if __name__ == '__main__':
-    cli()
+    exit(cli())
