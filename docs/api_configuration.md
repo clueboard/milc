@@ -49,6 +49,15 @@ This is called when the attribute is accessed either via the get method or throu
 Returns the config value from the `user` section.
 This is called when the attribute is accessed via dot notation but does not exist.
 
+<a name="configuration.ConfigurationSection.__setattr__"></a>
+#### \_\_setattr\_\_
+
+```python
+ | __setattr__(key, value)
+```
+
+Sets dictionary value when an attribute is set.
+
 <a name="configuration.SubparserWrapper"></a>
 ## SubparserWrapper Objects
 

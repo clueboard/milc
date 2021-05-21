@@ -24,9 +24,26 @@ Returns `True` for a yes and `False` for a no.
 If you add `--yes` and `--no` arguments to your program the user can answer questions by passing command line flags.
 
 ```python
-@add_argument('-y', '--yes', action='store_true', arg_only=True, help='Answer yes to all questions.')
-@add_argument('-n', '--no', action='store_true', arg_only=True, help='Answer no to all questions.')
+@cli.argument('-y', '--yes', action='store_true', arg_only=True, help='Answer yes to all questions.')
+@cli.argument('-n', '--no', action='store_true', arg_only=True, help='Answer no to all questions.')
 ```
+
+<a name="questions.password"></a>
+#### password
+
+```python
+password(prompt='Enter password:', *args, *, confirm=False, confirm_prompt='Confirm password:', confirm_limit=3, validate=None, **kwargs)
+```
+
+Securely receive a password from the user. Returns the password or None.
+
+| Argument | Description |
+|----------|-------------|
+| prompt | The prompt to present to the user. Can include ANSI and format strings like milc's `cli.echo()`. |
+| confirm | Prompt the user to type the password again and make sure they match. |
+| confirm_prompt | The prompt to present to the user. Can include ANSI and format strings like milc's `cli.echo()`. |
+| confirm_limit | Number of attempts to confirm before giving up. Default: 3 |
+| validate | This is an optional function that can be used to validate the password, EG to check complexity. It should return True or False and have the following signature:<br><br>`def function_name(answer):` |
 
 <a name="questions.question"></a>
 #### question
