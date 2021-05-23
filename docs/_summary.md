@@ -4,15 +4,16 @@
 * [Tutorial](tutorial.md)
 * Features
     * [ANSI Color](ANSI.md)
-    * [Argument Completion](argcomplete.md)
+    * [Argument (Tab) Completion](argcomplete.md)
     * [Argument Parsing](argument_parsing.md)
     * [Configuration](configuration.md)
     * [Config Subcommand](subcommand_config.md)
     * [Logging](logging.md)
     * [Metadata](metadata.md)
+    * [Spinners](spinners.md)
     * [Subprocesses](subprocesses.md)
     * [Thread Safety](threading.md)
-    * [User Input](questions.md)
+    * [User Input](api_questions.md)
 <!-- DO NOT ADD OR CHANGE ANYTHING BELOW THIS LINE -->
 * API Reference
     * [milc.ansi](api_ansi.md)

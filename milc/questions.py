@@ -1,6 +1,4 @@
-"""Functions to ask the user questions.
-
-These functions can be used to query the user for information.
+"""Sometimes you need to ask the user a question. MILC provides basic functions for collecting and validating user input. You can find these in the `milc.questions` module.
 """
 from getpass import getpass
 
@@ -101,7 +99,7 @@ def password(prompt='Enter password:', *args, confirm=False, confirm_prompt='Con
 
 
 def question(prompt, *args, default=None, confirm=False, answer_type=str, validate=None, **kwargs):
-    """Prompt the user to answer a question with a free-form input.
+    """Allow the user to type in a free-form string to answer.
 
     | Argument | Description |
     |----------|-------------|
@@ -144,9 +142,9 @@ def question(prompt, *args, default=None, confirm=False, answer_type=str, valida
 
 
 def choice(heading, options, *args, default=None, confirm=False, prompt='Please enter your choice: ', **kwargs):
-    """Present the user with a list of options and let them pick one.
+    """Present the user with a list of options and let them select one.
 
-    Returns the value of the item they choose.
+    Users can enter either the number or the text of their choice. This will return the value of the item they choose, not the numerical index.
 
     | Argument | Description |
     |----------|-------------|

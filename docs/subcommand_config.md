@@ -46,7 +46,7 @@ user.arg1: None -> baz
 
 The `config` subcommand is used to interact with the underlying configuration. When run with no argument it shows the current configuration. When arguments are supplied they are assumed to be configuration tokens, which are strings containing no spaces with the following form:
 
-    <subcommand|general|default>[.<key>][=<value>]
+    <subcommand|general|user>[.<key>][=<value>]
 
 ## Setting Configuration Values
 
@@ -55,18 +55,22 @@ You can set configuration values by putting an equal sign (=) into your config k
 Example:
 
 ```
-$ my_cli config default.arg1=default
-default.arg1: None -> default
+$ my_cli config user.arg1=default
+user.arg1: None -> default
 ℹ Wrote configuration to '/Users/example/Library/Application Support/my_cli/my_cli.ini'
 ```
 
 ## Reading Configuration Values
 
-You can read configuration values for the entire configuration, a single key, or for an entire section. You can also specify multiple keys to display more than one value.
+You can read configuration values for all set options, the entire configuration, a single key, or for an entire section. You can also specify multiple keys to display more than one value.
+
+### All Set Options Example
+
+    my_cli config
 
 ### Entire Configuration Example
 
-    my_cli config
+    my_cli config -a
 
 ### Whole Section Example
 

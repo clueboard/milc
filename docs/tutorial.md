@@ -24,29 +24,25 @@ if __name__ == '__main__':
     cli()
 ```
 
-## Entrypoints
+## Quick Program Overview
 
-MILC does the work of setting up your execution environment then it hands
-off control to your entrypoint. There are two types of entrypoints in MILC-
-the root entrypoint and subcommand entrypoints. When you think of subcommands
-think of programs like git, where the first argument that doesn't start with
-a dash indicates what mode the program is operating in.
+Before we dive into the features our program is using let's take a look at the general structure of a MILC program. We start by importing the `cli` object- this is where most of MILC's functionality is exposed and where a lot of important state tracking happens.
 
-MILC entrypoints are python callables that take a single argument- `cli`.
-This is the `MILC()` object that you instaniate at the start of your program,
-and for the most part is how you will interact with your user. You will also
-call `cli()` to dispatch to the root or subcommand entrypoint, as determined
-by the flags the user passes.
+Next, we've decorated our main function with `cli.entrypoint()`. This is how we tell MILC what function to execute and set the help text for our program.
+
+Inside our `main()` function we print a simple message to the log file, which by default is also printed to the user's screen.
+
+Finally, we execute our `cli()` program inside the familiar `if __name__ == '__main__':` guard.
 
 ## Logging and Printing
 
-MILC provides 2 mechanisms for outputting text to the user, and which one you
+MILC provides two mechanisms for outputting text to the user, and which one you
 use depends a lot on the needs of your program. Both use the same API so
 switching between them should be simple.
 
 For writing to stdout you have `cli.echo()`. This differs from python
 `print()` in two important ways- It supports tokens for colorizing your text
-using [ANSI](ANSI.md) and it supports format strings in the same way as 
+using [ANSI](ANSI.md) and it supports format strings in the same way as
 [logging](https://docs.python.org/3/library/logging.html).  For writing to
 stderr and/or log files you have `cli.log`. You can use these to output log
 messages at different levels so the CLI user can easily adjust how much
@@ -60,6 +56,18 @@ More information:
 
 * [ANSI Color](ANSI.md)
 * [Logging](logging.md)
+
+## Entrypoints
+
+MILC does the work of setting up your execution environment then it hands
+off control to your entrypoint. There are two types of entrypoints in MILC-
+the root entrypoint and subcommand entrypoints. When you think of subcommands
+think of programs like git, where the first argument that doesn't start with
+a dash indicates what mode the program is operating in.
+
+MILC entrypoints are python callables that take a single argument- `cli`.
+When you call `cli()` at the end of your script it will determine the 
+correct entrypoint to call based on the arguments the user passed.
 
 ## Configuration and Argument Parsing
 
@@ -163,7 +171,18 @@ Each subcommand gets its own section in the configuration. You can access a
 subcommand's config with `cli.config.<subcommand>`. Options for the root
 entrypoint can be found in the `cli.config.general` section of the config.
 
-Let's finish up our program by adding some flags to hello and goodbye:
+We add flags to our subcommands by decorating them with `@cli.argument`:
+
+```python
+@cli.argument('--comma', help='comma in output', action='store_boolean', default=True)
+```
+
+## User Controlled Configuration
+
+Using the built-in `config` subcommand our user can permanently set certain
+options so they don't have to type them in each time. We do this by adding a
+single line to our program, `import milc.subcommand.config`. Let's take a
+look at our final program:
 
 ```python
 #!/usr/bin/env python3
@@ -173,6 +192,8 @@ PYTHON_ARGCOMPLETE_OK
 """
 
 from milc import cli
+import milc.subcommand.config
+
 
 @cli.argument('-n', '--name', help='Name to greet', default='World')
 @cli.entrypoint('Greet a user.')
@@ -209,12 +230,13 @@ if __name__ == '__main__':
 
 ## Example Output
 
-Now that we've written our program let's explore how it works, starting with
-running it with no arguments.
+Now that we've written our program and we have a better idea what is going
+on, let's explore how it works. We'll start by demonstrating it with no
+arguments passed.
 
 ![Simple Output](https://i.imgur.com/Ms3G8Aw.png)
 
-We can demonstrate entering a subcommand here:
+We'll demonstrate entering a subcommand here:
 
 ![Hello Output](https://i.imgur.com/a9RjE8S.png)
 

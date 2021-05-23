@@ -1,10 +1,10 @@
-# Argcomplete Support
+# Argument (Tab) Completion Support
 
-MILC supports argument completion out of the box using [argcomplete](). Getting tab completion to actually work can be a little fiddly, this page attempts to help you with them.
+MILC supports argument completion out of the box using [argcomplete](). Getting argument completion to actually work can be a little fiddly, this page attempts to help you with that.
 
 ## Prerequisites
 
-Before tab completion will work your program must be registered with your shell. The most direct way to do so is this:
+Before argument completion will work your program must be registered with your shell. The most compatible way to do so is this:
 
     eval "$(register-python-argcomplete my-program)"
 

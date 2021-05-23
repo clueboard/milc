@@ -3,21 +3,14 @@
 
 PYTHON_ARGCOMPLETE_OK
 """
-import os
-
-# Uncomment these to customize your config file location
-#os.environ['MILC_APP_NAME'] = 'hello'
-#os.environ['MILC_APP_VERSION'] = '0.0.1'
-#os.environ['MILC_APP_AUTHOR'] = 'MILC'
-
 from milc import cli
 
 
-@cli.argument('-c', '--comma', help='comma in output', default=True, action='store_boolean')
+@cli.argument('-c', '--comma', arg_only=True, help='comma in output', default=True, action='store_boolean')
 @cli.argument('-n', '--name', help='Name to greet', default='World')
 @cli.entrypoint('Greet a user.')
 def main(cli):
-    comma = ',' if cli.config.general.comma else ''
+    comma = ',' if cli.args.comma else ''
     cli.log.debug('You used -v you lucky person!')
     cli.log.info('Hello%s %s, from cli.log.info!', comma, cli.config.general.name)
     cli.echo('{fg_red}Hello%s %s, from cli.echo!', comma, cli.config.general.name)

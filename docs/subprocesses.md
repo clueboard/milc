@@ -32,6 +32,13 @@ This will return a [subprocess.CompletedProcess](https://docs.python.org/3/libra
 
 MILC's `cli.run()` differs from `subprocess.run()` in some important ways. 
 
+### Windows Support
+
+When running inside a windows console (Powershell, DOS, Cygwin, Msys2) there are some quirks that MILC attempts to handle but which you need to be aware of:
+
+* Commands are always run in a subshell, so that non-executable files and POSIX paths work seemlessly.
+* Windows leaves stdin in a broken state after executing a subprocess. To avoid this MILC adds `stdin=DEVNULL` to the `subprocess.run()` call. If you need stdin to work in your executed process you can pass `stdin=None`.
+
 ### Building argument lists
 
 The most important way MILC differs from `subprocess.run()` is that it only accepts commands that have already been split into sequences. A lot of bugs are caused by mistakes in building command strings that are later split into a sequence of arguments in unexpected ways.

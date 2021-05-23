@@ -10,7 +10,7 @@ colors = ('black', 'blue', 'cyan', 'green', 'magenta', 'red', 'white', 'yellow')
 
 @cli.entrypoint('Show all the colors available to us.')
 def main(cli):
-    cli.echo('|Normal   |   FG   | ExtFG  |   BG   | ExtBG  |')
+    cli.echo('|Normal  |   FG   | ExtFG  |   BG   | ExtBG  |')
     for color in colors:
         cli.echo(f'|{color:8}|{{fg_{color}}}xxxxxxxx{{fg_reset}}|{{fg_light{color}_ex}}xxxxxxxx{{fg_reset}}|{{bg_{color}}}xxxxxxxx{{bg_reset}}|{{bg_light{color}_ex}}xxxxxxxx{{bg_reset}}|')
 

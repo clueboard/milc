@@ -21,6 +21,7 @@ if __name__ == "__main__":
         long_description=Path('README.md').read_text(),
         long_description_content_type="text/markdown",
         packages=setuptools.find_packages(exclude=('tests',)),
+        scripts=['milc-color'],
         classifiers=[
             'Development Status :: 5 - Production/Stable',
             'Environment :: Console',

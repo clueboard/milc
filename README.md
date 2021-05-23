@@ -21,18 +21,20 @@ MILC follows [Semantic Versioning](https://semver.org/). You can see a list of w
 
 Full documentation is on the web: <https://milc.clueboard.co/>
 
+## Reporting Bugs and Requesting Features
+
+Please let us know about any bugs and/or feature requests you have: <https://github.com/clueboard/milc/issues>
+
 ## Short Example
 
 ```python
-from milc import MILC
+from milc import cli
 
-cli = MILC('My useful CLI tool.')
-
-@cli.argument('-c', '--comma', help='comma in output', default=True, action='store_boolean')
-@cli.argument('-n', '--name', help='Name to greet', default='World')
-@cli.entrypoint
+@cli.argument('-c', '--comma', arg_only=True, action='store_boolean', default=True, help='comma in output')
+@cli.argument('-n', '--name', default='World', help='Name to greet')
+@cli.entrypoint('My useful CLI tool.')
 def main(cli):
-    comma = ',' if cli.config.general.comma else ''
+    comma = ',' if cli.args.comma else ''
     cli.log.info('Hello%s %s!', comma, cli.config.general.name)
 
 if __name__ == '__main__':

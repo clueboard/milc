@@ -1,19 +1,19 @@
-MILC comes with a robust logging system based on python's `logging` module. All you have to do is worry about log output, let MILC worry about presenting that output to the user in configurable ways.
+MILC comes with a robust logging system based on python's `logging` module. All you have to worry about are log messages, let MILC worry about presenting those messages to the user in configurable ways.
 
 ## Writing Log Entries
 
 A python [Logger Object](https://docs.python.org/3/library/logging.html#logger-objects) is available as `cli.log`. You can use this to write messages at various log levels:
 
-* `log.debug()`
-* `log.info()`
-* `log.warning()`
-* `log.error()`
-* `log.critical()`
-* `log.exception()`
+* `cli.log.debug()`
+* `cli.log.info()`
+* `cli.log.warning()`
+* `cli.log.error()`
+* `cli.log.critical()`
+* `cli.log.exception()`
 
 As is standard for the python logging module you can use [`printf`-style format string operations](https://docs.python.org/3/library/stdtypes.html#printf-style-string-formatting) with these. Example:
 
-    log.info('Hello, %s!', 'World')
+    log.info('Hello, %s!', cli.config.general.name)
 
 ANSI color sequences are also available. For more information see the [ANSI Color](ANSI.md) page.
 
@@ -21,7 +21,7 @@ ANSI color sequences are also available. For more information see the [ANSI Colo
 
 All MILC programs have `-v` and `--verbose` flags by default. When this flag is passed `DEBUG` level messages will be printed to the screen.
 
-If you want to use this flag in your program you can check `cli.args.verbose`. It is True when `-v`/`--versbose` are passed and False otherwise.
+If you want to use this flag in your program you can check `cli.config.general.verbose`. It is True when `-v`/`--verbose` is passed and False otherwise.
 
 ## Controlling Log Output
 
@@ -36,4 +36,6 @@ Users have several CLI arguments they can pass to control the output of logs. Th
 * `--log-file`, default: None
     * File to write log messages to
 * `--color` and `--no-color`
-    * Enable and disable ANSI color
+    * Enable or disable ANSI color
+* `--unicode` and `--no-unicode`
+    * Enable or disable unicode icons

@@ -32,7 +32,9 @@ cli.echo(text)
 ## Available Colors
 
 Colors prefixed with 'fg' will affect the foreground (text) color. Colors
-prefixed with 'bg' will affect the background color.
+prefixed with 'bg' will affect the background color. The included
+`milc-color` command will show you what the colors look like in your
+terminal.
 
 | Color | Background | Extended Background | Foreground | Extended Foreground|
 |-------|------------|---------------------|------------|--------------------|
