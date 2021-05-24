@@ -267,9 +267,17 @@ class MILC(object):
             return Path(sys.argv[sys.argv.index('--config-file') + 1]).expanduser().resolve()
 
         filedir = user_config_dir(appname=self.prog_name, appauthor=self.author)
-        filename = '%s.ini' % self.prog_name
 
-        return Path(filedir, filename).resolve()
+        if sys.argv[0].endswith('.py'):
+            filename = sys.argv[0][:-3]
+        elif sys.argv[0].endswith('.exe'):
+            filename = sys.argv[0][:-4]
+        else:
+            filename = sys.argv[0]
+
+        ini_filename = '%s.ini' % os.path.basename(filename)
+
+        return Path(filedir, ini_filename).resolve()
 
     def argument(self, *args, **kwargs):
         """Decorator to call self.add_argument or self.<subcommand>.add_argument.
