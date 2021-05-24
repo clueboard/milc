@@ -1,5 +1,1 @@
-appdirs
-argcomplete
-colorama
-halo
-spinners
+-e .
