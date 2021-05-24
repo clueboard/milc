@@ -263,7 +263,7 @@ class MILC(object):
         if '--config-file' in sys.argv:
             return Path(sys.argv[sys.argv.index('--config-file') + 1]).expanduser().resolve()
 
-        filedir = user_config_dir(appname=self.prog_name, appauthor=self.author or self.prog_name.upper())
+        filedir = user_config_dir(appname=self.prog_name, appauthor=self.author)
         filename = '%s.ini' % self.prog_name
 
         return Path(filedir, filename).resolve()
