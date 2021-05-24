@@ -32,7 +32,7 @@ def argv_name():
 
 APP_NAME = os.environ.get('MILC_APP_NAME') or argv_name()
 APP_VERSION = os.environ.get('MILC_APP_VERSION', 'unknown')
-APP_AUTHOR = os.environ.get('MILC_APP_AUTHOR', 'unknown')
+APP_AUTHOR = os.environ.get('MILC_APP_AUTHOR', APP_NAME.upper())
 
 if 'MILC_IGNORE_DEPRECATED' not in os.environ:
     for name in ('MILC_APP_NAME', 'MILC_APP_VERSION', 'MILC_APP_AUTHOR'):
