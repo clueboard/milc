@@ -52,4 +52,7 @@ def main(cli):
 
 
 if __name__ == '__main__':
-    cli()
+    if cli():
+        exit(0)
+    else:
+        exit(1)
