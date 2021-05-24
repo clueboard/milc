@@ -26,7 +26,13 @@ from .milc import MILC
 def argv_name():
     """Returns the name of our program by examining argv.
     """
-    app_name = sys.argv[0][:-3] if sys.argv[0].endswith('.py') else sys.argv[0]
+    if sys.argv[0].endswith('.py'):
+        app_name = sys.argv[0][:-3]
+    elif sys.argv[0].endswith('.exe'):
+        app_name = sys.argv[0][:-4]
+    else:
+        app_name = sys.argv[0]
+
     return os.path.split(app_name)[-1]
 
 
