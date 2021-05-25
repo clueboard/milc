@@ -54,9 +54,13 @@ def test_hello_no_color_log_file():
     else:
         check_assert(result, result.stdout == 'INFO Hello, World, from cli.log.info!\nHello, World, from cli.echo!\n')
     log_file_contents = log_file.read().decode('utf-8')
-    check_assert(result, 'Hello, World, from cli.log.info!\n' in log_file_contents)
     log_file.close()
     unlink(log_file.name)
+    if 'Hello, World, from cli.log.info!' not in log_file_contents:
+        print('Log File Contents:')
+        print(log_file_contents)
+        print()
+        raise AssertionError
 
 
 def test_hello_no_color_no_unicode_log_file():
@@ -65,9 +69,13 @@ def test_hello_no_color_no_unicode_log_file():
     check_returncode(result)
     check_assert(result, result.stdout == 'INFO Hello, World, from cli.log.info!\nHello, World, from cli.echo!\n')
     log_file_contents = log_file.read().decode('utf-8')
-    check_assert(result, 'Hello, World, from cli.log.info!\n' in log_file_contents)
     log_file.close()
     unlink(log_file.name)
+    if 'Hello, World, from cli.log.info!' not in log_file_contents:
+        print('Log File Contents:')
+        print(log_file_contents)
+        print()
+        raise AssertionError
 
 
 def test_hello_no_color_verbose():
