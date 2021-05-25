@@ -36,7 +36,10 @@ def test_hello_no_color_no_unicode():
 def test_hello_no_color_no_comma():
     result = check_command('./hello', '--no-color', '--no-comma')
     check_returncode(result)
-    check_assert(result, result.stdout == 'ℹ Hello World, from cli.log.info!\nHello World, from cli.echo!\n')
+    if 'ℹ' in result.stdout:
+        check_assert(result, result.stdout == 'ℹ Hello World, from cli.log.info!\nHello World, from cli.echo!\n')
+    else:
+        check_assert(result, result.stdout == 'INFO Hello World, from cli.log.info!\nHello World, from cli.echo!\n')
 
 
 def test_hello_no_color_no_unicode_no_comma():
