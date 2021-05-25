@@ -142,6 +142,9 @@ class MILC(object):
         if combined_output:
             kwargs['stderr'] = subprocess.STDOUT
 
+        if 'stdin' in kwargs and kwargs['stdin'] is None:
+            del kwargs['stdin']
+
         if text:
             kwargs['universal_newlines'] = True
 
