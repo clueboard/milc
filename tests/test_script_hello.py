@@ -1,3 +1,6 @@
+from os import unlink
+from tempfile import NamedTemporaryFile
+
 from .common import check_assert, check_command, check_returncode
 
 
@@ -43,20 +46,28 @@ def test_hello_no_color_no_unicode_no_comma():
 
 
 def test_hello_no_color_log_file():
-    result = check_command('./hello', '--no-color', '--log-file', '/dev/stdout')
+    log_file = NamedTemporaryFile(delete=False)
+    result = check_command('./hello', '--no-color', '--log-file', log_file.name)
     check_returncode(result)
     if 'ℹ' in result.stdout:
-        check_assert(result, result.stdout.startswith('[ℹ] '))
-        check_assert(result, result.stdout.endswith('Hello, World, from cli.log.info!\nℹ Hello, World, from cli.log.info!\nHello, World, from cli.echo!\n'))
+        check_assert(result, result.stdout == 'ℹ Hello, World, from cli.log.info!\nHello, World, from cli.echo!\n')
     else:
-        check_assert(result, result.stdout.endswith('INFO Hello, World, from cli.log.info!\nHello, World, from cli.echo!\n'))
+        check_assert(result, result.stdout == 'INFO Hello, World, from cli.log.info!\nHello, World, from cli.echo!\n')
+    log_file_contents = log_file.read().decode('utf-8')
+    check_assert(result, 'Hello, World, from cli.log.info!\n' in log_file_contents)
+    log_file.close()
+    unlink(log_file.name)
 
 
 def test_hello_no_color_no_unicode_log_file():
-    result = check_command('./hello', '--no-color', '--no-unicode', '--log-file', '/dev/stdout')
+    log_file = NamedTemporaryFile(delete=False)
+    result = check_command('./hello', '--no-color', '--no-unicode', '--log-file', log_file.name)
     check_returncode(result)
-    check_assert(result, result.stdout.startswith('[INFO] '))
-    check_assert(result, result.stdout.endswith('Hello, World, from cli.log.info!\nINFO Hello, World, from cli.log.info!\nHello, World, from cli.echo!\n'))
+    check_assert(result, result.stdout == 'INFO Hello, World, from cli.log.info!\nHello, World, from cli.echo!\n')
+    log_file_contents = log_file.read().decode('utf-8')
+    check_assert(result, 'Hello, World, from cli.log.info!\n' in log_file_contents)
+    log_file.close()
+    unlink(log_file.name)
 
 
 def test_hello_no_color_verbose():
