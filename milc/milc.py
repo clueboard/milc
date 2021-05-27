@@ -59,7 +59,7 @@ class MILC(object):
         self.default_arguments = {}
         self.platform = platform()
         self.prog_name = name
-        self.interactive = sys.stdout.isatty()
+        self.interactive = sys.stdin.isatty()
         self.release_lock()
 
         # Initialize all the things

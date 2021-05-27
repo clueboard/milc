@@ -2,8 +2,8 @@
 """
 from getpass import getpass
 
+import milc
 from .ansi import format_ansi
-from . import cli
 
 
 def yesno(prompt, *args, default=None, **kwargs):
@@ -26,13 +26,13 @@ def yesno(prompt, *args, default=None, **kwargs):
     if not args and kwargs:
         args = kwargs
 
-    if 'no' in cli.args and cli.args.no:
+    if 'no' in milc.cli.args and milc.cli.args.no:
         return False
 
-    if 'yes' in cli.args and cli.args.yes:
+    if 'yes' in milc.cli.args and milc.cli.args.yes:
         return True
 
-    if not cli.interactive:
+    if not milc.cli.interactive:
         return False
 
     if default is None:
@@ -66,7 +66,7 @@ def password(prompt='Enter password:', *args, confirm=False, confirm_prompt='Con
     | confirm_limit | Number of attempts to confirm before giving up. Default: 3 |
     | validate | This is an optional function that can be used to validate the password, EG to check complexity. It should return True or False and have the following signature:<br><br>`def function_name(answer):` |
     """
-    if not cli.interactive:
+    if not milc.cli.interactive:
         return None
 
     if not args and kwargs:
@@ -90,7 +90,7 @@ def password(prompt='Enter password:', *args, confirm=False, confirm_prompt='Con
                 if getpass(format_ansi(confirm_prompt % args)) == pw:
                     return pw
                 else:
-                    cli.log.error('Passwords do not match!')
+                    milc.cli.log.error('Passwords do not match!')
 
             else:
                 return pw
@@ -109,7 +109,7 @@ def question(prompt, *args, default=None, confirm=False, answer_type=str, valida
     | answer_type | Specify a type function for the answer. Will re-prompt the user if the function raises any errors. Common choices here include int, float, and decimal.Decimal. |
     | validate | This is an optional function that can be used to validate the answer. It should return True or False and have the following signature:<br><br>`def function_name(answer, *args, **kwargs):` |
     """
-    if not cli.interactive:
+    if not milc.cli.interactive:
         return default
 
     if default is not None:
@@ -129,13 +129,13 @@ def question(prompt, *args, default=None, confirm=False, answer_type=str, valida
                     try:
                         return answer_type(answer)
                     except Exception as e:
-                        cli.log.error('Could not convert answer (%s) to type %s: %s', answer, answer_type.__name__, str(e))
+                        milc.cli.log.error('Could not convert answer (%s) to type %s: %s', answer, answer_type.__name__, str(e))
 
             else:
                 try:
                     return answer_type(answer)
                 except Exception as e:
-                    cli.log.error('Could not convert answer (%s) to type %s: %s', answer, answer_type.__name__, str(e))
+                    milc.cli.log.error('Could not convert answer (%s) to type %s: %s', answer, answer_type.__name__, str(e))
 
         elif default is not None:
             return default
@@ -161,7 +161,7 @@ def choice(heading, options, *args, default=None, confirm=False, prompt='Please 
     if not args and kwargs:
         args = kwargs
 
-    if not cli.interactive:
+    if not milc.cli.interactive:
         return default
 
     if prompt and default:
@@ -171,9 +171,9 @@ def choice(heading, options, *args, default=None, confirm=False, prompt='Please 
 
     while True:
         # Prompt for an answer.
-        cli.echo(heading % args)
+        milc.cli.echo(heading % args)
         for i, option in enumerate(options, 1):
-            cli.echo('\t{fg_cyan}%d.{fg_reset} %s', i, option)
+            milc.cli.echo('\t{fg_cyan}%d.{fg_reset} %s', i, option)
 
         answer = input(format_ansi(prompt))
 
@@ -188,15 +188,15 @@ def choice(heading, options, *args, default=None, confirm=False, prompt='Please 
             try:
                 answer = int(answer) - 1
             except Exception as e:
-                cli.log.error('Invalid choice: %s', answer)
-                cli.log.debug('Could not convert %s to int: %s: %s', answer, e.__class__.__name__, e)
-                if cli.config.general.verbose:
-                    cli.log.exception(e)
+                milc.cli.log.error('Invalid choice: %s', answer)
+                milc.cli.log.debug('Could not convert %s to int: %s: %s', answer, e.__class__.__name__, e)
+                if milc.cli.config.general.verbose:
+                    milc.cli.log.exception(e)
                 continue
 
         # Validate the answer
         if answer >= len(options) or answer < 0:
-            cli.log.error('Invalid choice: %s', answer + 1)
+            milc.cli.log.error('Invalid choice: %s', answer + 1)
             continue
 
         if confirm and not yesno('Is the answer "%s" correct?', answer + 1, default=True):
