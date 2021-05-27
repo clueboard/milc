@@ -1,23 +1,23 @@
 """Read and write configuration settings
 """
-from milc import cli
+import milc
 
 
 def print_config(section, key):
     """Print a single config setting to stdout.
     """
-    if cli.config_source[section][key] == 'config_file':
-        cli.echo('%s.%s{fg_blue}={fg_reset}%s', section, key, cli.config[section][key])
+    if milc.cli.config_source[section][key] == 'config_file':
+        milc.cli.echo('%s.%s{fg_blue}={fg_reset}%s', section, key, milc.cli.config[section][key])
     else:
-        cli.echo('{fg_cyan}%s.%s=%s', section, key, cli.config[section][key])
+        milc.cli.echo('{fg_cyan}%s.%s=%s', section, key, milc.cli.config[section][key])
 
 
 def show_config():
     """Print the current configuration to stdout.
     """
-    for section in sorted(cli.config):
-        for key in sorted(cli.config[section]):
-            if cli.config_source[section][key] == 'config_file' or cli.config.config.all:
+    for section in sorted(milc.cli.config):
+        for key in sorted(milc.cli.config[section]):
+            if milc.cli.config_source[section][key] == 'config_file' or milc.cli.config.config.all:
                 print_config(section, key)
 
 
@@ -27,7 +27,7 @@ def parse_config_token(config_token):
     section = option = value = None
 
     if '=' in config_token and '.' not in config_token:
-        cli.log.error('Invalid configuration token, the key must be of the form <section>.<option>: %s', config_token)
+        milc.cli.log.error('Invalid configuration token, the key must be of the form <section>.<option>: %s', config_token)
         return section, option, value
 
     # Separate the key (<section>.<option>) from the value
@@ -49,23 +49,23 @@ def set_config(section, option, value):
     """Set a config key in the running config.
     """
     log_string = '%s.%s{fg_cyan}:{fg_reset} %s {fg_cyan}->{fg_reset} %s'
-    if cli.args.read_only:
+    if milc.cli.args.read_only:
         log_string += ' {fg_red}(change not written)'
 
-    cli.echo(log_string, section, option, cli.config[section][option], value)
+    milc.cli.echo(log_string, section, option, milc.cli.config[section][option], value)
 
-    if not cli.args.read_only:
+    if not milc.cli.args.read_only:
         if value == 'None':
-            del cli.config[section][option]
+            del milc.cli.config[section][option]
         else:
-            cli.config[section][option] = value
-            cli.config_source[section][option] = 'config_file'
+            milc.cli.config[section][option] = value
+            milc.cli.config_source[section][option] = 'config_file'
 
 
-@cli.argument('-a', '--all', action='store_true', help='Show all configuration options.')
-@cli.argument('-ro', '--read-only', arg_only=True, action='store_true', help='Operate in read-only mode.')
-@cli.argument('configs', nargs='*', arg_only=True, help='Configuration options to read or write.')
-@cli.subcommand("Read and write configuration settings.")
+@milc.cli.argument('-a', '--all', action='store_true', help='Show all configuration options.')
+@milc.cli.argument('-ro', '--read-only', arg_only=True, action='store_true', help='Operate in read-only mode.')
+@milc.cli.argument('configs', nargs='*', arg_only=True, help='Configuration options to read or write.')
+@milc.cli.subcommand("Read and write configuration settings.")
 def config(cli):
     """Read and write config settings.
 
@@ -83,25 +83,25 @@ def config(cli):
 
     No validation is done to ensure that the supplied section.key is actually used by a subcommand.
     """
-    if not cli.args.configs:
+    if not milc.cli.args.configs:
         return show_config()
 
     # Process config_tokens
     save_config = False
 
-    for config_token in cli.args.configs:
+    for config_token in milc.cli.args.configs:
         section, option, value = parse_config_token(config_token)
 
         # Validation
         if option and '.' in option:
-            cli.log.error('Config keys may not have more than one period! "%s" is not valid.', config_token)
+            milc.cli.log.error('Config keys may not have more than one period! "%s" is not valid.', config_token)
             return False
 
         # Do what the user wants
         if section and option and value:
             # Write a configuration option
             set_config(section, option, value)
-            if not cli.args.read_only:
+            if not milc.cli.args.read_only:
                 save_config = True
 
         elif section and option:
@@ -110,12 +110,12 @@ def config(cli):
 
         elif section:
             # Display an entire section
-            for key in cli.config[section]:
-                if cli.config_source[section][key] == 'config_file':
+            for key in milc.cli.config[section]:
+                if milc.cli.config_source[section][key] == 'config_file':
                     print_config(section, key)
 
     # Ending actions
     if save_config:
-        cli.save_config()
+        milc.cli.save_config()
 
     return True
