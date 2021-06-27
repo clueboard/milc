@@ -61,6 +61,8 @@ class MILC(object):
         self.prog_name = name
         self.interactive = sys.stdin.isatty()
         self.release_lock()
+        self._deprecated_arguments = {}
+        self._deprecated_commands = {}
 
         # Initialize all the things
         self.initialize_config()
@@ -186,6 +188,13 @@ class MILC(object):
 
         return self._arg_parser.print_usage(*args, **kwargs)
 
+    def log_deprecated_warning(self, item_type, name, reason):
+        """Logs a warning with a custom message if a argument or command is
+           deprecated.
+        """
+        self.log.warning("Warning: %s '%s' is deprecated:\n\t%s",
+                         item_type, name, reason)
+
     def add_argument(self, *args, **kwargs):
         """Wrapper to add arguments and track whether they were passed on the command line.
         """
@@ -281,6 +290,14 @@ class MILC(object):
             config_name = handler.__name__
             subcommand_name = config_name.replace("_", "-")
             arg_name = get_argument_name(self, *args, **kwargs)
+
+            if 'deprecated' in kwargs:
+                self._deprecated_arguments[arg_name] = kwargs['deprecated']
+                if kwargs['help']:
+                    kwargs['help'] += f" [Deprecated]: {kwargs['deprecated']}"
+                else:
+                    kwargs['help'] = f"[Deprecated]: {kwargs['deprecated']}"
+                del kwargs['deprecated']
 
             if kwargs.get('arg_only'):
                 if arg_name not in self.arg_only:
@@ -467,6 +484,27 @@ class MILC(object):
         self._save_config_file(self.config)
         self.log.info('Wrote configuration to %s', shlex.quote(str(self.config_file)))
 
+    def check_deprecated(self):
+        entry_name = self._entrypoint.__name__
+
+        if entry_name in self._deprecated_commands:
+            msg = self._deprecated_commands[entry_name]
+            self.log_deprecated_warning('Entrypoint', entry_name, msg)
+
+        if self._subcommand:
+            name = self._subcommand.__name__.replace("_", "-")
+            if name in self._deprecated_commands:
+                msg = self._deprecated_commands[name]
+                self.log_deprecated_warning('Subcommand', name, msg)
+
+        deprecated_args_passed = (
+            [arg.replace('-', '') for arg in sys.argv
+             if arg.replace('-', '') in self._deprecated_arguments]
+        )
+        for arg in deprecated_args_passed:
+            msg = self._deprecated_arguments[arg]
+            self.log_deprecated_warning('Argument', arg, msg)
+
     def __call__(self):
         """Execute the entrypoint function.
         """
@@ -475,6 +513,8 @@ class MILC(object):
             with self:
                 return self.__call__()
 
+        self.check_deprecated()
+
         if self._subcommand:
             return self._subcommand(self)
         elif self._entrypoint:
@@ -482,8 +522,16 @@ class MILC(object):
 
         raise RuntimeError('No entrypoint provided!')
 
-    def entrypoint(self, description):
-        """Decorator that marks the entrypoint used when a subcommand is not supplied.
+    def entrypoint(self, description, deprecated=None):
+        """Decorator that marks the entrypoint used when a subcommand is not
+           supplied.
+        Args:
+            description
+                A one-line description to display in --help
+
+            deprecated
+                When not None displays a warning with its when the entrypoint
+                is used
         """
         if self._inside_context_manager:
             raise RuntimeError('You must run this before cli()!')
@@ -494,6 +542,12 @@ class MILC(object):
 
         def entrypoint_func(handler):
             self.acquire_lock()
+
+            if deprecated:
+                name = handler.__name__
+                self._deprecated_commands[name] = deprecated
+                self.description += f' [Deprecated]: {deprecated}'
+
             self._entrypoint = handler
             self.release_lock()
 
@@ -501,7 +555,7 @@ class MILC(object):
 
         return entrypoint_func
 
-    def add_subcommand(self, handler, description, hidden=False, **kwargs):
+    def add_subcommand(self, handler, description, hidden=False, deprecated=None, **kwargs):
         """Register a subcommand.
 
         Args:
@@ -514,6 +568,10 @@ class MILC(object):
 
             hidden
                 When True don't display this command in --help
+
+            deprecated
+                When not None displays a warning with its when the subcommand
+                is used and appends note to description
         """
         if self._inside_context_manager:
             raise RuntimeError('You must run this before the with statement!')
@@ -522,6 +580,10 @@ class MILC(object):
             self.add_subparsers(metavar="")
 
         name = handler.__name__.replace("_", "-")
+
+        if deprecated:
+            self._deprecated_commands[name] = deprecated
+            description += f' [Deprecated]: {deprecated}'
 
         self.acquire_lock()
         if not hidden:
