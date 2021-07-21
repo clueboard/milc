@@ -189,11 +189,9 @@ class MILC(object):
         return self._arg_parser.print_usage(*args, **kwargs)
 
     def log_deprecated_warning(self, item_type, name, reason):
-        """Logs a warning with a custom message if a argument or command is
-           deprecated.
+        """Logs a warning with a custom message if a argument or command is deprecated.
         """
-        self.log.warning("Warning: %s '%s' is deprecated:\n\t%s",
-                         item_type, name, reason)
+        self.log.warning("Warning: %s '%s' is deprecated:\n\t%s", item_type, name, reason)
 
     def add_argument(self, *args, **kwargs):
         """Wrapper to add arguments and track whether they were passed on the command line.
@@ -523,8 +521,7 @@ class MILC(object):
         raise RuntimeError('No entrypoint provided!')
 
     def entrypoint(self, description, deprecated=None):
-        """Decorator that marks the entrypoint used when a subcommand is not
-           supplied.
+        """Decorator that marks the entrypoint used when a subcommand is not supplied.
         Args:
             description
                 A one-line description to display in --help
@@ -570,8 +567,8 @@ class MILC(object):
                 When True don't display this command in --help
 
             deprecated
-                When not None displays a warning with its when the subcommand
-                is used and appends note to description
+                Deprecation message. When set the subcommand will be marked as deprecated
+                and this message will be displayed in help output.
         """
         if self._inside_context_manager:
             raise RuntimeError('You must run this before the with statement!')
