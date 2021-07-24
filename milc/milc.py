@@ -495,10 +495,8 @@ class MILC(object):
                 msg = self._deprecated_commands[name]
                 self.log_deprecated_warning('Subcommand', name, msg)
 
-        deprecated_args_passed = (
-            [arg.replace('-', '') for arg in sys.argv
-             if arg.replace('-', '') in self._deprecated_arguments]
-        )
+        deprecated_args_passed = [arg.replace('-', '') for arg in sys.argv if arg.replace('-', '') in self._deprecated_arguments]
+
         for arg in deprecated_args_passed:
             msg = self._deprecated_arguments[arg]
             self.log_deprecated_warning('Argument', arg, msg)
