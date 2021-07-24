@@ -525,8 +525,7 @@ class MILC(object):
                 A one-line description to display in --help
 
             deprecated
-                When not None displays a warning with its when the entrypoint
-                is used
+                Deprecation message. When set the subcommand will marked as deprecated and this message will be displayed in the help output.
         """
         if self._inside_context_manager:
             raise RuntimeError('You must run this before cli()!')
