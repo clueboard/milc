@@ -32,6 +32,16 @@ Sometimes you want an argument to be a CLI flag only, and to not have a correspo
 
 You can specify [argcomplete completers](https://kislyuk.github.io/argcomplete/#specifying-completers) for your arguments by passing `completers`. For more detail see the [argcomplete](argcomplete.md) page.
 
+### deprecated
+
+You can use the `deprecated` argument to mark a flag as deprecated. To use this you should set it to a string that will be displayed in --help. For example:
+
+    @argument('--old', action='store_true', deprecated='Use --new instead', help='The old action for my command.')
+
+This will result in the following help output:
+
+    --old       The old action for my command. [Deprecated]: Use --new instead
+
 ### action: store_boolean
 
 In addition to the normal set of `action=` arguments that you can pass to `@argument()`, you can also pass a new action called `store_boolean`. This action behaves like `store_true` except that it adds a corresponding `--no-<argument>` flag that the user can pass as well.
