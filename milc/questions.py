@@ -164,7 +164,7 @@ def choice(heading, options, *args, default=None, confirm=False, prompt='Please 
     if not milc.cli.interactive:
         return default
 
-    if prompt and default:
+    if prompt and default is not None:
         prompt = prompt + ' [%s] ' % (default + 1,)
     elif prompt[-1] != ' ':
         prompt += ' '
@@ -182,7 +182,7 @@ def choice(heading, options, *args, default=None, confirm=False, prompt='Please 
             return answer
 
         # Massage the answer into a valid integer
-        if answer == '' and default:
+        if answer == '' and default is not None:
             answer = default
         else:
             try:
