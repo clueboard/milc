@@ -2,6 +2,11 @@
 
 This is a list of breaking changes that have been made to MILC. If your script stops working after a minor or major version upgrade this document will tell you how to fix it.
 
+# Version 1.5.0
+
+* Added `cli.config_dir` to find the location of the config directory.
+* [Arguments](https://milc.clueboard.co/#/argument_parsing?id=deprecated), [commands](https://milc.clueboard.co/#/api_milc?id=entrypoint), and [subcommands](https://milc.clueboard.co/#/api_milc?id=add_subcommand) can now be marked as deprecated.
+
 # Version 1.4.0
 
 * The `config` subcommand now filters out configuration that has not been explicitly set. The new `--all` flag will allow you to see all possible configuration options and their default values.
