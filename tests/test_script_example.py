@@ -8,7 +8,7 @@ from .common import check_assert, check_command, check_returncode
 def test_example():
     result = check_command('./example', '-h')
     check_returncode(result)
-    check_assert(result, '{config,dashed-hello,hello,goodbye}' in result.stdout)
+    check_assert(result, '{config,dashed-hello,hello,goodbye,config-file}' in result.stdout)
 
 
 def test_example_version():
@@ -91,3 +91,14 @@ def test_example_dashed_hello_dashed_name():
     result = check_command('./example', 'dashed-hello', '--dashed-name', 'Tester')
     check_returncode(result)
     check_assert(result, result.stdout == 'Hello, dashed-subcommand Tester!\n')
+
+
+def test_example_config_file():
+    result = check_command('./example', 'config-file')
+    check_returncode(result)
+    lines = result.stdout.split('\n')
+    filename = lines[0].split('=', 1)[1]
+    filedir = lines[1].split('=', 1)[1]
+    check_assert(result, len(lines) == 3)
+    check_assert(result, filename.endswith('example.ini'))
+    check_assert(result, filename.startswith(filedir))

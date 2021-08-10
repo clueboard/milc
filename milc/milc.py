@@ -7,6 +7,7 @@ import subprocess
 import shlex
 import sys
 from decimal import Decimal
+from functools import lru_cache
 from pathlib import Path
 from platform import platform
 from tempfile import NamedTemporaryFile
@@ -44,6 +45,7 @@ class MILC(object):
 
         # Define some basic info
         self.acquire_lock()
+        self.prog_name = name
         self.version = version
         self.author = author
         self._config_store_true = []
@@ -55,10 +57,9 @@ class MILC(object):
         self._inside_context_manager = False
         self.ansi = ansi_colors
         self.arg_only = {}
-        self.config_file = None
+        self.config_file = self.find_config_file()
         self.default_arguments = {}
         self.platform = platform()
-        self.prog_name = name
         self.interactive = sys.stdin.isatty()
         self.release_lock()
         self._deprecated_arguments = {}
@@ -68,6 +69,10 @@ class MILC(object):
         self.initialize_config()
         self.initialize_argparse()
         self.initialize_logging()
+
+    @property
+    def config_dir(self):
+        return self.config_file.parent
 
     @property
     def description(self):
@@ -267,6 +272,7 @@ class MILC(object):
         if self._lock:
             self._lock.release()
 
+    @lru_cache(maxsize=None)
     def find_config_file(self):
         """Locate the config file.
         """
@@ -343,15 +349,15 @@ class MILC(object):
 
         self.release_lock()
 
-    def read_config_file(self, config_file):
+    def read_config_file(self):
         """Read in the configuration file and return Configuration objects for it and the config_source.
         """
         config = Configuration()
         config_source = Configuration()
 
-        if config_file.exists():
+        if self.config_file.exists():
             raw_config = RawConfigParser()
-            raw_config.read(str(config_file))
+            raw_config.read(str(self.config_file))
 
             # Iterate over the config file options and write them into config
             for section in raw_config.sections():
@@ -380,8 +386,7 @@ class MILC(object):
         """Read in the configuration file and store it in self.config.
         """
         self.acquire_lock()
-        self.config_file = self.find_config_file()
-        self.config, self.config_source = self.read_config_file(self.config_file)
+        self.config, self.config_source = self.read_config_file()
         self.release_lock()
 
     def merge_args_into_config(self):
@@ -435,13 +440,12 @@ class MILC(object):
                 if self.config_source[section_name][option_name] == 'config_file' and value is not None:
                     sane_config.set(section_name, option_name, str(value))
 
-        config_dir = self.config_file.parent
-        if not config_dir.exists():
-            config_dir.mkdir(parents=True, exist_ok=True)
+        if not self.config_dir.exists():
+            self.config_dir.mkdir(parents=True, exist_ok=True)
 
         # Write the config file atomically.
         self.acquire_lock()
-        with NamedTemporaryFile(mode='w', dir=str(config_dir), delete=False) as tmpfile:
+        with NamedTemporaryFile(mode='w', dir=str(self.config_dir), delete=False) as tmpfile:
             sane_config.write(tmpfile)
 
         if os.path.getsize(tmpfile.name) > 0:
@@ -457,7 +461,7 @@ class MILC(object):
             self.log.warning('%s.config_file not set, not saving config!', self.__class__.__name__)
             return
 
-        config, config_source = self.read_config_file(self.config_file)
+        config, config_source = self.read_config_file()
 
         if section in config and option in config[section] and config[section][option] is None:
             del config[section][option]

@@ -68,5 +68,11 @@ def goodbye(cli):
         cli.echo('{fg_blue}Goodbye, %s!', cli.config.general.name)
 
 
+@cli.subcommand('Show the configured config file and directory.')
+def config_file(cli):
+    cli.echo(f'cli.config_file={cli.config_file}')
+    cli.echo(f'cli.config_dir={cli.config_dir}')
+
+
 if __name__ == '__main__':
     cli()

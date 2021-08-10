@@ -8,7 +8,7 @@ PYTHON_ARGCOMPLETE_OK
 import os
 from pathlib import Path
 from shutil import rmtree
-from subprocess import CalledProcessError, run
+from subprocess import CalledProcessError, DEVNULL, run
 
 from milc import set_metadata
 
@@ -26,19 +26,19 @@ def main(cli):
 
     cli.log.info('Running nose2 tests...')
     cmd = ['nose2']
-    result = run(cmd)
+    result = run(cmd, stdin=DEVNULL)
     if result.returncode != 0:
         build_ok = False
 
     cli.log.info('Running flake8...')
     cmd = ['flake8']
-    result = run(cmd)
+    result = run(cmd, stdin=DEVNULL)
     if result.returncode != 0:
         build_ok = False
 
     cli.log.info('Running yapf...')
     cmd = ['yapf', '-q', '-r', '.']
-    result = run(cmd)
+    result = run(cmd, stdin=DEVNULL)
     if result.returncode != 0:
         build_ok = False
         cli.log.error('Improperly formatted code. Please run this: yapf -i -r .')
