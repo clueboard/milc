@@ -1,5 +1,6 @@
 bumpversion
 flake8
+gitchangelog
 hjson
 nose2
 pydoc-markdown

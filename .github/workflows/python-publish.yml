@@ -38,6 +38,11 @@ jobs:
     - name: Bump version
       run: |
         bumpversion ${{ github.event.inputs.version_part }}
+    - name: Generate changelog
+      run: |
+        gitchangelog > CHANGELOG.rst
+        git add CHANGELOG.rst
+        git commit -m'minor: changelog update'
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
