@@ -13,9 +13,15 @@ all the features users expect from a modern CLI tool out of the box:
 * Thread safety
 * More than 60 built-in [spinners](https://github.com/manrajgrover/py-spinners) with the ability to add your own
 
-# Breaking Changes
+# Installation
 
-MILC follows [Semantic Versioning](https://semver.org/). You can see a list of why we made major or minor releases on the [Breaking Changes](https://milc.clueboard.co/#/breaking_changes) page.
+MILC is available on pypi, you can use pip to install it:
+
+    python3 -m pip install milc
+
+# ChangeLog and Breaking Changes
+
+MILC follows [Semantic Versioning](https://semver.org/). You can view the [full changelog](https://github.com/clueboard/milc/blob/master/CHANGELOG.rst), or you can see a list of why we made major or minor releases on the [Breaking Changes](https://milc.clueboard.co/#/breaking_changes) page.
 
 # Documentation
 

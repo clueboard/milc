@@ -88,6 +88,15 @@ Print a help message for the main program or subcommand, depending on context.
 
 Print brief description of how the main program or subcommand is invoked, depending on context.
 
+<a name="milc.MILC.log_deprecated_warning"></a>
+#### log\_deprecated\_warning
+
+```python
+ | log_deprecated_warning(item_type, name, reason)
+```
+
+Logs a warning with a custom message if a argument or command is deprecated.
+
 <a name="milc.MILC.add_argument"></a>
 #### add\_argument
 
@@ -128,6 +137,7 @@ Release the MILC lock.
 #### find\_config\_file
 
 ```python
+ | @lru_cache(maxsize=None)
  | find_config_file()
 ```
 
@@ -155,7 +165,7 @@ Parse the CLI args.
 #### read\_config\_file
 
 ```python
- | read_config_file(config_file)
+ | read_config_file()
 ```
 
 Read in the configuration file and return Configuration objects for it and the config_source.
@@ -209,16 +219,24 @@ Execute the entrypoint function.
 #### entrypoint
 
 ```python
- | entrypoint(description)
+ | entrypoint(description, deprecated=None)
 ```
 
 Decorator that marks the entrypoint used when a subcommand is not supplied.
+
+**Arguments**:
+
+  description
+  A one-line description to display in --help
+  
+  deprecated
+  Deprecation message. When set the subcommand will marked as deprecated and this message will be displayed in the help output.
 
 <a name="milc.MILC.add_subcommand"></a>
 #### add\_subcommand
 
 ```python
- | add_subcommand(handler, description, hidden=False, **kwargs)
+ | add_subcommand(handler, description, hidden=False, deprecated=None, **kwargs)
 ```
 
 Register a subcommand.
@@ -234,6 +252,10 @@ Register a subcommand.
   
   hidden
   When True don't display this command in --help
+  
+  deprecated
+  Deprecation message. When set the subcommand will be marked as deprecated
+  and this message will be displayed in help output.
 
 <a name="milc.MILC.subcommand"></a>
 #### subcommand
