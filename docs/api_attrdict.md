@@ -1,7 +1,9 @@
 <a name="attrdict"></a>
+
 # attrdict
 
 <a name="attrdict.AttrDict"></a>
+
 ## AttrDict Objects
 
 ```python
@@ -11,6 +13,7 @@ class AttrDict(object)
 A dictionary that can also be accessed by attribute.
 
 <a name="attrdict.AttrDict.__getitem__"></a>
+
 #### \_\_getitem\_\_
 
 ```python
@@ -20,6 +23,7 @@ A dictionary that can also be accessed by attribute.
 Returns an item.
 
 <a name="attrdict.SparseAttrDict"></a>
+
 ## SparseAttrDict Objects
 
 ```python
@@ -32,6 +36,7 @@ This class never raises IndexError, instead it will return None if a
 key does not yet exist.
 
 <a name="attrdict.SparseAttrDict.__getitem__"></a>
+
 #### \_\_getitem\_\_
 
 ```python

@@ -1,7 +1,9 @@
 <a name="configuration"></a>
+
 # configuration
 
 <a name="configuration.Configuration"></a>
+
 ## Configuration Objects
 
 ```python
@@ -14,6 +16,7 @@ This class never raises IndexError, instead it will return None if a
 section or option does not yet exist.
 
 <a name="configuration.Configuration.__getitem__"></a>
+
 #### \_\_getitem\_\_
 
 ```python
@@ -23,6 +26,7 @@ section or option does not yet exist.
 Returns a config section, creating it if it doesn't exist yet.
 
 <a name="configuration.ConfigurationSection"></a>
+
 ## ConfigurationSection Objects
 
 ```python
@@ -30,6 +34,7 @@ class ConfigurationSection(Configuration)
 ```
 
 <a name="configuration.ConfigurationSection.__getitem__"></a>
+
 #### \_\_getitem\_\_
 
 ```python
@@ -40,6 +45,7 @@ Returns a config value, pulling from the `user` section as a fallback.
 This is called when the attribute is accessed either via the get method or through [ ] index.
 
 <a name="configuration.ConfigurationSection.__getattr__"></a>
+
 #### \_\_getattr\_\_
 
 ```python
@@ -50,6 +56,7 @@ Returns the config value from the `user` section.
 This is called when the attribute is accessed via dot notation but does not exist.
 
 <a name="configuration.ConfigurationSection.__setattr__"></a>
+
 #### \_\_setattr\_\_
 
 ```python
@@ -59,6 +66,7 @@ This is called when the attribute is accessed via dot notation but does not exis
 Sets dictionary value when an attribute is set.
 
 <a name="configuration.SubparserWrapper"></a>
+
 ## SubparserWrapper Objects
 
 ```python
@@ -68,6 +76,7 @@ class SubparserWrapper(object)
 Wrap subparsers so we can track what options the user passed.
 
 <a name="configuration.SubparserWrapper.completer"></a>
+
 #### completer
 
 ```python
@@ -77,6 +86,7 @@ Wrap subparsers so we can track what options the user passed.
 Add an arpcomplete completer to this subcommand.
 
 <a name="configuration.SubparserWrapper.add_argument"></a>
+
 #### add\_argument
 
 ```python
@@ -88,6 +98,7 @@ Add an argument for this subcommand.
 This also stores the default for the argument in `self.cli.default_arguments`.
 
 <a name="configuration.get_argument_name"></a>
+
 #### get\_argument\_name
 
 ```python
@@ -97,6 +108,7 @@ get_argument_name(self, *args, **kwargs)
 Takes argparse arguments and returns the dest name.
 
 <a name="configuration.handle_store_boolean"></a>
+
 #### handle\_store\_boolean
 
 ```python
