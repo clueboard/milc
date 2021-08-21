@@ -10,6 +10,7 @@
     * [Config Subcommand](subcommand_config.md)
     * [Logging](logging.md)
     * [Metadata](metadata.md)
+    * [Sparklines](sparklines.md)
     * [Spinners](spinners.md)
     * [Subprocesses](subprocesses.md)
     * [Thread Safety](threading.md)
