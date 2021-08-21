@@ -55,8 +55,12 @@ def sparkline(number_list, *, min_value=None, max_value=None, highlight_threshol
         positive_reset
             A MILC or ANSI color code to reset the color code applied in `positive_color`. This is usually `{fg_reset}`, `{bg_reset}`, or `{style_reset_all}`.
     """
-    min_value = min_value or min(filter(is_number, number_list))
-    max_value = max_value or max(filter(is_number, number_list))
+    if min_value is None:
+        min_value = min(filter(is_number, number_list))
+
+    if max_value is None:
+        max_value = max(filter(is_number, number_list))
+
     int_range = max_value - min_value
     sparks = []
 
