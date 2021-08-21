@@ -1,10 +1,6 @@
 extra:
   version:
     provider: mike
-plugins:
-  - search:
-      prebuild_index: true
-      separator: '[\s\-\_]+'
 markdown_extensions:
   - admonition
   - codehilite:
@@ -53,6 +49,10 @@ nav:
     - milc.questions: api_questions.md
     - milc._sparkline: api__sparkline.md
     - milc.subcommand.config: api_subcommand_config.md
+plugins:
+  - search:
+      prebuild_index: true
+      separator: '[\s\-\_]+'
 repo_name: clueboard/milc
 repo_url: https://github.com/clueboard/milc
 site_name: MILC - An Opinionated Batteries-Included Python 3 CLI Framework
@@ -65,7 +65,25 @@ theme:
     - search.highlight
     - search.share
     - search.suggest
+  font:
+    text: Comfortaa
+    code: Source Code Pro
   icon:
     repo: fontawesome/brands/github
   language: en
   name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: deep purple
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: deep purple
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
