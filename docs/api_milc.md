@@ -1,9 +1,7 @@
 <a name="milc"></a>
-
 # milc
 
 <a name="milc.MILC"></a>
-
 ## MILC Objects
 
 ```python
@@ -13,7 +11,6 @@ class MILC(object)
 MILC - An Opinionated Batteries Included Framework
 
 <a name="milc.MILC.__init__"></a>
-
 #### \_\_init\_\_
 
 ```python
@@ -23,7 +20,6 @@ MILC - An Opinionated Batteries Included Framework
 Initialize the MILC object.
 
 <a name="milc.MILC.echo"></a>
-
 #### echo
 
 ```python
@@ -39,7 +35,6 @@ strings.
 If *args or **kwargs are passed they will be used to %-format the strings.
 
 <a name="milc.MILC.run"></a>
-
 #### run
 
 ```python
@@ -67,7 +62,6 @@ The **kwargs arguments get passed directly to `subprocess.run`.
   Set to False to disable encoding and get `bytes()` from `.stdout` and `.stderr`.
 
 <a name="milc.MILC.initialize_argparse"></a>
-
 #### initialize\_argparse
 
 ```python
@@ -77,7 +71,6 @@ The **kwargs arguments get passed directly to `subprocess.run`.
 Prepare to process arguments from sys.argv.
 
 <a name="milc.MILC.print_help"></a>
-
 #### print\_help
 
 ```python
@@ -87,7 +80,6 @@ Prepare to process arguments from sys.argv.
 Print a help message for the main program or subcommand, depending on context.
 
 <a name="milc.MILC.print_usage"></a>
-
 #### print\_usage
 
 ```python
@@ -97,7 +89,6 @@ Print a help message for the main program or subcommand, depending on context.
 Print brief description of how the main program or subcommand is invoked, depending on context.
 
 <a name="milc.MILC.log_deprecated_warning"></a>
-
 #### log\_deprecated\_warning
 
 ```python
@@ -107,7 +98,6 @@ Print brief description of how the main program or subcommand is invoked, depend
 Logs a warning with a custom message if a argument or command is deprecated.
 
 <a name="milc.MILC.add_argument"></a>
-
 #### add\_argument
 
 ```python
@@ -117,7 +107,6 @@ Logs a warning with a custom message if a argument or command is deprecated.
 Wrapper to add arguments and track whether they were passed on the command line.
 
 <a name="milc.MILC.initialize_logging"></a>
-
 #### initialize\_logging
 
 ```python
@@ -127,7 +116,6 @@ Wrapper to add arguments and track whether they were passed on the command line.
 Prepare the defaults for the logging infrastructure.
 
 <a name="milc.MILC.acquire_lock"></a>
-
 #### acquire\_lock
 
 ```python
@@ -137,7 +125,6 @@ Prepare the defaults for the logging infrastructure.
 Acquire the MILC lock for exclusive access to properties.
 
 <a name="milc.MILC.release_lock"></a>
-
 #### release\_lock
 
 ```python
@@ -147,7 +134,6 @@ Acquire the MILC lock for exclusive access to properties.
 Release the MILC lock.
 
 <a name="milc.MILC.find_config_file"></a>
-
 #### find\_config\_file
 
 ```python
@@ -158,7 +144,6 @@ Release the MILC lock.
 Locate the config file.
 
 <a name="milc.MILC.argument"></a>
-
 #### argument
 
 ```python
@@ -168,7 +153,6 @@ Locate the config file.
 Decorator to call self.add_argument or self.<subcommand>.add_argument.
 
 <a name="milc.MILC.parse_args"></a>
-
 #### parse\_args
 
 ```python
@@ -178,7 +162,6 @@ Decorator to call self.add_argument or self.<subcommand>.add_argument.
 Parse the CLI args.
 
 <a name="milc.MILC.read_config_file"></a>
-
 #### read\_config\_file
 
 ```python
@@ -188,7 +171,6 @@ Parse the CLI args.
 Read in the configuration file and return Configuration objects for it and the config_source.
 
 <a name="milc.MILC.initialize_config"></a>
-
 #### initialize\_config
 
 ```python
@@ -198,7 +180,6 @@ Read in the configuration file and return Configuration objects for it and the c
 Read in the configuration file and store it in self.config.
 
 <a name="milc.MILC.merge_args_into_config"></a>
-
 #### merge\_args\_into\_config
 
 ```python
@@ -208,7 +189,6 @@ Read in the configuration file and store it in self.config.
 Merge CLI arguments into self.config to create the runtime configuration.
 
 <a name="milc.MILC.write_config_option"></a>
-
 #### write\_config\_option
 
 ```python
@@ -218,7 +198,6 @@ Merge CLI arguments into self.config to create the runtime configuration.
 Save a single config option to the config file.
 
 <a name="milc.MILC.save_config"></a>
-
 #### save\_config
 
 ```python
@@ -228,7 +207,6 @@ Save a single config option to the config file.
 Save the current configuration to the config file.
 
 <a name="milc.MILC.__call__"></a>
-
 #### \_\_call\_\_
 
 ```python
@@ -238,7 +216,6 @@ Save the current configuration to the config file.
 Execute the entrypoint function.
 
 <a name="milc.MILC.entrypoint"></a>
-
 #### entrypoint
 
 ```python
@@ -256,7 +233,6 @@ Decorator that marks the entrypoint used when a subcommand is not supplied.
   Deprecation message. When set the subcommand will marked as deprecated and this message will be displayed in the help output.
 
 <a name="milc.MILC.add_subcommand"></a>
-
 #### add\_subcommand
 
 ```python
@@ -282,7 +258,6 @@ Register a subcommand.
   and this message will be displayed in help output.
 
 <a name="milc.MILC.subcommand"></a>
-
 #### subcommand
 
 ```python
@@ -301,7 +276,6 @@ Decorator to register a subcommand.
   When True don't display this command in --help
 
 <a name="milc.MILC.setup_logging"></a>
-
 #### setup\_logging
 
 ```python
@@ -311,7 +285,6 @@ Decorator to register a subcommand.
 Called by __enter__() to setup the logging configuration.
 
 <a name="milc.MILC.is_spinner"></a>
-
 #### is\_spinner
 
 ```python
@@ -321,7 +294,6 @@ Called by __enter__() to setup the logging configuration.
 Returns true if name is a valid spinner.
 
 <a name="milc.MILC.add_spinner"></a>
-
 #### add\_spinner
 
 ```python
@@ -339,7 +311,6 @@ A spinner is a dictionary with two keys:
         A list of frames for this spinner
 
 <a name="milc.MILC.spinner"></a>
-
 #### spinner
 
 ```python

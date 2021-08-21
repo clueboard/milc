@@ -1,11 +1,9 @@
 <a name="subcommand.config"></a>
-
 # subcommand.config
 
 Read and write configuration settings
 
 <a name="subcommand.config.print_config"></a>
-
 #### print\_config
 
 ```python
@@ -15,7 +13,6 @@ print_config(section, key)
 Print a single config setting to stdout.
 
 <a name="subcommand.config.show_config"></a>
-
 #### show\_config
 
 ```python
@@ -25,7 +22,6 @@ show_config()
 Print the current configuration to stdout.
 
 <a name="subcommand.config.parse_config_token"></a>
-
 #### parse\_config\_token
 
 ```python
@@ -35,7 +31,6 @@ parse_config_token(config_token)
 Split a user-supplied configuration-token into its components.
 
 <a name="subcommand.config.set_config"></a>
-
 #### set\_config
 
 ```python
@@ -45,7 +40,6 @@ set_config(section, option, value)
 Set a config key in the running config.
 
 <a name="subcommand.config.config"></a>
-
 #### config
 
 ```python

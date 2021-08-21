@@ -22,4 +22,5 @@
     * [milc.emoji](api_emoji.md)
     * [milc.milc](api_milc.md)
     * [milc.questions](api_questions.md)
+    * [milc.sparkline](api_sparkline.md)
     * [milc.subcommand.config](api_subcommand_config.md)
