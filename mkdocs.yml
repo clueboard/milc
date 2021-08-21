@@ -1,3 +1,5 @@
+extra_css:
+  - stylesheets/milc.css
 extra:
   version:
     provider: mike
@@ -55,7 +57,7 @@ plugins:
       separator: '[\s\-\_]+'
 repo_name: clueboard/milc
 repo_url: https://github.com/clueboard/milc
-site_name: MILC - An Opinionated Batteries-Included Python 3 CLI Framework
+site_name: MILC &mdash; A Python 3 CLI Framework
 site_url: https://milc.clueboard.co/
 theme:
   features:
