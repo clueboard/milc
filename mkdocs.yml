@@ -68,7 +68,7 @@ theme:
     - search.share
     - search.suggest
   font:
-    text: Comfortaa
+    text: Varela Round
     code: Source Code Pro
   icon:
     repo: fontawesome/brands/github
