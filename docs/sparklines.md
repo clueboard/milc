@@ -1,6 +1,6 @@
 # Sparklines
 
-A sparkline is a tool for displaying numerical information in a very compact format. You can read more about them in [an article by Jon Udell](https://blog.jonudell.net/2021/08/05/the-tao-of-unicode-sparklines/).
+A sparkline is a tool for displaying numerical information in a very compact format. You can read more about the general concept on [the Wikipedia page](https://en.wikipedia.org/wiki/Sparkline) and read about Unicode sparklines specifically in [an article by Jon Udell](https://blog.jonudell.net/2021/08/05/the-tao-of-unicode-sparklines/).
 
 ## Usage
 
@@ -18,9 +18,27 @@ This will output the following text:
 ▆▃▄▇▄▆▇
 ```
 
+## Whitespace
+
+Any item in your sparkline sequence that is not an integer will be rendered as a blank space. It is recommended that you consistently use the same object for this purpose, I prefer `None`.
+
+Input:
+
+```python
+from milc import sparkline
+
+print(sparkline([3, 7, None, 2, 1])
+```
+
+Output:
+
+```
+▃█ ▂▁
+```
+
 ## Optimization
 
-If you need to optimize the performance of a sparkline, or you want to set the boundaries for your data, you can supply min and max values when creating your sparkline:
+If you need to optimize the performance of a sparkline, or you want to set the boundaries for your data, you can supply min and max values when creating your sparkline. This will avoid two iterations over the list to find min and max values.
 
 ```python
 from milc import sparkline
