@@ -234,22 +234,22 @@ Now that we've written our program and we have a better idea what is going
 on, let's explore how it works. We'll start by demonstrating it with no
 arguments passed.
 
-![Simple Output](https://i.imgur.com/Ms3G8Aw.png)
+![Simple Output](images/tutorial_example1.png)
 
 We'll demonstrate entering a subcommand here:
 
-![Hello Output](https://i.imgur.com/a9RjE8S.png)
+![Hello Output](images/tutorial_example2.png)
 
 So far so good. Now let's take a look at the help output:
 
-![Help Output](https://i.imgur.com/MR5TbHv.png)
+![Help Output](images/tutorial_example3.png)
 
 Finally, let's combine it all together to demonstrate the use of both
 general and subcommand flags:
 
-![Flag Output](https://i.imgur.com/0aGFcKc.png)
+![Flag Output](images/tutorial_example4.png)
 
-# Doing More
+## Doing More
 
 Our program does a lot in only a few lines, but there's a lot more you can
 do. Explore the rest of the documentation to see everything MILC can do.

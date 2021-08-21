@@ -12,7 +12,8 @@ from milc import cli
 
 You should only do this once, and you should do it as early in your program's execution as possible.
 
-!> Do not import `set_metadata` and `cli` at the same time! When you run `set_metadata` the `cli` object will be replaced, but your existing import will continue to reference the old `cli` object.
+!!! danger
+    Do not import `set_metadata` and `cli` at the same time! When you run `set_metadata` the `cli` object will be replaced, but your existing import will continue to reference the old `cli` object.
 
 ## Environment based setup
 
