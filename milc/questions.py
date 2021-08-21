@@ -156,7 +156,8 @@ def choice(heading, options, *args, default=None, confirm=False, prompt='Please 
 
     Users can enter either the number or the text of their choice.
 
-    !> This will return the value of the item they choose, not the numerical index.
+    !!! warning
+        This will return the value of the item they choose, not the numerical index.
     """
     if not args and kwargs:
         args = kwargs

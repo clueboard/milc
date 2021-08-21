@@ -37,7 +37,7 @@ def main(cli):
         build_ok = False
 
     cli.log.info('Running yapf...')
-    cmd = ['yapf', '-q', '-r', '.']
+    cmd = ['yapf', '-q', '-r', '--exclude', 'venv/**', '.']
     result = run(cmd, stdin=DEVNULL)
     if result.returncode != 0:
         build_ok = False

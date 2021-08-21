@@ -46,18 +46,6 @@ def main(cli):
         doc_file = doc_path / filename
         doc_file.write_text(result.stdout)
 
-    # Rebuild _summary.md
-    summary_file = doc_path / '_summary.md'
-    summary_text = summary_file.read_text(encoding='utf-8')
-    summary_end = summary_text.index(summary_demarc)
-    new_summary = [
-        summary_text[:summary_end],
-        summary_demarc,
-    ]
-
-    for module, doc_file in sorted(doc_files):
-        new_summary.append(f"    * [{module}]({doc_file})")
-
     if cli.args.commit:
         cli.run(['git', 'add', 'docs'], capture_output=False)
         cli.run(['git', 'commit', '-m', '[ci] Updated API documentation'], capture_output=False)

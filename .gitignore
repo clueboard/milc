@@ -6,3 +6,4 @@ build
 dist
 milc.egg-info
 .idea
+venv
