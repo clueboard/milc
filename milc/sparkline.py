@@ -2,6 +2,8 @@
 """Display sparklines from a sequence of ints.
 """
 
+from milc import cli
+
 spark_chars = '▁▂▃▄▅▆▇█'
 
 
@@ -10,18 +12,23 @@ def sparkline(ints, int_min=None, int_max=None):
     """
     int_min = int_min or min(ints)
     int_max = int_max or max(ints)
-    bucket_size = (int_max-int_min) / 8.0
-    buckets = [i * bucket_size for i in range(8)]
+    int_range = int_max - int_min
     sparks = []
 
     for i in ints:
-        if i < int_min:
+        if i is None:
+            sparks.append(' ')
+
+        if i < int_min or i > int_max:
+            cli.log.debug('Skipping out of bounds value %s', i)
             continue
 
-        for bucket_num, bucket in enumerate(buckets):
-            if i < bucket:
-                sparks.append(spark_chars[bucket_num - 1])
-                break
+        spark_char = (i-int_min) / int_range * 8
+
+        if spark_char > 7:
+            spark_char = 7
+
+        sparks.append(spark_chars[min([7, int((i-int_min) / int_range * 8)])])
 
     return ''.join(sparks)
 

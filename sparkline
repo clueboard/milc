@@ -13,7 +13,9 @@ from milc.sparkline import sparkline
 
 @cli.entrypoint('Show a sparkline.')
 def main(cli):
-    cli.log.info('This is a sparkline: %s', sparkline([5, 9, 3, 15, 11, 22, 1, 45, 11, 22, 15]))
+    cli.log.info('sparkline1: %s', sparkline([5, 9, 3, 15, 11, 22, 1, 45, 11, 22, 15]))
+    cli.log.info('sparkline2: %s', sparkline([0, 1, 19, 20]))
+    cli.log.info('sparkline3: %s', sparkline([0, 999, 4000, 4999, 7000, 7999]))
 
 
 if __name__ == '__main__':
