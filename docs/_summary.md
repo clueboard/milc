@@ -14,7 +14,7 @@
     * [Subprocesses](subprocesses.md)
     * [Thread Safety](threading.md)
     * [User Input](api_questions.md)
-<!-- DO NOT ADD OR CHANGE ANYTHING BELOW THIS LINE -->
+<!-- DO NOT ADD OR CHANGE ANYTHING BELOW THIS LINE UNLESS `generate-docs` CREATED NEW FILES -->
 * API Reference
     * [milc.ansi](api_ansi.md)
     * [milc.attrdict](api_attrdict.md)
@@ -22,5 +22,5 @@
     * [milc.emoji](api_emoji.md)
     * [milc.milc](api_milc.md)
     * [milc.questions](api_questions.md)
-    * [milc.sparkline](api_sparkline.md)
+    * [milc.sparkline](api__sparkline.md)
     * [milc.subcommand.config](api_subcommand_config.md)
