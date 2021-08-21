@@ -14,7 +14,7 @@ from milc import cli, sparkline
 def main(cli):
     cli.log.info('sparkline1: %s', sparkline([5, 9, 3, 15, None, 22, 0, 45, -11, -22, -15], positive_color='{fg_green}'))
     cli.log.info('sparkline2: %s', sparkline([0, 1, 19, 20]))
-    cli.log.info('sparkline3: %s', sparkline([0, 999, 4000, 4999, 7000, 7999]))
+    cli.log.info('sparkline3: %s', sparkline([0, 999, 4000, 4999, 7000, 7999], highlight_threshold=7001, highlight_color='{fg_magenta}'))
 
 
 if __name__ == '__main__':

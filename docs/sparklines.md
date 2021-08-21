@@ -36,6 +36,21 @@ Output:
 ▃█ ▂▁
 ```
 
+## Color
+
+By default your sparkline will be un-colored for positive numbers and red for negative numbers. You can change the colors for these by passing the following parameters:
+
+* `negative_color`
+* `negative_reset`
+* `positive_color`
+* `positive_reset`
+
+These accept [MILC color codes](ANSI.md#available-colors).
+
+## Highlight Color
+
+If you want to highlight datapoints that exceed a threshold you can do so by passing in `highlight_threshold`, `highlight_color`, and (optionally) `highlight_reset`. These accept [MILC color codes](ANSI.md#available-colors).
+
 ## Optimization
 
 If you need to optimize the performance of a sparkline, or you want to set the boundaries for your data, you can supply min and max values when creating your sparkline. This will avoid two iterations over the list to find min and max values.
