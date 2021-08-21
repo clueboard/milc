@@ -20,7 +20,7 @@ This will output the following text:
 
 ## Whitespace
 
-Any item in your sparkline sequence that is not an integer will be rendered as a blank space. It is recommended that you consistently use the same object for this purpose, I prefer `None`.
+Any item in your sparkline sequence that is not a number (`int`, `float`, or `decimal.Decimal`) will be rendered as a blank space. It is recommended that you consistently use the same object for this purpose, I prefer `None`.
 
 Input:
 
