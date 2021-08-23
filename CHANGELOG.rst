@@ -2,6 +2,20 @@ Changelog
 =========
 
 
+1.6.2 (2021-08-23)
+------------------
+- New release: 1.6.1 → 1.6.2. [Zach White]
+- Add the ability to highlight values below a threshold (#43) [Zach
+  White]
+
+  * add support for high and low thresholds
+
+  * update sparklines documentation
+
+  * update the sparkline api docs
+- Minor: changelog update. [Zach White]
+
+
 1.6.1 (2021-08-23)
 ------------------
 - New release: 1.6.0 → 1.6.1. [Zach White]
