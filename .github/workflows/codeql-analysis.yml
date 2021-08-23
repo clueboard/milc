@@ -14,11 +14,35 @@ name: "CodeQL"
 on:
   push:
     branches: [ master ]
+    paths:
+      - '**.py'
+      - ci_tests
+      - example
+      - hello
+      - milc-color
+      - passwd_complexity
+      - passwd_confirm
+      - questions
+      - setup.cfg
+      - sparkline
+      - spinner
+      - spinner_qmk
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ master ]
-  schedule:
-    - cron: '31 23 * * 2'
+    paths:
+      - '**.py'
+      - ci_tests
+      - example
+      - hello
+      - milc-color
+      - passwd_complexity
+      - passwd_confirm
+      - questions
+      - setup.cfg
+      - sparkline
+      - spinner
+      - spinner_qmk
 
 jobs:
   analyze:

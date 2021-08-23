@@ -6,6 +6,9 @@ name: Update Develop Docs
 on:
   push:
     branches: [ master ]
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
   workflow_dispatch:
 
 jobs:

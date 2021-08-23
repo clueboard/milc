@@ -2,12 +2,40 @@ name: MILC CI
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+    paths:
+      - '**.py'
+      - ci_tests
+      - example
+      - hello
+      - milc-color
+      - passwd_complexity
+      - passwd_confirm
+      - questions
+      - setup.cfg
+      - sparkline
+      - spinner
+      - spinner_qmk
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
+    paths:
+      - '**.py'
+      - ci_tests
+      - example
+      - hello
+      - milc-color
+      - passwd_complexity
+      - passwd_confirm
+      - questions
+      - setup.cfg
+      - sparkline
+      - spinner
+      - spinner_qmk
 
 jobs:
-  build:
+  ci_tests:
 
     runs-on: ubuntu-latest
     strategy:
