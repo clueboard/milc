@@ -1,9 +1,11 @@
-<a name="_sparkline"></a>
+<a id="_sparkline"></a>
+
 # \_sparkline
 
 Display sparklines from a sequence of numbers.
 
-<a name="_sparkline.is_number"></a>
+<a id="_sparkline.is_number"></a>
+
 #### is\_number
 
 ```python
@@ -12,7 +14,8 @@ is_number(i)
 
 Returns true if i is a number. Used to filter non-numbers from a list.
 
-<a name="_sparkline.sparkline"></a>
+<a id="_sparkline.sparkline"></a>
+
 #### sparkline
 
 ```python
