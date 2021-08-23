@@ -81,4 +81,4 @@ optional arguments:
 
 # Breaking Changes
 
-MILC follows [Semantic Versioning](https://semver.org/). You can see a list of why we made major or minor releases on the [Breaking Changes](https://milc.clueboard.co/#/breaking_changes) page.
+MILC follows [Semantic Versioning](https://semver.org/). You can see a list of why we made major or minor releases on the [Breaking Changes](breaking_changes.md) page.
