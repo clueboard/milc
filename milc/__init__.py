@@ -60,3 +60,7 @@ def set_metadata(*, name=APP_NAME, author=APP_AUTHOR, version=APP_VERSION):
     APP_VERSION = version
     APP_AUTHOR = author
     cli = MILC(name, version, author)
+
+
+# Extra stuff people can import
+from ._sparkline import sparkline  # noqa

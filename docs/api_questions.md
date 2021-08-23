@@ -1,11 +1,9 @@
 <a name="questions"></a>
-
 # questions
 
 Sometimes you need to ask the user a question. MILC provides basic functions for collecting and validating user input. You can find these in the `milc.questions` module.
 
 <a name="questions.yesno"></a>
-
 #### yesno
 
 ```python
@@ -29,7 +27,6 @@ If you add `--yes` and `--no` arguments to your program the user can answer ques
 ```
 
 <a name="questions.password"></a>
-
 #### password
 
 ```python
@@ -47,7 +44,6 @@ Securely receive a password from the user. Returns the password or None.
 | validate | This is an optional function that can be used to validate the password, EG to check complexity. It should return True or False and have the following signature:<br><br>`def function_name(answer):` |
 
 <a name="questions.question"></a>
-
 #### question
 
 ```python
@@ -65,7 +61,6 @@ Allow the user to type in a free-form string to answer.
 | validate | This is an optional function that can be used to validate the answer. It should return True or False and have the following signature:<br><br>`def function_name(answer, *args, **kwargs):` |
 
 <a name="questions.choice"></a>
-
 #### choice
 
 ```python

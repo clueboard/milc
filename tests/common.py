@@ -23,6 +23,6 @@ def check_returncode(result, expected=0):
 def check_assert(result, assertion):
     if not assertion:
         print('`%s` stdout:' % ' '.join(result.args))
-        print(result.stdout)
+        print(repr(result.stdout))
         print('returncode:', result.returncode)
         raise AssertionError
