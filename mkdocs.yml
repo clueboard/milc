@@ -1,0 +1,91 @@
+extra_css:
+  - stylesheets/milc.css
+extra:
+  version:
+    provider: mike
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - def_list
+  - fenced_code
+  - footnotes
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.keys
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.tasklist
+  - pymdownx.tilde
+  - sane_lists
+  - tables
+  - toc:
+      marker: ''
+      permalink: true
+      toc_depth: 3
+  - wikilinks
+nav:
+  - Home: README.md
+  - Breaking Changes: breaking_changes.md
+  - Installation: installation.md
+  - Tutorial: tutorial.md
+  - Features:
+    - ANSI: ANSI.md
+    - Argument (Tab) Completion: argcomplete.md
+    - Argument Parsing: argument_parsing.md
+    - Configuration: configuration.md
+    - Config Subcommand: subcommand_config.md
+    - Logging: logging.md
+    - Metadata: metadata.md
+    - Sparklines: sparklines.md
+    - Spinners: spinners.md
+    - Subprocesses: subprocesses.md
+    - Thread Safety: threading.md
+    - User Input: api_questions.md
+  - API Reference:
+    - milc.ansi: api_ansi.md
+    - milc.attrdict: api_attrdict.md
+    - milc.configuration: api_configuration.md
+    - milc.emoji: api_emoji.md
+    - milc.milc: api_milc.md
+    - milc.questions: api_questions.md
+    - milc._sparkline: api__sparkline.md
+    - milc.subcommand.config: api_subcommand_config.md
+plugins:
+  - search:
+      prebuild_index: true
+      separator: '[\s\-\_]+'
+repo_name: clueboard/milc
+repo_url: https://github.com/clueboard/milc
+site_name: MILC &mdash; A Python 3 CLI Framework
+site_url: https://milc.clueboard.co/
+theme:
+  features:
+    - navigation.expand
+    - navigation.instant
+    - navigation.sections
+    - search.highlight
+    - search.share
+    - search.suggest
+  font:
+    text: Varela Round
+    code: Source Code Pro
+  icon:
+    repo: fontawesome/brands/github
+  language: en
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: deep purple
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: deep purple
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode

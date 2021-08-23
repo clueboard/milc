@@ -1,5 +1,10 @@
+-r requirements.txt
 flake8
 hjson
+mike
+mkdocs-git-revision-date-plugin
+mkdocs-material
 nose2
+pygments
 semver
 yapf

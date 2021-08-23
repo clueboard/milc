@@ -125,7 +125,7 @@ Please follow this checklist before submitting a PR:
 
 * [ ] Format your code: `yapf -i -r .`
 * [ ] Generate docs: `./generate_docs`
-* [ ] Add any new doc files to `docs/_summary.md`
+* [ ] Add any new doc files to the `nav` section of `mkdocs.yml`
 * [ ] Run tests: `./ci_tests`
 
 # FAQ

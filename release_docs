@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Script to build and release the current documentation
+
+set -e
+set -x
+
+if [ "$1" = "devel" ]; then
+	mike deploy --push devel
+elif [ "$1" = "latest" ]; then
+	RELEASE_VERSION=$(grep 'current_version = ' setup.cfg | grep -o '[0-9].*' | cut -f 1,2 -d .)
+	mike deploy --push --update-aliases $RELEASE_VERSION latest
+else
+	echo "*** You must specify devel or latest!"
+	exit 1
+fi
