@@ -2,10 +2,18 @@
 
 This is a list of breaking changes that have been made to MILC. If your script stops working after a minor or major version upgrade this document will tell you how to fix it.
 
+# Version 1.6.0
+
+* Added support for [Sparklines](sparklines.md)
+* Moved documentation to [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/)
+  * Latest release documentation can always be found here: <https://milc.clueboard.co/latest>
+  * Latest in development documentation can always be found here: <https://milc.clueboard.co/devel>
+  * Legacy docsify documentation for MILC 1.5.0 can be found here: <https://milc.clueboard.co/1.5.0>
+
 # Version 1.5.0
 
 * Added `cli.config_dir` to find the location of the config directory.
-* [Arguments](https://milc.clueboard.co/#/argument_parsing?id=deprecated), [commands](https://milc.clueboard.co/#/api_milc?id=entrypoint), and [subcommands](https://milc.clueboard.co/#/api_milc?id=add_subcommand) can now be marked as deprecated.
+* [Arguments](argument_parsing.md#deprecated), [commands](api_milc.md#entrypoint), and [subcommands](api_milc.md#add_subcommand) can now be marked as deprecated.
 
 # Version 1.4.0
 
