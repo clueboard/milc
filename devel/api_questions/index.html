@@ -639,10 +639,10 @@
                   </a>
                 
                 
-                <p><a name="questions"></a></p>
+                <p><a id="questions"></a></p>
 <h1 id="questions">questions<a class="headerlink" href="#questions" title="Permanent link">&para;</a></h1>
 <p>Sometimes you need to ask the user a question. MILC provides basic functions for collecting and validating user input. You can find these in the <code>milc.questions</code> module.</p>
-<p><a name="questions.yesno"></a></p>
+<p><a id="questions.yesno"></a></p>
 <h4 id="yesno">yesno<a class="headerlink" href="#yesno" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="n">yesno</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
@@ -670,7 +670,7 @@
 <div class="highlight"><pre><span></span><code><span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;-y&#39;</span><span class="p">,</span> <span class="s1">&#39;--yes&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">arg_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Answer yes to all questions.&#39;</span><span class="p">)</span>
 <span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;--no&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">arg_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Answer no to all questions.&#39;</span><span class="p">)</span>
 </code></pre></div>
-<p><a name="questions.password"></a></p>
+<p><a id="questions.password"></a></p>
 <h4 id="password">password<a class="headerlink" href="#password" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="n">password</span><span class="p">(</span><span class="n">prompt</span><span class="o">=</span><span class="s1">&#39;Enter password:&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">confirm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">confirm_prompt</span><span class="o">=</span><span class="s1">&#39;Confirm password:&#39;</span><span class="p">,</span> <span class="n">confirm_limit</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
@@ -705,7 +705,7 @@
 </tr>
 </tbody>
 </table>
-<p><a name="questions.question"></a></p>
+<p><a id="questions.question"></a></p>
 <h4 id="question">question<a class="headerlink" href="#question" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="n">question</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">confirm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">answer_type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
@@ -740,7 +740,7 @@
 </tr>
 </tbody>
 </table>
-<p><a name="questions.choice"></a></p>
+<p><a id="questions.choice"></a></p>
 <h4 id="choice">choice<a class="headerlink" href="#choice" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="n">choice</span><span class="p">(</span><span class="n">heading</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">confirm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="s1">&#39;Please enter your choice: &#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>

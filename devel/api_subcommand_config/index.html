@@ -639,30 +639,30 @@
                   </a>
                 
                 
-                <p><a name="subcommand.config"></a></p>
+                <p><a id="subcommand.config"></a></p>
 <h1 id="subcommandconfig">subcommand.config<a class="headerlink" href="#subcommandconfig" title="Permanent link">&para;</a></h1>
 <p>Read and write configuration settings</p>
-<p><a name="subcommand.config.print_config"></a></p>
+<p><a id="subcommand.config.print_config"></a></p>
 <h4 id="print_config">print_config<a class="headerlink" href="#print_config" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="n">print_config</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
 </code></pre></div>
 <p>Print a single config setting to stdout.</p>
-<p><a name="subcommand.config.show_config"></a></p>
+<p><a id="subcommand.config.show_config"></a></p>
 <h4 id="show_config">show_config<a class="headerlink" href="#show_config" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="n">show_config</span><span class="p">()</span>
 </code></pre></div>
 <p>Print the current configuration to stdout.</p>
-<p><a name="subcommand.config.parse_config_token"></a></p>
+<p><a id="subcommand.config.parse_config_token"></a></p>
 <h4 id="parse_config_token">parse_config_token<a class="headerlink" href="#parse_config_token" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="n">parse_config_token</span><span class="p">(</span><span class="n">config_token</span><span class="p">)</span>
 </code></pre></div>
 <p>Split a user-supplied configuration-token into its components.</p>
-<p><a name="subcommand.config.set_config"></a></p>
+<p><a id="subcommand.config.set_config"></a></p>
 <h4 id="set_config">set_config<a class="headerlink" href="#set_config" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="n">set_config</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">option</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 </code></pre></div>
 <p>Set a config key in the running config.</p>
-<p><a name="subcommand.config.config"></a></p>
+<p><a id="subcommand.config.config"></a></p>
 <h4 id="config">config<a class="headerlink" href="#config" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="nd">@milc</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;-a&#39;</span><span class="p">,</span> <span class="s1">&#39;--all&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Show all configuration options.&#39;</span><span class="p">)</span>
 <span class="nd">@milc</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;-ro&#39;</span><span class="p">,</span> <span class="s1">&#39;--read-only&#39;</span><span class="p">,</span> <span class="n">arg_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Operate in read-only mode.&#39;</span><span class="p">)</span>

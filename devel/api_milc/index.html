@@ -710,19 +710,19 @@
                   </a>
                 
                 
-                <p><a name="milc"></a></p>
+                <p><a id="milc"></a></p>
 <h1 id="milc">milc<a class="headerlink" href="#milc" title="Permanent link">&para;</a></h1>
-<p><a name="milc.MILC"></a></p>
+<p><a id="milc.MILC"></a></p>
 <h2 id="milc-objects">MILC Objects<a class="headerlink" href="#milc-objects" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">MILC</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
 </code></pre></div>
 <p>MILC - An Opinionated Batteries Included Framework</p>
-<p><a name="milc.MILC.__init__"></a></p>
+<p><a id="milc.MILC.__init__"></a></p>
 <h4 id="__init__">__init__<a class="headerlink" href="#__init__" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">author</span><span class="p">)</span>
 </code></pre></div>
 <p>Initialize the MILC object.</p>
-<p><a name="milc.MILC.echo"></a></p>
+<p><a id="milc.MILC.echo"></a></p>
 <h4 id="echo">echo<a class="headerlink" href="#echo" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">echo</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
@@ -731,7 +731,7 @@
 escape sequences, and the ANSI reset sequence will be added to all
 strings.</p>
 <p>If <em>args or </em>*kwargs are passed they will be used to %-format the strings.</p>
-<p><a name="milc.MILC.run"></a></p>
+<p><a id="milc.MILC.run"></a></p>
 <h4 id="run">run<a class="headerlink" href="#run" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">run</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">combined_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
@@ -747,93 +747,93 @@ strings.</p>
   When true STDERR will be written to STDOUT. Equivalent to the shell construct <code>2&gt;&amp;1</code>.</p>
 <p>text
   Set to False to disable encoding and get <code>bytes()</code> from <code>.stdout</code> and <code>.stderr</code>.</p>
-<p><a name="milc.MILC.initialize_argparse"></a></p>
+<p><a id="milc.MILC.initialize_argparse"></a></p>
 <h4 id="initialize_argparse">initialize_argparse<a class="headerlink" href="#initialize_argparse" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">initialize_argparse</span><span class="p">()</span>
 </code></pre></div>
 <p>Prepare to process arguments from sys.argv.</p>
-<p><a name="milc.MILC.print_help"></a></p>
+<p><a id="milc.MILC.print_help"></a></p>
 <h4 id="print_help">print_help<a class="headerlink" href="#print_help" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">print_help</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
 <p>Print a help message for the main program or subcommand, depending on context.</p>
-<p><a name="milc.MILC.print_usage"></a></p>
+<p><a id="milc.MILC.print_usage"></a></p>
 <h4 id="print_usage">print_usage<a class="headerlink" href="#print_usage" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">print_usage</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
 <p>Print brief description of how the main program or subcommand is invoked, depending on context.</p>
-<p><a name="milc.MILC.log_deprecated_warning"></a></p>
+<p><a id="milc.MILC.log_deprecated_warning"></a></p>
 <h4 id="log_deprecated_warning">log_deprecated_warning<a class="headerlink" href="#log_deprecated_warning" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">log_deprecated_warning</span><span class="p">(</span><span class="n">item_type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span>
 </code></pre></div>
 <p>Logs a warning with a custom message if a argument or command is deprecated.</p>
-<p><a name="milc.MILC.add_argument"></a></p>
+<p><a id="milc.MILC.add_argument"></a></p>
 <h4 id="add_argument">add_argument<a class="headerlink" href="#add_argument" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
 <p>Wrapper to add arguments and track whether they were passed on the command line.</p>
-<p><a name="milc.MILC.initialize_logging"></a></p>
+<p><a id="milc.MILC.initialize_logging"></a></p>
 <h4 id="initialize_logging">initialize_logging<a class="headerlink" href="#initialize_logging" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">initialize_logging</span><span class="p">()</span>
 </code></pre></div>
 <p>Prepare the defaults for the logging infrastructure.</p>
-<p><a name="milc.MILC.acquire_lock"></a></p>
+<p><a id="milc.MILC.acquire_lock"></a></p>
 <h4 id="acquire_lock">acquire_lock<a class="headerlink" href="#acquire_lock" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">acquire_lock</span><span class="p">(</span><span class="n">blocking</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 <p>Acquire the MILC lock for exclusive access to properties.</p>
-<p><a name="milc.MILC.release_lock"></a></p>
+<p><a id="milc.MILC.release_lock"></a></p>
 <h4 id="release_lock">release_lock<a class="headerlink" href="#release_lock" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">release_lock</span><span class="p">()</span>
 </code></pre></div>
 <p>Release the MILC lock.</p>
-<p><a name="milc.MILC.find_config_file"></a></p>
+<p><a id="milc.MILC.find_config_file"></a></p>
 <h4 id="find_config_file">find_config_file<a class="headerlink" href="#find_config_file" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
  <span class="o">|</span> <span class="n">find_config_file</span><span class="p">()</span>
 </code></pre></div>
 <p>Locate the config file.</p>
-<p><a name="milc.MILC.argument"></a></p>
+<p><a id="milc.MILC.argument"></a></p>
 <h4 id="argument">argument<a class="headerlink" href="#argument" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">argument</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
 <p>Decorator to call self.add_argument or self.<subcommand>.add_argument.</p>
-<p><a name="milc.MILC.parse_args"></a></p>
+<p><a id="milc.MILC.parse_args"></a></p>
 <h4 id="parse_args">parse_args<a class="headerlink" href="#parse_args" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">parse_args</span><span class="p">()</span>
 </code></pre></div>
 <p>Parse the CLI args.</p>
-<p><a name="milc.MILC.read_config_file"></a></p>
+<p><a id="milc.MILC.read_config_file"></a></p>
 <h4 id="read_config_file">read_config_file<a class="headerlink" href="#read_config_file" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">read_config_file</span><span class="p">()</span>
 </code></pre></div>
 <p>Read in the configuration file and return Configuration objects for it and the config_source.</p>
-<p><a name="milc.MILC.initialize_config"></a></p>
+<p><a id="milc.MILC.initialize_config"></a></p>
 <h4 id="initialize_config">initialize_config<a class="headerlink" href="#initialize_config" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">initialize_config</span><span class="p">()</span>
 </code></pre></div>
 <p>Read in the configuration file and store it in self.config.</p>
-<p><a name="milc.MILC.merge_args_into_config"></a></p>
+<p><a id="milc.MILC.merge_args_into_config"></a></p>
 <h4 id="merge_args_into_config">merge_args_into_config<a class="headerlink" href="#merge_args_into_config" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">merge_args_into_config</span><span class="p">()</span>
 </code></pre></div>
 <p>Merge CLI arguments into self.config to create the runtime configuration.</p>
-<p><a name="milc.MILC.write_config_option"></a></p>
+<p><a id="milc.MILC.write_config_option"></a></p>
 <h4 id="write_config_option">write_config_option<a class="headerlink" href="#write_config_option" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">write_config_option</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">option</span><span class="p">)</span>
 </code></pre></div>
 <p>Save a single config option to the config file.</p>
-<p><a name="milc.MILC.save_config"></a></p>
+<p><a id="milc.MILC.save_config"></a></p>
 <h4 id="save_config">save_config<a class="headerlink" href="#save_config" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">save_config</span><span class="p">()</span>
 </code></pre></div>
 <p>Save the current configuration to the config file.</p>
-<p><a name="milc.MILC.__call__"></a></p>
+<p><a id="milc.MILC.__call__"></a></p>
 <h4 id="__call__">__call__<a class="headerlink" href="#__call__" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="fm">__call__</span><span class="p">()</span>
 </code></pre></div>
 <p>Execute the entrypoint function.</p>
-<p><a name="milc.MILC.entrypoint"></a></p>
+<p><a id="milc.MILC.entrypoint"></a></p>
 <h4 id="entrypoint">entrypoint<a class="headerlink" href="#entrypoint" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">entrypoint</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">deprecated</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
@@ -843,7 +843,7 @@ strings.</p>
   A one-line description to display in --help</p>
 <p>deprecated
   Deprecation message. When set the subcommand will marked as deprecated and this message will be displayed in the help output.</p>
-<p><a name="milc.MILC.add_subcommand"></a></p>
+<p><a id="milc.MILC.add_subcommand"></a></p>
 <h4 id="add_subcommand">add_subcommand<a class="headerlink" href="#add_subcommand" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">add_subcommand</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">deprecated</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
@@ -858,7 +858,7 @@ strings.</p>
 <p>deprecated
   Deprecation message. When set the subcommand will be marked as deprecated
   and this message will be displayed in help output.</p>
-<p><a name="milc.MILC.subcommand"></a></p>
+<p><a id="milc.MILC.subcommand"></a></p>
 <h4 id="subcommand">subcommand<a class="headerlink" href="#subcommand" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">subcommand</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
@@ -868,17 +868,17 @@ strings.</p>
   A one-line description to display in --help</p>
 <p>hidden
   When True don't display this command in --help</p>
-<p><a name="milc.MILC.setup_logging"></a></p>
+<p><a id="milc.MILC.setup_logging"></a></p>
 <h4 id="setup_logging">setup_logging<a class="headerlink" href="#setup_logging" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">setup_logging</span><span class="p">()</span>
 </code></pre></div>
 <p>Called by <strong>enter</strong>() to setup the logging configuration.</p>
-<p><a name="milc.MILC.is_spinner"></a></p>
+<p><a id="milc.MILC.is_spinner"></a></p>
 <h4 id="is_spinner">is_spinner<a class="headerlink" href="#is_spinner" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">is_spinner</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 </code></pre></div>
 <p>Returns true if name is a valid spinner.</p>
-<p><a name="milc.MILC.add_spinner"></a></p>
+<p><a id="milc.MILC.add_spinner"></a></p>
 <h4 id="add_spinner">add_spinner<a class="headerlink" href="#add_spinner" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">add_spinner</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">spinner</span><span class="p">)</span>
 </code></pre></div>
@@ -891,7 +891,7 @@ frames
     A list of frames for this spinner
 </code></pre></div>
 
-<p><a name="milc.MILC.spinner"></a></p>
+<p><a id="milc.MILC.spinner"></a></p>
 <h4 id="spinner">spinner<a class="headerlink" href="#spinner" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code> <span class="o">|</span> <span class="n">spinner</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">spinner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">animation</span><span class="o">=</span><span class="s1">&#39;ellipsed&#39;</span><span class="p">,</span> <span class="n">placement</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">interval</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
