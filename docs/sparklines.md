@@ -38,6 +38,10 @@ Output:
 
 ## Color
 
+MILC supports coloring your sparkline in two different ways. You can combine these for a total of 4 colors per sparkline.
+
+### Negative and Positive Numbers
+
 By default your sparkline will be un-colored for positive numbers and red for negative numbers. You can change the colors for these by passing the following parameters:
 
 * `negative_color`
@@ -47,9 +51,14 @@ By default your sparkline will be un-colored for positive numbers and red for ne
 
 These accept [MILC color codes](ANSI.md#available-colors).
 
-## Highlight Color
+### Highlight Color
 
-If you want to highlight datapoints that exceed a threshold you can do so by passing in `highlight_threshold`, `threshold_color`, and (optionally) `highlight_reset`. These accept [MILC color codes](ANSI.md#available-colors).
+If you want to highlight datapoints that higher or lower than a threshold you can do so by passing in `highlight_low`, `highlight_high`, and the associated color codes. These accept [MILC color codes](ANSI.md#available-colors).
+
+You will need to set a color for your highlight, one is not set by default. The correct arguments to pass for each are listed below. By default the reset codes are set to `{fg_reset}`. If you are setting other attributes too you will need to adjust this by passing the correct reset code as well.
+
+* `highlight_low`: `highlight_low_color` and `highlight_low_reset`
+* `highlight_high`: `highlight_high_color` and `highlight_high_reset`
 
 ## Optimization
 
