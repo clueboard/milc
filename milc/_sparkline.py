@@ -15,12 +15,12 @@ def is_number(i):
     return isinstance(i, (int, float, Decimal))
 
 
-def sparkline(number_list, *, min_value=None, max_value=None, highlight_threshold=inf, highlight_color='', negative_color='{fg_red}', positive_color='', highlight_reset='{fg_reset}', negative_reset='{fg_reset}', positive_reset='{fg_reset}'):
+def sparkline(number_list, *, min_value=None, max_value=None, highlight_threshold=inf, threshold_color='', negative_color='{fg_red}', positive_color='', highlight_reset='{fg_reset}', negative_reset='{fg_reset}', positive_reset='{fg_reset}'):
     """Display a sparkline from a sequence of numbers.
 
     If you wish to exclude extreme values, or you want to limit the set of characters used, you can adjust `min_value` and `max_value` to your own values. Values between your actual min/max will exclude datapoints, while values outside your actual min/max will compress your data into fewer sparks.
 
-    If you want to highlight data that is too high you can use `highlight_threshold` to set this. Any number in your list that exceeds that threshold will be colored with `highlight_color`.
+    If you want to highlight data that is too high you can use `highlight_threshold` to set this. Any number in your list that exceeds that threshold will be colored with `threshold_color`.
 
     By default this function will display negative numbers in red and positive numbers in the system default color. You can use `negative_color`, `negative_reset`, `positive_color`, and `positive_reset` to change this behavior.
 
@@ -35,9 +35,9 @@ def sparkline(number_list, *, min_value=None, max_value=None, highlight_threshol
             The highest value in your sparkline. If not provided it will be determined automatically.
 
         highlight_threshold
-            When a number is greater than this value it will be highlighted with `highlight_color`.
+            When a number is greater than this value it will be highlighted with `threshold_color`.
 
-        highlight_color
+        threshold_color
             A MILC or ANSI color code to apply to integers greater than highlight_threshold.
 
         negative_color
@@ -47,7 +47,7 @@ def sparkline(number_list, *, min_value=None, max_value=None, highlight_threshol
             A MILC or ANSI color code to apply to integers greater than 0.
 
         highlight_reset
-            A MILC or ANSI color code to reset the color code applied in `highlight_color`. This is usually `{fg_reset}`, `{bg_reset}`, or `{style_reset_all}`.
+            A MILC or ANSI color code to reset the color code applied in `threshold_color`. This is usually `{fg_reset}`, `{bg_reset}`, or `{style_reset_all}`.
 
         negative_reset
             A MILC or ANSI color code to reset the color code applied in `negative_color`. This is usually `{fg_reset}`, `{bg_reset}`, or `{style_reset_all}`.
@@ -89,7 +89,7 @@ def sparkline(number_list, *, min_value=None, max_value=None, highlight_threshol
             reset = negative_reset
 
         if i > highlight_threshold:
-            color = highlight_color
+            color = threshold_color
             reset = highlight_reset
 
         # Add this spark to the list

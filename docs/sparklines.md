@@ -49,7 +49,7 @@ These accept [MILC color codes](ANSI.md#available-colors).
 
 ## Highlight Color
 
-If you want to highlight datapoints that exceed a threshold you can do so by passing in `highlight_threshold`, `highlight_color`, and (optionally) `highlight_reset`. These accept [MILC color codes](ANSI.md#available-colors).
+If you want to highlight datapoints that exceed a threshold you can do so by passing in `highlight_threshold`, `threshold_color`, and (optionally) `highlight_reset`. These accept [MILC color codes](ANSI.md#available-colors).
 
 ## Optimization
 
