@@ -694,11 +694,11 @@
 <p>Returns true if i is a number. Used to filter non-numbers from a list.</p>
 <p><a id="_sparkline.sparkline"></a></p>
 <h4 id="sparkline">sparkline<a class="headerlink" href="#sparkline" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="n">sparkline</span><span class="p">(</span><span class="n">number_list</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">min_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">highlight_threshold</span><span class="o">=</span><span class="n">inf</span><span class="p">,</span> <span class="n">highlight_color</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">negative_color</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{fg_red}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">positive_color</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">highlight_reset</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{fg_reset}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">negative_reset</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{fg_reset}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">positive_reset</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{fg_reset}</span><span class="s1">&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">sparkline</span><span class="p">(</span><span class="n">number_list</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">min_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">highlight_threshold</span><span class="o">=</span><span class="n">inf</span><span class="p">,</span> <span class="n">threshold_color</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">negative_color</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{fg_red}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">positive_color</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">highlight_reset</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{fg_reset}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">negative_reset</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{fg_reset}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">positive_reset</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{fg_reset}</span><span class="s1">&#39;</span><span class="p">)</span>
 </code></pre></div>
 <p>Display a sparkline from a sequence of numbers.</p>
 <p>If you wish to exclude extreme values, or you want to limit the set of characters used, you can adjust <code>min_value</code> and <code>max_value</code> to your own values. Values between your actual min/max will exclude datapoints, while values outside your actual min/max will compress your data into fewer sparks.</p>
-<p>If you want to highlight data that is too high you can use <code>highlight_threshold</code> to set this. Any number in your list that exceeds that threshold will be colored with <code>highlight_color</code>.</p>
+<p>If you want to highlight data that is too high you can use <code>highlight_threshold</code> to set this. Any number in your list that exceeds that threshold will be colored with <code>threshold_color</code>.</p>
 <p>By default this function will display negative numbers in red and positive numbers in the system default color. You can use <code>negative_color</code>, <code>negative_reset</code>, <code>positive_color</code>, and <code>positive_reset</code> to change this behavior.</p>
 <p>If you wish to color your sparkline according to other rules it is recommended to generate it without color and then add color yourself.</p>
 <h3 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h3>
@@ -709,9 +709,9 @@ max_value
     The highest value in your sparkline. If not provided it will be determined automatically.
 
 highlight_threshold
-    When a number is greater than this value it will be highlighted with `highlight_color`.
+    When a number is greater than this value it will be highlighted with `threshold_color`.
 
-highlight_color
+threshold_color
     A MILC or ANSI color code to apply to integers greater than highlight_threshold.
 
 negative_color
@@ -721,7 +721,7 @@ positive_color
     A MILC or ANSI color code to apply to integers greater than 0.
 
 highlight_reset
-    A MILC or ANSI color code to reset the color code applied in `highlight_color`. This is usually `{fg_reset}`, `{bg_reset}`, or `{style_reset_all}`.
+    A MILC or ANSI color code to reset the color code applied in `threshold_color`. This is usually `{fg_reset}`, `{bg_reset}`, or `{style_reset_all}`.
 
 negative_reset
     A MILC or ANSI color code to reset the color code applied in `negative_color`. This is usually `{fg_reset}`, `{bg_reset}`, or `{style_reset_all}`.
