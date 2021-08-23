@@ -17,7 +17,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        ref: gh-pages
         fetch-depth: 0
 
     - name: Configure git
@@ -38,6 +37,4 @@ jobs:
 
     - name: Update docs
       run: |
-        git checkout master
-        git pull
         ./release_docs devel
