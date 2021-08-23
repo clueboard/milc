@@ -6,9 +6,9 @@ This is a list of breaking changes that have been made to MILC. If your script s
 
 * Added support for [Sparklines](sparklines.md)
 * Moved documentation to [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/)
-  * Latest release documentation can always be found here: <https://milc.clueboard.co/latest>
-  * Latest in development documentation can always be found here: <https://milc.clueboard.co/devel>
-  * Legacy docsify documentation for MILC 1.5.0 can be found here: <https://milc.clueboard.co/1.5.0>
+    * Latest release documentation can always be found here: <https://milc.clueboard.co/latest>
+    * Latest in development documentation can always be found here: <https://milc.clueboard.co/devel>
+    * Legacy docsify documentation for MILC 1.5.0 can be found here: <https://milc.clueboard.co/1.5.0>
 
 # Version 1.5.0
 
