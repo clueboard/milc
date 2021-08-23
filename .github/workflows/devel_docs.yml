@@ -17,8 +17,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        refs: gh-pages
-        fetch_depth: 0
+        ref: gh-pages
+        fetch-depth: 0
 
     - name: Configure git
       run: |
