@@ -36,7 +36,7 @@ def test_sparkline_negative_positive():
 def test_sparkline_negative_positive_threshold():
     """Ensure that negative, positive, and threshold numbers are highlighted.
     """
-    assert sparkline([-1, 0, 1, 2], highlight_threshold=1, highlight_color='{fg_magenta}', positive_color='{fg_green}') == '{fg_red}▁{fg_reset}{fg_green}▃{fg_reset}{fg_green}▆{fg_reset}{fg_magenta}█{fg_reset}'
+    assert sparkline([-1, 0, 1, 2], highlight_threshold=1, threshold_color='{fg_magenta}', positive_color='{fg_green}') == '{fg_red}▁{fg_reset}{fg_green}▃{fg_reset}{fg_green}▆{fg_reset}{fg_magenta}█{fg_reset}'
 
 
 def test_whitespace():
