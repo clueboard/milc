@@ -457,12 +457,25 @@
     Color
   </a>
   
+    <nav class="md-nav" aria-label="Color">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#negative-and-positive-numbers" class="md-nav__link">
+    Negative and Positive Numbers
+  </a>
+  
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#highlight-color" class="md-nav__link">
     Highlight Color
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -707,12 +720,25 @@
     Color
   </a>
   
+    <nav class="md-nav" aria-label="Color">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#negative-and-positive-numbers" class="md-nav__link">
+    Negative and Positive Numbers
+  </a>
+  
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#highlight-color" class="md-nav__link">
     Highlight Color
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -762,6 +788,8 @@
 <div class="highlight"><pre><span></span><code>▃█ ▂▁
 </code></pre></div>
 <h2 id="color">Color<a class="headerlink" href="#color" title="Permanent link">&para;</a></h2>
+<p>MILC supports coloring your sparkline in two different ways. You can combine these for a total of 4 colors per sparkline.</p>
+<h3 id="negative-and-positive-numbers">Negative and Positive Numbers<a class="headerlink" href="#negative-and-positive-numbers" title="Permanent link">&para;</a></h3>
 <p>By default your sparkline will be un-colored for positive numbers and red for negative numbers. You can change the colors for these by passing the following parameters:</p>
 <ul>
 <li><code>negative_color</code></li>
@@ -770,8 +798,13 @@
 <li><code>positive_reset</code></li>
 </ul>
 <p>These accept <a href="../ANSI/#available-colors">MILC color codes</a>.</p>
-<h2 id="highlight-color">Highlight Color<a class="headerlink" href="#highlight-color" title="Permanent link">&para;</a></h2>
-<p>If you want to highlight datapoints that exceed a threshold you can do so by passing in <code>highlight_threshold</code>, <code>threshold_color</code>, and (optionally) <code>highlight_reset</code>. These accept <a href="../ANSI/#available-colors">MILC color codes</a>.</p>
+<h3 id="highlight-color">Highlight Color<a class="headerlink" href="#highlight-color" title="Permanent link">&para;</a></h3>
+<p>If you want to highlight datapoints that higher or lower than a threshold you can do so by passing in <code>highlight_low</code>, <code>highlight_high</code>, and the associated color codes. These accept <a href="../ANSI/#available-colors">MILC color codes</a>.</p>
+<p>You will need to set a color for your highlight, one is not set by default. The correct arguments to pass for each are listed below. By default the reset codes are set to <code>{fg_reset}</code>. If you are setting other attributes too you will need to adjust this by passing the correct reset code as well.</p>
+<ul>
+<li><code>highlight_low</code>: <code>highlight_low_color</code> and <code>highlight_low_reset</code></li>
+<li><code>highlight_high</code>: <code>highlight_high_color</code> and <code>highlight_high_reset</code></li>
+</ul>
 <h2 id="optimization">Optimization<a class="headerlink" href="#optimization" title="Permanent link">&para;</a></h2>
 <p>If you need to optimize the performance of a sparkline, or you want to set the boundaries for your data, you can supply min and max values when creating your sparkline. This will avoid two iterations over the list to find min and max values.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">milc</span> <span class="kn">import</span> <span class="n">sparkline</span>
