@@ -35,6 +35,7 @@ def dashed_hello(cli):
 @cli.argument('--print-usage', action='store_true', help='Show a usage summary')
 @cli.argument('--print-help', action='store_true', help='Alias for --help')
 @cli.argument('--comma', help='comma in output', action='store_boolean', default=True)
+@cli.argument('--count', help='Number of times to say hello', type=int, default=1)
 @cli.subcommand('Say hello.')
 def hello(cli):
     """Say hello.
@@ -49,7 +50,8 @@ def hello(cli):
         return True
 
     comma = ',' if cli.config.hello.comma else ''
-    cli.echo('{fg_green}Hello%s %s!', comma, cli.config.general.name)
+    for i in range(cli.config.hello.count):
+        cli.echo('{fg_green}Hello%s %s!', comma, cli.config.general.name)
 
 
 @cli.argument('-e', '--env', completer=EnvironCompleter, help='Environment Variable')

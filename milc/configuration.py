@@ -84,7 +84,7 @@ class SubparserWrapper(object):
             del kwargs['completer']
 
         self.cli.acquire_lock()
-        argument_name = get_argument_name(self.cli, *args, **kwargs)
+        argument_name = get_argument_name(self.cli._arg_parser, *args, **kwargs)
 
         if completer:
             self.subparser.add_argument(*args, **kwargs).completer = completer
@@ -104,13 +104,22 @@ class SubparserWrapper(object):
         self.cli.release_lock()
 
 
-def get_argument_name(self, *args, **kwargs):
+def get_argument_strings(arg_parser, *args, **kwargs):
+    """Takes argparse arguments and returns a list of argument strings or positional names.
+    """
+    try:
+        return arg_parser._get_optional_kwargs(*args, **kwargs)['option_strings']
+    except ValueError:
+        return [arg_parser._get_positional_kwargs(*args, **kwargs)['dest']]
+
+
+def get_argument_name(arg_parser, *args, **kwargs):
     """Takes argparse arguments and returns the dest name.
     """
     try:
-        return self._arg_parser._get_optional_kwargs(*args, **kwargs)['dest']
+        return arg_parser._get_optional_kwargs(*args, **kwargs)['dest']
     except ValueError:
-        return self._arg_parser._get_positional_kwargs(*args, **kwargs)['dest']
+        return arg_parser._get_positional_kwargs(*args, **kwargs)['dest']
 
 
 def handle_store_boolean(self, *args, **kwargs):
@@ -119,7 +128,7 @@ def handle_store_boolean(self, *args, **kwargs):
     disabled_args = None
     disabled_kwargs = kwargs.copy()
     disabled_kwargs['action'] = 'store_false'
-    disabled_kwargs['dest'] = get_argument_name(getattr(self, 'cli', self), *args, **kwargs)
+    disabled_kwargs['dest'] = get_argument_name(getattr(self, 'cli', self)._arg_parser, *args, **kwargs)
     disabled_kwargs['help'] = 'Disable ' + kwargs['help']
     kwargs['action'] = 'store_true'
     kwargs['help'] = 'Enable ' + kwargs['help']

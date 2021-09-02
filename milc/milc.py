@@ -6,6 +6,7 @@ import os
 import subprocess
 import shlex
 import sys
+from configparser import RawConfigParser
 from decimal import Decimal
 from functools import lru_cache
 from pathlib import Path
@@ -13,15 +14,9 @@ from platform import platform
 from tempfile import NamedTemporaryFile
 
 try:
-    from ConfigParser import RawConfigParser
-except ImportError:
-    from configparser import RawConfigParser
-
-try:
-    import thread
     import threading
 except ImportError:
-    thread = None
+    threading = None
 
 import argcomplete
 import colorama
@@ -30,8 +25,8 @@ from halo import Halo
 from spinners.spinners import Spinners
 
 from .ansi import MILCFormatter, ansi_colors, ansi_config, ansi_escape, format_ansi
-from .configuration import Configuration, SubparserWrapper, get_argument_name, handle_store_boolean
 from .attrdict import AttrDict
+from .configuration import Configuration, SubparserWrapper, get_argument_name, get_argument_strings, handle_store_boolean
 
 
 class MILC(object):
@@ -41,7 +36,7 @@ class MILC(object):
         """Initialize the MILC object.
         """
         # Setup a lock for thread safety
-        self._lock = threading.RLock() if thread else None
+        self._lock = threading.RLock() if threading else None
 
         # Define some basic info
         self.acquire_lock()
@@ -173,6 +168,7 @@ class MILC(object):
         self._subparsers = None
         self.argwarn = argcomplete.warn
         self.args = AttrDict()
+        self.args_passed = AttrDict()
         self._arg_parser = argparse.ArgumentParser(**kwargs)
         self.set_defaults = self._arg_parser.set_defaults
         self.release_lock()
@@ -204,6 +200,10 @@ class MILC(object):
         if 'action' in kwargs and kwargs['action'] == 'store_boolean':
             return handle_store_boolean(self, *args, **kwargs)
 
+        arg_name = get_argument_name(self._arg_parser, *args, **kwargs)
+        arg_strings = get_argument_strings(self._arg_parser, *args, **kwargs)
+
+        # Handle tab completion
         completer = kwargs.get('completer')
 
         if 'completer' in kwargs:
@@ -216,9 +216,21 @@ class MILC(object):
         else:
             self._arg_parser.add_argument(*args, **kwargs)
 
+        # Record the default for this argument
         if 'general' not in self.default_arguments:
             self.default_arguments['general'] = {}
-        self.default_arguments['general'][get_argument_name(self, *args, **kwargs)] = kwargs.get('default')
+
+        self.default_arguments['general'][arg_name] = kwargs.get('default')
+
+        # Determine if it was passed on the command line
+        if 'general' not in self.args_passed:
+            self.args_passed['general'] = {}
+
+        self.args_passed['general'][arg_name] = False
+
+        for arg in arg_strings:
+            if arg in sys.argv:
+                self.args_passed['general'][arg_name] = True
 
         self.release_lock()
 
@@ -293,7 +305,8 @@ class MILC(object):
         def argument_function(handler):
             config_name = handler.__name__
             subcommand_name = config_name.replace("_", "-")
-            arg_name = get_argument_name(self, *args, **kwargs)
+            arg_name = get_argument_name(self._arg_parser, *args, **kwargs)
+            arg_strings = get_argument_strings(self._arg_parser, *args, **kwargs)
 
             if 'deprecated' in kwargs:
                 self._deprecated_arguments[arg_name] = kwargs['deprecated']
@@ -317,6 +330,15 @@ class MILC(object):
 
                 if self.config[config_name][arg_name] is None:
                     self.config[config_name][arg_name] = kwargs.get('default')
+
+                if config_name not in self.args_passed:
+                    self.args_passed[config_name] = {}
+
+                self.args_passed[config_name][arg_name] = False
+
+                for arg in arg_strings:
+                    if arg in sys.argv:
+                        self.args_passed[config_name][arg_name] = True
 
             if handler is self._entrypoint:
                 self.add_argument(*args, **kwargs)
@@ -408,22 +430,9 @@ class MILC(object):
             if argument not in self.arg_only or section not in self.arg_only[argument]:
                 # Determine the arg value and source
                 arg_value = getattr(self.args, argument)
-                passed_on_cmdline = False
-
-                if section in self.subcommands:
-                    default_value = self.subcommands[section].get_default(argument)
-                else:
-                    default_value = self._arg_parser.get_default(argument)
-
-                if argument in self._config_store_true and arg_value:
-                    passed_on_cmdline = True
-                elif argument in self._config_store_false and not arg_value:
-                    passed_on_cmdline = True
-                elif arg_value is not None and (self.config[section][argument] is None or arg_value != default_value):
-                    passed_on_cmdline = True
 
                 # Merge this argument into self.config
-                if passed_on_cmdline:
+                if (self.args_passed[section][argument] or (self.config[section][argument] is None) or (argument in self._config_store_true and arg_value) or (argument in self._config_store_false and not arg_value)):
                     self.config[section][argument] = arg_value
                     self.config_source[section][argument] = 'argument'
 
