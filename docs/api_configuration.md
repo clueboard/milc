@@ -20,7 +20,7 @@ section or option does not yet exist.
 #### \_\_getitem\_\_
 
 ```python
- | __getitem__(key)
+def __getitem__(key)
 ```
 
 Returns a config section, creating it if it doesn't exist yet.
@@ -38,7 +38,7 @@ class ConfigurationSection(Configuration)
 #### \_\_getitem\_\_
 
 ```python
- | __getitem__(key)
+def __getitem__(key)
 ```
 
 Returns a config value, pulling from the `user` section as a fallback.
@@ -49,7 +49,7 @@ This is called when the attribute is accessed either via the get method or throu
 #### \_\_getattr\_\_
 
 ```python
- | __getattr__(key)
+def __getattr__(key)
 ```
 
 Returns the config value from the `user` section.
@@ -60,7 +60,7 @@ This is called when the attribute is accessed via dot notation but does not exis
 #### \_\_setattr\_\_
 
 ```python
- | __setattr__(key, value)
+def __setattr__(key, value)
 ```
 
 Sets dictionary value when an attribute is set.
@@ -80,7 +80,7 @@ Wrap subparsers so we can track what options the user passed.
 #### completer
 
 ```python
- | completer(completer)
+def completer(completer)
 ```
 
 Add an arpcomplete completer to this subcommand.
@@ -90,19 +90,29 @@ Add an arpcomplete completer to this subcommand.
 #### add\_argument
 
 ```python
- | add_argument(*args, **kwargs)
+def add_argument(*args, **kwargs)
 ```
 
 Add an argument for this subcommand.
 
 This also stores the default for the argument in `self.cli.default_arguments`.
 
+<a id="configuration.get_argument_strings"></a>
+
+#### get\_argument\_strings
+
+```python
+def get_argument_strings(arg_parser, *args, **kwargs)
+```
+
+Takes argparse arguments and returns a list of argument strings or positional names.
+
 <a id="configuration.get_argument_name"></a>
 
 #### get\_argument\_name
 
 ```python
-get_argument_name(self, *args, **kwargs)
+def get_argument_name(arg_parser, *args, **kwargs)
 ```
 
 Takes argparse arguments and returns the dest name.
@@ -112,7 +122,7 @@ Takes argparse arguments and returns the dest name.
 #### handle\_store\_boolean
 
 ```python
-handle_store_boolean(self, *args, **kwargs)
+def handle_store_boolean(self, *args, **kwargs)
 ```
 
 Does the add_argument for action='store_boolean'.

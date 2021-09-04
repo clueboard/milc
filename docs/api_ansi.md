@@ -9,7 +9,7 @@ ANSI color support for MILC.
 #### format\_ansi
 
 ```python
-format_ansi(text)
+def format_ansi(text)
 ```
 
 Return a copy of text with certain strings replaced with ansi.

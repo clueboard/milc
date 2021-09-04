@@ -17,7 +17,7 @@ A dictionary that can also be accessed by attribute.
 #### \_\_getitem\_\_
 
 ```python
- | __getitem__(key)
+def __getitem__(key)
 ```
 
 Returns an item.
@@ -40,7 +40,7 @@ key does not yet exist.
 #### \_\_getitem\_\_
 
 ```python
- | __getitem__(key)
+def __getitem__(key)
 ```
 
 Returns an item, creating it if it doesn't already exist

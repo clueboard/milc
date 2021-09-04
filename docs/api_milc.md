@@ -17,7 +17,7 @@ MILC - An Opinionated Batteries Included Framework
 #### \_\_init\_\_
 
 ```python
- | __init__(name, version, author)
+def __init__(name, version, author)
 ```
 
 Initialize the MILC object.
@@ -27,7 +27,7 @@ Initialize the MILC object.
 #### echo
 
 ```python
- | echo(text, *args, **kwargs)
+def echo(text, *args, **kwargs)
 ```
 
 Print colorized text to stdout.
@@ -43,7 +43,7 @@ If *args or **kwargs are passed they will be used to %-format the strings.
 #### run
 
 ```python
- | run(command, capture_output=True, combined_output=False, text=True, **kwargs)
+def run(command, capture_output=True, combined_output=False, text=True, **kwargs)
 ```
 
 Run a command using `subprocess.run`, but using some different defaults.
@@ -71,7 +71,7 @@ The **kwargs arguments get passed directly to `subprocess.run`.
 #### initialize\_argparse
 
 ```python
- | initialize_argparse()
+def initialize_argparse()
 ```
 
 Prepare to process arguments from sys.argv.
@@ -81,7 +81,7 @@ Prepare to process arguments from sys.argv.
 #### print\_help
 
 ```python
- | print_help(*args, **kwargs)
+def print_help(*args, **kwargs)
 ```
 
 Print a help message for the main program or subcommand, depending on context.
@@ -91,7 +91,7 @@ Print a help message for the main program or subcommand, depending on context.
 #### print\_usage
 
 ```python
- | print_usage(*args, **kwargs)
+def print_usage(*args, **kwargs)
 ```
 
 Print brief description of how the main program or subcommand is invoked, depending on context.
@@ -101,7 +101,7 @@ Print brief description of how the main program or subcommand is invoked, depend
 #### log\_deprecated\_warning
 
 ```python
- | log_deprecated_warning(item_type, name, reason)
+def log_deprecated_warning(item_type, name, reason)
 ```
 
 Logs a warning with a custom message if a argument or command is deprecated.
@@ -111,7 +111,7 @@ Logs a warning with a custom message if a argument or command is deprecated.
 #### add\_argument
 
 ```python
- | add_argument(*args, **kwargs)
+def add_argument(*args, **kwargs)
 ```
 
 Wrapper to add arguments and track whether they were passed on the command line.
@@ -121,7 +121,7 @@ Wrapper to add arguments and track whether they were passed on the command line.
 #### initialize\_logging
 
 ```python
- | initialize_logging()
+def initialize_logging()
 ```
 
 Prepare the defaults for the logging infrastructure.
@@ -131,7 +131,7 @@ Prepare the defaults for the logging infrastructure.
 #### acquire\_lock
 
 ```python
- | acquire_lock(blocking=True)
+def acquire_lock(blocking=True)
 ```
 
 Acquire the MILC lock for exclusive access to properties.
@@ -141,7 +141,7 @@ Acquire the MILC lock for exclusive access to properties.
 #### release\_lock
 
 ```python
- | release_lock()
+def release_lock()
 ```
 
 Release the MILC lock.
@@ -151,8 +151,8 @@ Release the MILC lock.
 #### find\_config\_file
 
 ```python
- | @lru_cache(maxsize=None)
- | find_config_file()
+@lru_cache(maxsize=None)
+def find_config_file()
 ```
 
 Locate the config file.
@@ -162,7 +162,7 @@ Locate the config file.
 #### argument
 
 ```python
- | argument(*args, **kwargs)
+def argument(*args, **kwargs)
 ```
 
 Decorator to call self.add_argument or self.<subcommand>.add_argument.
@@ -172,7 +172,7 @@ Decorator to call self.add_argument or self.<subcommand>.add_argument.
 #### parse\_args
 
 ```python
- | parse_args()
+def parse_args()
 ```
 
 Parse the CLI args.
@@ -182,7 +182,7 @@ Parse the CLI args.
 #### read\_config\_file
 
 ```python
- | read_config_file()
+def read_config_file()
 ```
 
 Read in the configuration file and return Configuration objects for it and the config_source.
@@ -192,7 +192,7 @@ Read in the configuration file and return Configuration objects for it and the c
 #### initialize\_config
 
 ```python
- | initialize_config()
+def initialize_config()
 ```
 
 Read in the configuration file and store it in self.config.
@@ -202,7 +202,7 @@ Read in the configuration file and store it in self.config.
 #### merge\_args\_into\_config
 
 ```python
- | merge_args_into_config()
+def merge_args_into_config()
 ```
 
 Merge CLI arguments into self.config to create the runtime configuration.
@@ -212,7 +212,7 @@ Merge CLI arguments into self.config to create the runtime configuration.
 #### write\_config\_option
 
 ```python
- | write_config_option(section, option)
+def write_config_option(section, option)
 ```
 
 Save a single config option to the config file.
@@ -222,7 +222,7 @@ Save a single config option to the config file.
 #### save\_config
 
 ```python
- | save_config()
+def save_config()
 ```
 
 Save the current configuration to the config file.
@@ -232,7 +232,7 @@ Save the current configuration to the config file.
 #### \_\_call\_\_
 
 ```python
- | __call__()
+def __call__()
 ```
 
 Execute the entrypoint function.
@@ -242,7 +242,7 @@ Execute the entrypoint function.
 #### entrypoint
 
 ```python
- | entrypoint(description, deprecated=None)
+def entrypoint(description, deprecated=None)
 ```
 
 Decorator that marks the entrypoint used when a subcommand is not supplied.
@@ -260,7 +260,7 @@ Decorator that marks the entrypoint used when a subcommand is not supplied.
 #### add\_subcommand
 
 ```python
- | add_subcommand(handler, description, hidden=False, deprecated=None, **kwargs)
+def add_subcommand(handler, description, hidden=False, deprecated=None, **kwargs)
 ```
 
 Register a subcommand.
@@ -286,7 +286,7 @@ Register a subcommand.
 #### subcommand
 
 ```python
- | subcommand(description, hidden=False, **kwargs)
+def subcommand(description, hidden=False, **kwargs)
 ```
 
 Decorator to register a subcommand.
@@ -305,7 +305,7 @@ Decorator to register a subcommand.
 #### setup\_logging
 
 ```python
- | setup_logging()
+def setup_logging()
 ```
 
 Called by __enter__() to setup the logging configuration.
@@ -315,7 +315,7 @@ Called by __enter__() to setup the logging configuration.
 #### is\_spinner
 
 ```python
- | is_spinner(name)
+def is_spinner(name)
 ```
 
 Returns true if name is a valid spinner.
@@ -325,7 +325,7 @@ Returns true if name is a valid spinner.
 #### add\_spinner
 
 ```python
- | add_spinner(name, spinner)
+def add_spinner(name, spinner)
 ```
 
 Adds a new spinner to the list of spinners.
@@ -343,7 +343,7 @@ A spinner is a dictionary with two keys:
 #### spinner
 
 ```python
- | spinner(text, *args, *, spinner=None, animation='ellipsed', placement='left', color='blue', interval=-1, stream=sys.stdout, enabled=True, **kwargs)
+def spinner(text, *args, *, spinner=None, animation='ellipsed', placement='left', color='blue', interval=-1, stream=sys.stdout, enabled=True, **kwargs)
 ```
 
 Create a spinner object for showing activity to the user.
