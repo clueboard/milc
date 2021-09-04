@@ -2,6 +2,14 @@ Changelog
 =========
 
 
+1.6.3 (2021-09-04)
+------------------
+- New release: 1.6.2 → 1.6.3. [Zach White]
+- [ci] Updated API documentation. [Zach White]
+- More robust detection for passed arguments (#44) [Zach White]
+- Minor: changelog update. [Zach White]
+
+
 1.6.2 (2021-08-23)
 ------------------
 - New release: 1.6.1 → 1.6.2. [Zach White]
