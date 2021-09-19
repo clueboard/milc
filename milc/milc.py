@@ -432,9 +432,12 @@ class MILC(object):
                 arg_value = getattr(self.args, argument)
 
                 # Merge this argument into self.config
-                if (self.args_passed[section][argument] or (self.config[section][argument] is None) or (argument in self._config_store_true and arg_value) or (argument in self._config_store_false and not arg_value)):
+                if self.args_passed[section][argument] or (argument in self._config_store_true and arg_value) or (argument in self._config_store_false and not arg_value):
                     self.config[section][argument] = arg_value
                     self.config_source[section][argument] = 'argument'
+                elif self.config[section][argument] is None:
+                    # Capture the default value
+                    self.config[section][argument] = arg_value
 
         self.release_lock()
 
