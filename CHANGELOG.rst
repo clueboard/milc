@@ -2,6 +2,16 @@ Changelog
 =========
 
 
+1.6.5 (2021-09-19)
+------------------
+- New release: 1.6.4 → 1.6.5. [Zach White]
+- Fix a bug in cli.config_source. [Zach White]
+
+  Before this change arguments that weren't passed were incorrectly marked
+  as `argument` instead of None.
+- Minor: changelog update. [Zach White]
+
+
 1.6.4 (2021-09-19)
 ------------------
 - New release: 1.6.3 → 1.6.4. [Zach White]
