@@ -2,6 +2,13 @@ Changelog
 =========
 
 
+1.6.4 (2021-09-19)
+------------------
+- New release: 1.6.3 → 1.6.4. [Zach White]
+- Change cli.echo to display ansi in passed vars too. [Zach White]
+- Minor: changelog update. [Zach White]
+
+
 1.6.3 (2021-09-04)
 ------------------
 - New release: 1.6.2 → 1.6.3. [Zach White]
