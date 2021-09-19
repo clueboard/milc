@@ -12,7 +12,7 @@ For more details see the MILC documentation:
 
     <https://github.com/clueboard/milc/tree/master/docs>
 """
-__VERSION__ = '1.6.4'
+__VERSION__ = '1.6.5'
 
 import logging
 import os
