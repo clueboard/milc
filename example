@@ -7,7 +7,7 @@ import os
 
 from milc import set_metadata
 
-set_metadata(name='example', author='Milc Milcenson', version='1.6.3')
+set_metadata(name='example', author='Milc Milcenson', version='1.6.4')
 
 from milc import cli
 import milc.subcommand.config  # noqa
