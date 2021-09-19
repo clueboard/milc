@@ -90,12 +90,12 @@ class MILC(object):
             raise RuntimeError('You can only specify *args or **kwargs, not both!')
 
         args = args or kwargs
-        text = format_ansi(text)
+        text = format_ansi(text % args)
 
         if not self.config.general.color:
             text = ansi_escape.sub('', text)
 
-        print(text % args)
+        print(text)
 
     def run(self, command, capture_output=True, combined_output=False, text=True, **kwargs):
         """Run a command using `subprocess.run`, but using some different defaults.
