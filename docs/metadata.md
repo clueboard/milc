@@ -5,7 +5,7 @@ In order to initialize some things, such as the configuration file location and 
 ```python
 from milc import set_metadata
 
-set_metadata('Florzelbop', '1.0.0', 'Jane Doe')
+set_metadata(name='Florzelbop', version='1.0.0', author='Jane Doe')
 
 from milc import cli
 ```
