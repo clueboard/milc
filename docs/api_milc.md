@@ -43,7 +43,11 @@ If *args or **kwargs are passed they will be used to %-format the strings.
 #### run
 
 ```python
-def run(command, capture_output=True, combined_output=False, text=True, **kwargs)
+def run(command,
+        capture_output=True,
+        combined_output=False,
+        text=True,
+        **kwargs)
 ```
 
 Run a command using `subprocess.run`, but using some different defaults.
@@ -260,7 +264,11 @@ Decorator that marks the entrypoint used when a subcommand is not supplied.
 #### add\_subcommand
 
 ```python
-def add_subcommand(handler, description, hidden=False, deprecated=None, **kwargs)
+def add_subcommand(handler,
+                   description,
+                   hidden=False,
+                   deprecated=None,
+                   **kwargs)
 ```
 
 Register a subcommand.
@@ -343,7 +351,16 @@ A spinner is a dictionary with two keys:
 #### spinner
 
 ```python
-def spinner(text, *args, *, spinner=None, animation='ellipsed', placement='left', color='blue', interval=-1, stream=sys.stdout, enabled=True, **kwargs)
+def spinner(text,
+            *args,
+            spinner=None,
+            animation='ellipsed',
+            placement='left',
+            color='blue',
+            interval=-1,
+            stream=sys.stdout,
+            enabled=True,
+            **kwargs)
 ```
 
 Create a spinner object for showing activity to the user.

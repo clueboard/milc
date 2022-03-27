@@ -19,7 +19,20 @@ Returns true if i is a number. Used to filter non-numbers from a list.
 #### sparkline
 
 ```python
-def sparkline(number_list, *, min_value=None, max_value=None, highlight_low=-inf, highlight_high=inf, highlight_low_color='', highlight_high_color='', negative_color='{fg_red}', positive_color='', highlight_low_reset='{fg_reset}', highlight_high_reset='{fg_reset}', negative_reset='{fg_reset}', positive_reset='{fg_reset}')
+def sparkline(number_list,
+              *,
+              min_value=None,
+              max_value=None,
+              highlight_low=-inf,
+              highlight_high=inf,
+              highlight_low_color='',
+              highlight_high_color='',
+              negative_color='{fg_red}',
+              positive_color='',
+              highlight_low_reset='{fg_reset}',
+              highlight_high_reset='{fg_reset}',
+              negative_reset='{fg_reset}',
+              positive_reset='{fg_reset}')
 ```
 
 Display a sparkline from a sequence of numbers.

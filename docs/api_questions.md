@@ -9,7 +9,7 @@ Sometimes you need to ask the user a question. MILC provides basic functions for
 #### yesno
 
 ```python
-def yesno(prompt, *args, *, default=None, **kwargs)
+def yesno(prompt, *args, default=None, **kwargs)
 ```
 
 Displays `prompt` to the user and gets a yes or no response.
@@ -33,7 +33,13 @@ If you add `--yes` and `--no` arguments to your program the user can answer ques
 #### password
 
 ```python
-def password(prompt='Enter password:', *args, *, confirm=False, confirm_prompt='Confirm password:', confirm_limit=3, validate=None, **kwargs)
+def password(prompt='Enter password:',
+             *args,
+             confirm=False,
+             confirm_prompt='Confirm password:',
+             confirm_limit=3,
+             validate=None,
+             **kwargs)
 ```
 
 Securely receive a password from the user. Returns the password or None.
@@ -51,7 +57,13 @@ Securely receive a password from the user. Returns the password or None.
 #### question
 
 ```python
-def question(prompt, *args, *, default=None, confirm=False, answer_type=str, validate=None, **kwargs)
+def question(prompt,
+             *args,
+             default=None,
+             confirm=False,
+             answer_type=str,
+             validate=None,
+             **kwargs)
 ```
 
 Allow the user to type in a free-form string to answer.
@@ -69,7 +81,13 @@ Allow the user to type in a free-form string to answer.
 #### choice
 
 ```python
-def choice(heading, options, *args, *, default=None, confirm=False, prompt='Please enter your choice: ', **kwargs)
+def choice(heading,
+           options,
+           *args,
+           default=None,
+           confirm=False,
+           prompt='Please enter your choice: ',
+           **kwargs)
 ```
 
 Present the user with a list of options and let them select one.
