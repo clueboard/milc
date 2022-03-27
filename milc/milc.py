@@ -27,6 +27,7 @@ from spinners.spinners import Spinners
 from .ansi import MILCFormatter, ansi_colors, ansi_config, ansi_escape, format_ansi
 from .attrdict import AttrDict
 from .configuration import Configuration, SubparserWrapper, get_argument_name, get_argument_strings, handle_store_boolean
+from ._in_argv import _in_argv, _index_argv
 
 
 class MILC(object):
@@ -229,7 +230,7 @@ class MILC(object):
         self.args_passed['general'][arg_name] = False
 
         for arg in arg_strings:
-            if arg in sys.argv:
+            if _in_argv(arg):
                 self.args_passed['general'][arg_name] = True
 
         self.release_lock()
@@ -288,8 +289,8 @@ class MILC(object):
     def find_config_file(self):
         """Locate the config file.
         """
-        if '--config-file' in sys.argv:
-            return Path(sys.argv[sys.argv.index('--config-file') + 1]).expanduser().resolve()
+        if _in_argv('--config-file'):
+            return Path(sys.argv[_index_argv('--config-file') + 1]).expanduser().resolve()
 
         filedir = user_config_dir(appname=self.prog_name, appauthor=self.author)
         filename = '%s.ini' % self.prog_name
@@ -337,7 +338,7 @@ class MILC(object):
                 self.args_passed[config_name][arg_name] = False
 
                 for arg in arg_strings:
-                    if arg in sys.argv:
+                    if _in_argv(arg):
                         self.args_passed[config_name][arg_name] = True
 
             if handler is self._entrypoint:
@@ -511,7 +512,8 @@ class MILC(object):
                 msg = self._deprecated_commands[name]
                 self.log_deprecated_warning('Subcommand', name, msg)
 
-        deprecated_args_passed = [arg.replace('-', '') for arg in sys.argv if arg.replace('-', '') in self._deprecated_arguments]
+        # FIXME(skullydazed): This should be simplified
+        deprecated_args_passed = [arg.replace('-', '') for arg in sys.argv if arg.split('=')[0].replace('-', '') in self._deprecated_arguments]
 
         for arg in deprecated_args_passed:
             msg = self._deprecated_arguments[arg]
