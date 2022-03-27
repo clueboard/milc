@@ -2,6 +2,15 @@ Changelog
 =========
 
 
+1.6.6 (2022-03-27)
+------------------
+- New release: 1.6.5 → 1.6.6. [Zach White]
+- [ci] Updated API documentation. [Zach White]
+- Support --foo=bar options. Fixes #65. [Zach White]
+- Fix the metadata documentation. [Zach White]
+- Minor: changelog update. [Zach White]
+
+
 1.6.5 (2021-09-19)
 ------------------
 - New release: 1.6.4 → 1.6.5. [Zach White]
