@@ -290,7 +290,18 @@ class MILC(object):
         """Locate the config file.
         """
         if _in_argv('--config-file'):
-            return Path(sys.argv[_index_argv('--config-file') + 1]).expanduser().resolve()
+            config_file_index = _index_argv('--config-file')
+            config_file_param = sys.argv[config_file_index]
+            
+            if '=' in config_file_param:
+                # get the file name from the '=' assignment
+                opt, config_file = config_file_param.split('=')
+                
+            else:
+                # assume the file name is next space-sep arg
+                config_file = sys.argv[config_file_index + 1]
+                
+            return Path(config_file).expanduser().resolve()
 
         filedir = user_config_dir(appname=self.prog_name, appauthor=self.author)
         filename = '%s.ini' % self.prog_name
