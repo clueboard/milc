@@ -287,26 +287,40 @@ class MILC(object):
 
     @lru_cache(maxsize=None)
     def find_config_file(self):
-        """Locate the config file.
+        """Return an absolute path to the config file so we can read and write configurations.
+
+        Valid argument values for --config-file=CONFIG_FILE include:
+        * a relative or absolute filename e.g. "./config/mycli/myconfig.ini" or "~/.config/mycli/myconfig.ini"
+        * a filename relative to user config dir e.g. "myconfig.ini"
+        * a file basename, sans .ini, in the user config dir e.g. "myconfig"
         """
+        config_dir = user_config_dir(appname=self.prog_name, appauthor=self.author)
         if _in_argv('--config-file'):
             config_file_index = _index_argv('--config-file')
             config_file_param = sys.argv[config_file_index]
-            
             if '=' in config_file_param:
                 # get the file name from the '=' assignment
                 opt, config_file = config_file_param.split('=')
-                
             else:
                 # assume the file name is next space-sep arg
                 config_file = sys.argv[config_file_index + 1]
-                
-            return Path(config_file).expanduser().resolve()
+            # don't assume the file exists at a fully-resolved path
+            config_file_path = Path(config_file).expanduser()
+            # try fully-resolved path
+            if config_file_path.resolve().exists():
+                return config_file_path.resolve()
+            # try relative to config_dir
+            elif Path(config_dir / config_file_path).resolve().exists():
+                return Path(config_dir / config_file_path).resolve()
+            # try appending .ini
+            elif Path(f"{config_dir}/{config_file_path}.ini").resolve().exists():
+                return Path(f"{config_dir}/{config_file_path}.ini").resolve()
+            # use default config file
+        else:
+            filename = '%s.ini' % self.prog_name
+            config_file_path = Path(config_dir, filename).resolve()
 
-        filedir = user_config_dir(appname=self.prog_name, appauthor=self.author)
-        filename = '%s.ini' % self.prog_name
-
-        return Path(filedir, filename).resolve()
+        return config_file_path
 
     def argument(self, *args, **kwargs):
         """Decorator to call self.add_argument or self.<subcommand>.add_argument.
