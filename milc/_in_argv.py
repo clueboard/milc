@@ -16,8 +16,13 @@ def _index_argv(argument):
 
     Since long options can be passed as either '--option value' or '--option=value' we need to check for both forms.
     """
-    for i, arg in enumerate(sys.argv):
-        if arg.split('=')[0] == argument:
-            return i
+    if argument.startswith('--'):
+        for i, arg in enumerate(sys.argv):
+            if arg.split('=')[0] == argument:
+                return i
+    else:
+        for i, arg in enumerate(sys.argv):
+            if arg.startswith(argument):
+                return i
 
     return None
