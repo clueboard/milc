@@ -6,9 +6,7 @@ def _in_argv(argument):
 
     Since long options can be passed as either '--option value' or '--option=value' we need to check for both forms.
     """
-    for arg in sys.argv:
-        if arg.split('=')[0] == argument:
-            return True
+    return _index_argv(argument) is not None
 
     return False
 
