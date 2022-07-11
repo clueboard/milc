@@ -5,6 +5,8 @@ def _in_argv(argument):
     """Returns true if the argument is found is sys.argv.
 
     Since long options can be passed as either '--option value' or '--option=value' we need to check for both forms.
+
+    Similarly, for short options that take an argument, the "-jX" (single positional argument) style must be handled.
     """
     return _index_argv(argument) is not None
 
@@ -15,6 +17,8 @@ def _index_argv(argument):
     """Returns the location of the argument in sys.argv, or None.
 
     Since long options can be passed as either '--option value' or '--option=value' we need to check for both forms.
+
+    Similarly, for short options that take an argument, the "-jX" (single positional argument) style must be handled.
     """
     if argument.startswith('--'):
         for i, arg in enumerate(sys.argv):
