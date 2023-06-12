@@ -39,7 +39,7 @@ if 'MILC_IGNORE_DEPRECATED' not in os.environ:
         if name in os.environ:
             warnings.warn(f'Using {name} is deprecated and will not be supported in the future, please use set_metadata() instead.', stacklevel=2)
 
-logging.basicConfig(stream=os.devnull)  # Disable logging until we can configure it how the user wants
+logging.basicConfig(filename=os.devnull)  # Disable logging until we can configure it how the user wants
 
 cli = MILC(APP_NAME, APP_VERSION, APP_AUTHOR)
 
