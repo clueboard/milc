@@ -10,7 +10,7 @@ EMOJI_LEVELS = ('CRITICAL', 'ERROR', 'FATAL', 'WARN', 'WARNING', 'INFO', 'DEBUG'
 def test_version():
     """Make sure that version matches semver.
     """
-    assert semver.VersionInfo.isvalid(milc.__VERSION__)
+    assert semver.VersionInfo.is_valid(milc.__VERSION__)
 
 
 def test_emojis():
