@@ -11,7 +11,7 @@ Emoji used by MILC when outputting logs
 | `WARNING` | `{fg_yellow}⚠` |
 | `INFO` | `{fg_blue}ℹ` |
 | `DEBUG` | `{fg_cyan}☐` |
-| `NOTSET` | `{style_reset_all}¯\\_(o_o)_/¯` |
+| `NOTSET` | `{style_reset_all}¯\_(o_o)_/¯` |
 
 If you'd like to use your own icon for a level instead you can simply redefine it:
 
