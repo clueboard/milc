@@ -2,6 +2,12 @@ Changelog
 =========
 
 
+1.6.8 (2023-06-13)
+------------------
+- New release: 1.6.7 → 1.6.8. [Zach White]
+- Minor: changelog update. [Zach White]
+
+
 1.6.7 (2023-06-13)
 ------------------
 - New release: 1.6.6 → 1.6.7. [Zach White]
