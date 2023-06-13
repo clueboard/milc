@@ -51,6 +51,9 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: master
         tags: true
+    - name: Update docs
+      run: |
+        ./release_docs latest
     - name: Build and publish
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
@@ -58,6 +61,3 @@ jobs:
       run: |
         python setup.py sdist bdist_wheel
         twine upload dist/*
-    - name: Update docs
-      run: |
-        ./release_docs latest
