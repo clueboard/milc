@@ -8,14 +8,14 @@
       
       
       
-        <link rel="canonical" href="https://milc.clueboard.co/devel/subprocesses/">
+        <link rel="canonical" href="https://milc.clueboard.co/devel/api__in_argv/">
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.2.4, mkdocs-material-8.2.7">
     
     
       
-        <title>Subprocesses - MILC &mdash; A Python 3 CLI Framework</title>
+        <title>Api in argv - MILC &mdash; A Python 3 CLI Framework</title>
       
     
     
@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#executing-commands-in-a-subprocess" class="md-skip">
+        <a href="#_in_argv" class="md-skip">
           Skip to content
         </a>
       
@@ -106,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Subprocesses
+              Api  in argv
             
           </span>
         </div>
@@ -302,16 +302,14 @@
 
   
   
-    
-  
   
     
       
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" data-md-state="indeterminate" type="checkbox" id="__nav_5" checked>
       
       
       
@@ -458,114 +456,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Subprocesses
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../subprocesses/" class="md-nav__link">
         Subprocesses
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#basic-subprocess-execution" class="md-nav__link">
-    Basic Subprocess Execution
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#supported-arguments" class="md-nav__link">
-    Supported Arguments
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#differences-from-subprocessrun" class="md-nav__link">
-    Differences from subprocess.run
-  </a>
-  
-    <nav class="md-nav" aria-label="Differences from subprocess.run">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#windows-support" class="md-nav__link">
-    Windows Support
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#building-argument-lists" class="md-nav__link">
-    Building argument lists
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#capture-output" class="md-nav__link">
-    Capture Output
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#combining-stderr-with-stdout" class="md-nav__link">
-    Combining STDERR with STDOUT
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#text-encoding" class="md-nav__link">
-    Text Encoding
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#other-arguments" class="md-nav__link">
-    Other Arguments
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -773,83 +668,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#basic-subprocess-execution" class="md-nav__link">
-    Basic Subprocess Execution
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#supported-arguments" class="md-nav__link">
-    Supported Arguments
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#differences-from-subprocessrun" class="md-nav__link">
-    Differences from subprocess.run
-  </a>
-  
-    <nav class="md-nav" aria-label="Differences from subprocess.run">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#windows-support" class="md-nav__link">
-    Windows Support
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#building-argument-lists" class="md-nav__link">
-    Building argument lists
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#capture-output" class="md-nav__link">
-    Capture Output
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#combining-stderr-with-stdout" class="md-nav__link">
-    Combining STDERR with STDOUT
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#text-encoding" class="md-nav__link">
-    Text Encoding
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#other-arguments" class="md-nav__link">
-    Other Arguments
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -860,77 +678,14 @@
             <article class="md-content__inner md-typeset">
               
                 
-<a href="https://github.com/clueboard/milc/edit/master/docs/subprocesses.md" title="Edit this page" class="md-content__button md-icon">
+<a href="https://github.com/clueboard/milc/edit/master/docs/api__in_argv.md" title="Edit this page" class="md-content__button md-icon">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
 </a>
 
 
 
-<h1 id="executing-commands-in-a-subprocess">Executing commands in a subprocess<a class="headerlink" href="#executing-commands-in-a-subprocess" title="Permanent link">&para;</a></h1>
-<p>MILC provides some tools to make running subcommands easier and more convienent to work with.</p>
-<h2 id="basic-subprocess-execution">Basic Subprocess Execution<a class="headerlink" href="#basic-subprocess-execution" title="Permanent link">&para;</a></h2>
-<p>You can use <code>cli.run()</code> to easily and safely run shell commands. The first argument to <code>cli.run()</code> should be an argument list, which is a list or tuple containing the command and any arguments you want to pass in. For example, if you wanted to run a git command you might build this argument list:</p>
-<div class="highlight"><pre><span></span><code><span class="n">git_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;git&#39;</span><span class="p">,</span> <span class="s1">&#39;-C&#39;</span><span class="p">,</span> <span class="s1">&#39;/srv/web/htdocs&#39;</span><span class="p">,</span> <span class="s1">&#39;pull&#39;</span><span class="p">]</span>
-</code></pre></div>
-<p>This is all you need to do to run that command:</p>
-<div class="highlight"><pre><span></span><code><span class="n">p</span> <span class="o">=</span> <span class="n">cli</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">git_cmd</span><span class="p">)</span>
-</code></pre></div>
-<p>This will return a <a href="https://docs.python.org/3/library/subprocess.html#subprocess.CompletedProcess">subprocess.CompletedProcess</a> instance. You can examine attributes such as <code>p.returncode</code>, <code>p.stderr</code>, and <code>p.stdout</code> to see the fate of the process.</p>
-<h2 id="supported-arguments">Supported Arguments<a class="headerlink" href="#supported-arguments" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Argument</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>command</code></td>
-<td></td>
-<td>A sequence of arguments for the command to be run. The first element is the command to be executed.</td>
-</tr>
-<tr>
-<td><code>capture_output</code></td>
-<td><code>True</code></td>
-<td>When <code>False</code> output from the subprocess is written directly to STDOUT and STDERR.</td>
-</tr>
-<tr>
-<td><code>combined_output</code></td>
-<td><code>False</code></td>
-<td>When <code>True</code> STDERR will be combined with STDOUT.</td>
-</tr>
-<tr>
-<td><code>text</code></td>
-<td><code>True</code></td>
-<td>When <code>False</code> STDOUT and STDERR will return binary data.</td>
-</tr>
-<tr>
-<td><code>**kwargs</code></td>
-<td></td>
-<td>Any unrecognized argument will be passed to <code>subprocess.run()</code></td>
-</tr>
-</tbody>
-</table>
-<h2 id="differences-from-subprocessrun">Differences from subprocess.run<a class="headerlink" href="#differences-from-subprocessrun" title="Permanent link">&para;</a></h2>
-<p>MILC's <code>cli.run()</code> differs from <code>subprocess.run()</code> in some important ways. </p>
-<h3 id="windows-support">Windows Support<a class="headerlink" href="#windows-support" title="Permanent link">&para;</a></h3>
-<p>When running inside a windows console (Powershell, DOS, Cygwin, Msys2) there are some quirks that MILC attempts to handle but which you need to be aware of:</p>
-<ul>
-<li>Commands are always run in a subshell, so that non-executable files and POSIX paths work seemlessly.</li>
-<li>Windows leaves stdin in a broken state after executing a subprocess. To avoid this MILC adds <code>stdin=DEVNULL</code> to the <code>subprocess.run()</code> call. If you need stdin to work in your executed process you can pass <code>stdin=None</code>.</li>
-</ul>
-<h3 id="building-argument-lists">Building argument lists<a class="headerlink" href="#building-argument-lists" title="Permanent link">&para;</a></h3>
-<p>The most important way MILC differs from <code>subprocess.run()</code> is that it only accepts commands that have already been split into sequences. A lot of bugs are caused by mistakes in building command strings that are later split into a sequence of arguments in unexpected ways.</p>
-<h3 id="capture-output">Capture Output<a class="headerlink" href="#capture-output" title="Permanent link">&para;</a></h3>
-<p>By default <code>cli.run()</code> captures STDOUT and STDERR. If you'd like that output to be written to the terminal instead you can pass <code>capture_output=False</code>.</p>
-<h3 id="combining-stderr-with-stdout">Combining STDERR with STDOUT<a class="headerlink" href="#combining-stderr-with-stdout" title="Permanent link">&para;</a></h3>
-<p>If you'd like to combine STDOUT and STDERR into one stream (similar to the shell construct <code>2&gt;&amp;1</code>) you can pass <code>combined_output=True</code>.</p>
-<h3 id="text-encoding">Text Encoding<a class="headerlink" href="#text-encoding" title="Permanent link">&para;</a></h3>
-<p>By default STDOUT and STDERR will be opened as text. If you'd like these to be bytes instead of text you can pass <code>text=False</code>.</p>
-<h3 id="other-arguments">Other Arguments<a class="headerlink" href="#other-arguments" title="Permanent link">&para;</a></h3>
-<p>All other arguments are passed directly to <a href="https://docs.python.org/3/library/subprocess.html#subprocess.run"><code>subprocess.run()</code></a>. You can use these to further tweak the behavior of your subprocesses.</p>
+<p><a id="_in_argv"></a></p>
+<h1 id="_in_argv">_in_argv<a class="headerlink" href="#_in_argv" title="Permanent link">&para;</a></h1>
 
               
             </article>
@@ -940,41 +695,6 @@
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../spinners/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Spinners" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Spinners
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../threading/" class="md-footer__link md-footer__link--next" aria-label="Next: Thread Safety" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Thread Safety
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
