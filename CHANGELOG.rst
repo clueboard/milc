@@ -2,6 +2,29 @@ Changelog
 =========
 
 
+1.6.7 (2023-06-13)
+------------------
+- New release: 1.6.6 → 1.6.7. [Zach White]
+- [ci] Updated API documentation. [Zach White]
+- Upgrade all workflow versions. [Zach White]
+- Upgrade workflows. [Zach White]
+- Remove the trivial change. [Zach White]
+- Fix the python version specification. [Zach White]
+- Trivial change to kick off ci. [Zach White]
+- Update to codeql 2. [Zach White]
+- Remove python 3.6, add 3.10. [Zach White]
+- Fix test. [Zach White]
+- Fix during-initialization logging. [Zach White]
+- Fix whitespace. [Zach White]
+- Handle '--config-file=CONFIG_FILE' syntax (#66) [Ken Bingham, Zach
+  White]
+
+  * handle --config-file=CONFIG_FILE syntax
+
+  * Update milc/milc.py
+- Minor: changelog update. [Zach White]
+
+
 1.6.6 (2022-03-27)
 ------------------
 - New release: 1.6.5 → 1.6.6. [Zach White]
