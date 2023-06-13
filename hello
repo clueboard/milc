@@ -3,7 +3,6 @@
 
 PYTHON_ARGCOMPLETE_OK
 """
-
 from milc import cli
 
 
