@@ -17,7 +17,7 @@ MILC - An Opinionated Batteries Included Framework
 #### \_\_init\_\_
 
 ```python
-def __init__(name, version, author)
+def __init__(name, version, author, logger=None)
 ```
 
 Initialize the MILC object.
@@ -125,7 +125,7 @@ Wrapper to add arguments and track whether they were passed on the command line.
 #### initialize\_logging
 
 ```python
-def initialize_logging()
+def initialize_logging(logger)
 ```
 
 Prepare the defaults for the logging infrastructure.
