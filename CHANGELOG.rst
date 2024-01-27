@@ -2,6 +2,16 @@ Changelog
 =========
 
 
+1.6.9 (2024-01-27)
+------------------
+- New release: 1.6.8 → 1.6.9. [Zach White]
+- [ci] Updated API documentation. [Zach White]
+- Document custom loggers. [Zach White]
+- Add the ability to pass custom loggers. [Zach White]
+- Publish docs before the python package. [Zach White]
+- Minor: changelog update. [Zach White]
+
+
 1.6.8 (2023-06-13)
 ------------------
 - New release: 1.6.7 → 1.6.8. [Zach White]
