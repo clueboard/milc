@@ -15,8 +15,16 @@ You should only do this once, and you should do it as early in your program's ex
 !!! danger
     Do not import `set_metadata` and `cli` at the same time! When you run `set_metadata` the `cli` object will be replaced, but your existing import will continue to reference the old `cli` object.
 
-## Environment based setup
+## Custom Loggers
 
-Earlier versions of MILC used the environment variables `MILC_APP_NAME`, `MILC_APP_VERSION`, and `MILC_AUTHOR_NAME` to set this information. While this is supported in MILC 1.4.x it will throw a `DeprecationWarning` and will be removed in a later version of MILC.
+You can also use this to pass in custom loggers.
 
-You can supress this warning by setting the environment variable `MILC_IGNORE_DEPRECATED`.
+```python
+from milc import set_metadata
+
+from my_program import custom_logger
+
+set_metadata(logger=custom_logger)
+
+from milc import cli
+```
