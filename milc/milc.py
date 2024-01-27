@@ -33,7 +33,7 @@ from ._in_argv import _in_argv, _index_argv
 class MILC(object):
     """MILC - An Opinionated Batteries Included Framework
     """
-    def __init__(self, name, version, author):
+    def __init__(self, name, version, author, logger=None):
         """Initialize the MILC object.
         """
         # Setup a lock for thread safety
@@ -64,7 +64,7 @@ class MILC(object):
         # Initialize all the things
         self.initialize_config()
         self.initialize_argparse()
-        self.initialize_logging()
+        self.initialize_logging(logger)
 
     @property
     def config_dir(self):
@@ -235,9 +235,12 @@ class MILC(object):
 
         self.release_lock()
 
-    def initialize_logging(self):
+    def initialize_logging(self, logger):
         """Prepare the defaults for the logging infrastructure.
         """
+        if not logger:
+            logger = logging.getLogger(self.__class__.__name__)
+
         self.acquire_lock()
         self.log_file = None
         self.log_file_mode = 'a'
@@ -247,7 +250,7 @@ class MILC(object):
         self.log_print_level = logging.INFO
         self.log_file_level = logging.INFO
         self.log_level = logging.INFO
-        self.log = logging.getLogger(self.__class__.__name__)
+        self.log = logger
         self.log.setLevel(logging.DEBUG)
         logging.root.setLevel(logging.DEBUG)
         self.release_lock()

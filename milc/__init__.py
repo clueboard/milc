@@ -44,12 +44,14 @@ logging.basicConfig(filename=os.devnull)  # Disable logging until we can configu
 cli = MILC(APP_NAME, APP_VERSION, APP_AUTHOR)
 
 
-def set_metadata(*, name=APP_NAME, author=APP_AUTHOR, version=APP_VERSION):
+def set_metadata(*, name=APP_NAME, author=APP_AUTHOR, version=APP_VERSION, logger=None):
     """Set metadata about your program.
 
     This allows you to set the application's name, version, and/or author
-    before executing your entrypoint. It's best to run this only once, and
-    it must be run before you call `cli()`.
+    before executing your entrypoint. You can also pass your own logger here
+    if you like.
+
+    It's best to run this only once, and it must be run before you call `cli()`.
     """
     global APP_NAME, APP_VERSION, APP_AUTHOR, cli
 
@@ -59,7 +61,7 @@ def set_metadata(*, name=APP_NAME, author=APP_AUTHOR, version=APP_VERSION):
     APP_NAME = name
     APP_VERSION = version
     APP_AUTHOR = author
-    cli = MILC(name, version, author)
+    cli = MILC(name, version, author, logger)
 
 
 # Extra stuff people can import
