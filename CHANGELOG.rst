@@ -2,6 +2,13 @@ Changelog
 =========
 
 
+1.6.10 (2024-01-27)
+-------------------
+- New release: 1.6.9 → 1.6.10. [Zach White]
+- Switch to api token auth. [Zach White]
+- Minor: changelog update. [Zach White]
+
+
 1.6.9 (2024-01-27)
 ------------------
 - New release: 1.6.8 → 1.6.9. [Zach White]
