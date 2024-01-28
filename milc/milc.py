@@ -33,9 +33,19 @@ from ._in_argv import _in_argv, _index_argv
 class MILC(object):
     """MILC - An Opinionated Batteries Included Framework
     """
-    def __init__(self, name, version, author, logger=None):
+    def __init__(self, name=None, version=None, author=None, logger=None):
         """Initialize the MILC object.
         """
+        # Set some defaults
+        if not name:
+            name = os.environ.get('MILC_APP_NAME') or self.argv_name()
+
+        if not version:
+            version = os.environ.get('MILC_APP_VERSION', 'unknown')
+
+        if not author:
+            author = os.environ.get('MILC_APP_AUTHOR', name.upper())
+
         # Setup a lock for thread safety
         self._lock = threading.RLock() if threading else None
 
@@ -77,6 +87,12 @@ class MILC(object):
     @description.setter
     def description(self, value):
         self._description = self._arg_parser.description = value
+
+    def argv_name(self):
+        """Returns the name of our program by examining argv.
+        """
+        app_name = sys.argv[0][:-3] if sys.argv[0].endswith('.py') else sys.argv[0]
+        return os.path.split(app_name)[-1]
 
     def echo(self, text, *args, **kwargs):
         """Print colorized text to stdout.
