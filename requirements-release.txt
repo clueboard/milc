@@ -1,10 +1,6 @@
 -r requirements-dev.txt
 bumpversion
-flake8
 gitchangelog
 hjson
-nose2
 pydoc-markdown
-semver
 twine
-yapf

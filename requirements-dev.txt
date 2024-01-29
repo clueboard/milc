@@ -4,6 +4,7 @@ hjson
 mike
 mkdocs-git-revision-date-plugin
 mkdocs-material
+mypy
 nose2
 pygments
 semver
