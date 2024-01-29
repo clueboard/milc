@@ -9,7 +9,10 @@ Sometimes you need to ask the user a question. MILC provides basic functions for
 #### yesno
 
 ```python
-def yesno(prompt, *args, default=None, **kwargs)
+def yesno(prompt: str,
+          *args: Any,
+          default: Optional[bool] = None,
+          **kwargs: Any) -> bool
 ```
 
 Displays `prompt` to the user and gets a yes or no response.
@@ -18,7 +21,7 @@ Returns `True` for a yes and `False` for a no.
 
 | Argument | Description |
 |----------|-------------|
-| prompt | The prompt to present to the user. Can include ANSI and format strings like milc's `cli.echo()`. |
+| prompt | The prompt to present to the user. Can include ANSI and format strings like `cli.echo()`. |
 | default | Whether to default to a Yes or No when the user presses enter.<br><br>None- force the user to enter Y or N<br>True- Default to yes<br>False- Default to no |
 
 If you add `--yes` and `--no` arguments to your program the user can answer questions by passing command line flags.
@@ -33,16 +36,18 @@ If you add `--yes` and `--no` arguments to your program the user can answer ques
 #### password
 
 ```python
-def password(prompt='Enter password:',
-             *args,
-             confirm=False,
-             confirm_prompt='Confirm password:',
-             confirm_limit=3,
-             validate=None,
-             **kwargs)
+def password(prompt: str = 'Enter password:',
+             *args: Any,
+             confirm: bool = False,
+             confirm_prompt: str = 'Confirm password:',
+             confirm_limit: int = 3,
+             validate: Optional[Callable[[str], bool]] = None,
+             **kwargs: Any) -> Optional[str]
 ```
 
 Securely receive a password from the user. Returns the password or None.
+
+When running in non-interactive mode this will always return None. Otherwise it will return the confirmed password the user provides.
 
 | Argument | Description |
 |----------|-------------|
@@ -57,13 +62,13 @@ Securely receive a password from the user. Returns the password or None.
 #### question
 
 ```python
-def question(prompt,
-             *args,
-             default=None,
-             confirm=False,
-             answer_type=str,
-             validate=None,
-             **kwargs)
+def question(prompt: str,
+             *args: Any,
+             default: Optional[str] = None,
+             confirm: bool = False,
+             answer_type: Callable[[str], str] = str,
+             validate: Optional[Callable[..., bool]] = None,
+             **kwargs: Any) -> Union[str, Any]
 ```
 
 Allow the user to type in a free-form string to answer.
@@ -81,13 +86,13 @@ Allow the user to type in a free-form string to answer.
 #### choice
 
 ```python
-def choice(heading,
-           options,
-           *args,
-           default=None,
-           confirm=False,
-           prompt='Please enter your choice: ',
-           **kwargs)
+def choice(heading: str,
+           options: Sequence[str],
+           *args: Any,
+           default: Optional[int] = None,
+           confirm: bool = False,
+           prompt: str = 'Please enter your choice: ',
+           **kwargs: Any) -> Optional[str]
 ```
 
 Present the user with a list of options and let them select one.

@@ -9,7 +9,7 @@ Display sparklines from a sequence of numbers.
 #### is\_number
 
 ```python
-def is_number(i)
+def is_number(i: Any) -> bool
 ```
 
 Returns true if i is a number. Used to filter non-numbers from a list.
@@ -19,20 +19,20 @@ Returns true if i is a number. Used to filter non-numbers from a list.
 #### sparkline
 
 ```python
-def sparkline(number_list,
+def sparkline(number_list: List[Optional[int]],
               *,
-              min_value=None,
-              max_value=None,
-              highlight_low=-inf,
-              highlight_high=inf,
-              highlight_low_color='',
-              highlight_high_color='',
-              negative_color='{fg_red}',
-              positive_color='',
-              highlight_low_reset='{fg_reset}',
-              highlight_high_reset='{fg_reset}',
-              negative_reset='{fg_reset}',
-              positive_reset='{fg_reset}')
+              min_value: Optional[int] = None,
+              max_value: Optional[int] = None,
+              highlight_low: float = -inf,
+              highlight_high: float = inf,
+              highlight_low_color: str = '',
+              highlight_high_color: str = '',
+              negative_color: str = '{fg_red}',
+              positive_color: str = '',
+              highlight_low_reset: str = '{fg_reset}',
+              highlight_high_reset: str = '{fg_reset}',
+              negative_reset: str = '{fg_reset}',
+              positive_reset: str = '{fg_reset}') -> str
 ```
 
 Display a sparkline from a sequence of numbers.

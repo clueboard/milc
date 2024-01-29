@@ -20,7 +20,7 @@ section or option does not yet exist.
 #### \_\_getitem\_\_
 
 ```python
-def __getitem__(key)
+def __getitem__(key: Hashable) -> Any
 ```
 
 Returns a config section, creating it if it doesn't exist yet.
@@ -38,7 +38,7 @@ class ConfigurationSection(Configuration)
 #### \_\_getitem\_\_
 
 ```python
-def __getitem__(key)
+def __getitem__(key: Hashable) -> Any
 ```
 
 Returns a config value, pulling from the `user` section as a fallback.
@@ -49,7 +49,7 @@ This is called when the attribute is accessed either via the get method or throu
 #### \_\_getattr\_\_
 
 ```python
-def __getattr__(key)
+def __getattr__(key: str) -> Any
 ```
 
 Returns the config value from the `user` section.
@@ -60,7 +60,7 @@ This is called when the attribute is accessed via dot notation but does not exis
 #### \_\_setattr\_\_
 
 ```python
-def __setattr__(key, value)
+def __setattr__(key: str, value: Any) -> None
 ```
 
 Sets dictionary value when an attribute is set.
@@ -80,7 +80,7 @@ Wrap subparsers so we can track what options the user passed.
 #### completer
 
 ```python
-def completer(completer)
+def completer(completer: Any) -> None
 ```
 
 Add an arpcomplete completer to this subcommand.
@@ -90,7 +90,7 @@ Add an arpcomplete completer to this subcommand.
 #### add\_argument
 
 ```python
-def add_argument(*args, **kwargs)
+def add_argument(*args: Any, **kwargs: Any) -> None
 ```
 
 Add an argument for this subcommand.
@@ -102,7 +102,8 @@ This also stores the default for the argument in `self.cli.default_arguments`.
 #### get\_argument\_strings
 
 ```python
-def get_argument_strings(arg_parser, *args, **kwargs)
+def get_argument_strings(arg_parser: Any, *args: Any,
+                         **kwargs: Any) -> List[str]
 ```
 
 Takes argparse arguments and returns a list of argument strings or positional names.
@@ -112,7 +113,7 @@ Takes argparse arguments and returns a list of argument strings or positional na
 #### get\_argument\_name
 
 ```python
-def get_argument_name(arg_parser, *args, **kwargs)
+def get_argument_name(arg_parser: Any, *args: Any, **kwargs: Any) -> Any
 ```
 
 Takes argparse arguments and returns the dest name.
@@ -122,7 +123,7 @@ Takes argparse arguments and returns the dest name.
 #### handle\_store\_boolean
 
 ```python
-def handle_store_boolean(self, *args, **kwargs)
+def handle_store_boolean(self: Any, *args: Any, **kwargs: Any) -> Any
 ```
 
 Does the add_argument for action='store_boolean'.

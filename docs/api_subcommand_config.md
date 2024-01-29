@@ -9,7 +9,7 @@ Read and write configuration settings
 #### print\_config
 
 ```python
-def print_config(section, key)
+def print_config(section: str, key: str) -> None
 ```
 
 Print a single config setting to stdout.
@@ -19,7 +19,7 @@ Print a single config setting to stdout.
 #### show\_config
 
 ```python
-def show_config()
+def show_config() -> None
 ```
 
 Print the current configuration to stdout.
@@ -29,7 +29,7 @@ Print the current configuration to stdout.
 #### parse\_config\_token
 
 ```python
-def parse_config_token(config_token)
+def parse_config_token(config_token: str) -> Tuple[str, str, Any]
 ```
 
 Split a user-supplied configuration-token into its components.
@@ -39,7 +39,7 @@ Split a user-supplied configuration-token into its components.
 #### set\_config
 
 ```python
-def set_config(section, option, value)
+def set_config(section: str, option: str, value: str) -> None
 ```
 
 Set a config key in the running config.
@@ -63,7 +63,7 @@ Set a config key in the running config.
                    arg_only=True,
                    help='Configuration options to read or write.')
 @milc.cli.subcommand("Read and write configuration settings.")
-def config(cli)
+def config(cli: MILC) -> bool
 ```
 
 Read and write config settings.
