@@ -122,6 +122,16 @@ def password(
     return None
 
 
+def _cast_answer(answer_type: Callable[[str], str], answer: str) -> Any:
+    """Attempt to convert answer to answer_type.
+    """
+    try:
+        return answer_type(answer)
+    except Exception as e:
+        cli.log.error('Could not convert answer (%s) to type %s: %s', answer, answer_type.__name__, str(e))
+        return None
+
+
 def question(
     prompt: str,
     *args: Any,
@@ -130,7 +140,7 @@ def question(
     answer_type: Callable[[str], str] = str,
     validate: Optional[Callable[..., bool]] = None,
     **kwargs: Any,
-) -> Optional[str]:
+) -> str | Any:
     """Allow the user to type in a free-form string to answer.
 
     | Argument | Description |
@@ -158,17 +168,10 @@ def question(
 
             elif confirm:
                 if yesno('Is the answer "%s" correct?', answer, default=True):
-                    try:
-                        return answer_type(answer)
-                    except Exception as e:
-                        cli.log.error('Could not convert answer (%s) to type %s: %s', answer, answer_type.__name__, str(e))
-                        return None
+                    return _cast_answer(answer_type, answer)
 
             else:
-                try:
-                    return answer_type(answer)
-                except Exception as e:
-                    cli.log.error('Could not convert answer (%s) to type %s: %s', answer, answer_type.__name__, str(e))
+                return _cast_answer(answer_type, answer)
 
         elif default is not None:
             return default
@@ -217,35 +220,48 @@ def choice(
         prompt = '%s[%s] ' % (prompt, default + 1)
 
     while True:
-        # Prompt for an answer.
-        cli.echo(formatted_heading)
+        answer = _choice_get_answer(options, default, prompt, formatted_heading)
 
-        for i, option in enumerate(options, 1):
-            cli.echo('\t{fg_cyan}%d.{fg_reset} %s', i, option)
+        if answer:
+            if confirm and not yesno('Is the answer "%s" correct?', answer, default=True):
+                continue
 
-        answer = input(format_ansi(prompt))
-
-        # If the user types in one of the options exactly use that
-        if answer in options:
             return answer
 
-        # Massage the answer into a valid integer
-        if answer == '' and default is not None:
-            answer_index = default
-        elif answer.isnumeric():
-            answer_index = int(answer) - 1
-        else:
-            cli.log.error('Invalid choice: %s', answer)
-            cli.log.debug('Could not convert %s to int', answer)
-            continue
 
-        # Validate the answer
-        if answer_index >= len(options) or answer_index < 0:
-            cli.log.error('Invalid choice: %s', answer_index + 1)
-            continue
+def _choice_get_answer(
+    options: Sequence[str],
+    default: Optional[int],
+    prompt: str,
+    formatted_heading: str,
+) -> Optional[str]:
+    """Get an answer from the user for choice().
+    """
+    # Prompt for an answer.
+    cli.echo(formatted_heading)
 
-        if confirm and not yesno('Is the answer "%s" correct?', answer_index + 1, default=True):
-            continue
+    for i, option in enumerate(options, 1):
+        cli.echo('\t{fg_cyan}%d.{fg_reset} %s', i, option)
 
-        # Return the answer they chose.
-        return options[answer_index]
+    answer = input(format_ansi(prompt))
+
+    # If the user types in one of the options exactly use that
+    if answer in options:
+        return answer
+
+    # Massage the answer into a valid integer
+    if answer == '' and default is not None:
+        answer_index = default
+    elif answer.isnumeric():
+        answer_index = int(answer) - 1
+    else:
+        cli.log.error('Invalid choice: %s', answer)
+        return None
+
+    # Validate the answer
+    if answer_index >= len(options) or answer_index < 0:
+        cli.log.error('Invalid choice: %s', answer_index + 1)
+        return None
+
+    # Return the answer they chose.
+    return options[answer_index]

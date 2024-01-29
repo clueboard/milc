@@ -354,6 +354,46 @@ class MILC(object):
 
         return Path(filedir, filename).resolve()
 
+    def _handle_deprecated(self, arg_name: str, kwargs: Dict[str, Any]) -> None:
+        """Called by self.argument: Mark an argument as deprecated, if necessary.
+        """
+        if 'deprecated' in kwargs:
+            self._deprecated_arguments[arg_name] = kwargs['deprecated']
+            if kwargs['help']:
+                kwargs['help'] += f" [Deprecated]: {kwargs['deprecated']}"
+            else:
+                kwargs['help'] = f"[Deprecated]: {kwargs['deprecated']}"
+            del kwargs['deprecated']
+
+    def _handle_arg_parsing(self, config_name: str, arg_name: str, args: Sequence[Any], kwargs: Dict[str, Any]) -> None:
+        """Called by self.argument: Parse this argument into the right datastructures.
+        """
+        arg_strings = get_argument_strings(self._arg_parser, *args, **kwargs)
+
+        if kwargs.get('arg_only'):
+            if arg_name not in self.arg_only:
+                self.arg_only[arg_name] = []
+
+            self.arg_only[arg_name].append(config_name)
+            del kwargs['arg_only']
+        else:
+            if arg_name not in self.default_arguments:
+                self.default_arguments[config_name] = {}
+
+            self.default_arguments[config_name][arg_name] = kwargs.get('default')
+
+            if self.config[config_name][arg_name] is None:
+                self.config[config_name][arg_name] = kwargs.get('default')
+
+            if config_name not in self.args_passed:
+                self.args_passed[config_name] = {}
+
+            self.args_passed[config_name][arg_name] = False
+
+            for arg in arg_strings:
+                if _in_argv(arg):
+                    self.args_passed[config_name][arg_name] = True
+
     def argument(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
         """Decorator to call self.add_argument or self.<subcommand>.add_argument.
         """
@@ -364,39 +404,9 @@ class MILC(object):
             config_name = handler.__name__
             subcommand_name = config_name.replace("_", "-")
             arg_name = get_argument_name(self._arg_parser, *args, **kwargs)
-            arg_strings = get_argument_strings(self._arg_parser, *args, **kwargs)
 
-            if 'deprecated' in kwargs:
-                self._deprecated_arguments[arg_name] = kwargs['deprecated']
-                if kwargs['help']:
-                    kwargs['help'] += f" [Deprecated]: {kwargs['deprecated']}"
-                else:
-                    kwargs['help'] = f"[Deprecated]: {kwargs['deprecated']}"
-                del kwargs['deprecated']
-
-            if kwargs.get('arg_only'):
-                if arg_name not in self.arg_only:
-                    self.arg_only[arg_name] = []
-
-                self.arg_only[arg_name].append(handler.__name__)
-                del kwargs['arg_only']
-            else:
-                if arg_name not in self.default_arguments:
-                    self.default_arguments[config_name] = {}
-
-                self.default_arguments[config_name][arg_name] = kwargs.get('default')
-
-                if self.config[config_name][arg_name] is None:
-                    self.config[config_name][arg_name] = kwargs.get('default')
-
-                if config_name not in self.args_passed:
-                    self.args_passed[config_name] = {}
-
-                self.args_passed[config_name][arg_name] = False
-
-                for arg in arg_strings:
-                    if _in_argv(arg):
-                        self.args_passed[config_name][arg_name] = True
+            self._handle_deprecated(arg_name, kwargs)
+            self._handle_arg_parsing(config_name, arg_name, args, kwargs)
 
             if handler is self._entrypoint:
                 self.add_argument(*args, **kwargs)
