@@ -21,7 +21,7 @@ except ImportError:
 
 import argcomplete
 import colorama
-from appdirs import user_config_dir  # type: ignore
+from appdirs import user_config_dir
 from halo import Halo  # type: ignore
 from spinners.spinners import Spinners  # type: ignore
 
