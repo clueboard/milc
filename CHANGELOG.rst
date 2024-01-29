@@ -2,6 +2,24 @@ Changelog
 =========
 
 
+1.7.0 (2024-01-29)
+------------------
+- New release: 1.6.10 → 1.7.0. [Zach White]
+- [ci] Updated API documentation. [Zach White]
+- Remove unneeded type ignore. [Zach White]
+- Fix typing for 3.7. [Zach White]
+- Fixup requirements. [Zach White]
+- Turn max_complexity down to 12. [Zach White]
+- Small doc updates. [Zach White]
+- Fix python version. [Zach White]
+- Update ci and expand the python versions. [Zach White]
+- Increase ci coverage. [Zach White]
+- Add type hints to milc (now we'll never have a bug again!) [Zach
+  White]
+- Make it possible to instantiate MILC directly. [Zach White]
+- Minor: changelog update. [Zach White]
+
+
 1.6.10 (2024-01-27)
 -------------------
 - New release: 1.6.9 → 1.6.10. [Zach White]
