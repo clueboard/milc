@@ -1,7 +1,7 @@
 """Sometimes you need to ask the user a question. MILC provides basic functions for collecting and validating user input. You can find these in the `milc.questions` module.
 """
 from getpass import getpass
-from typing import Any, Callable, Optional, Sequence
+from typing import Any, Callable, Optional, Sequence, Union
 
 from milc import cli
 from .ansi import format_ansi
@@ -140,7 +140,7 @@ def question(
     answer_type: Callable[[str], str] = str,
     validate: Optional[Callable[..., bool]] = None,
     **kwargs: Any,
-) -> str | Any:
+) -> Union[str, Any]:
     """Allow the user to type in a free-form string to answer.
 
     | Argument | Description |

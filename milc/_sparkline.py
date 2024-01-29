@@ -3,14 +3,14 @@
 """
 from decimal import Decimal
 from math import inf
-from typing import Any, List, Optional, TypeGuard
+from typing import Any, List, Optional
 
 from milc import cli
 
 spark_chars = '▁▂▃▄▅▆▇█'
 
 
-def is_number(i: Any) -> TypeGuard[bool]:
+def is_number(i: Any) -> bool:
     """Returns true if i is a number. Used to filter non-numbers from a list.
     """
     return isinstance(i, (int, float, Decimal))
@@ -81,12 +81,12 @@ def sparkline(
             A MILC or ANSI color code to reset the color code applied in `positive_color`. This is usually `{fg_reset}`, `{bg_reset}`, or `{style_reset_all}`.
     """
     if min_value is None:
-        min_value = min(filter(is_number, number_list))
+        min_value = min(filter(is_number, number_list))  # type: ignore[type-var]
 
     if max_value is None:
-        max_value = max(filter(is_number, number_list))
+        max_value = max(filter(is_number, number_list))  # type: ignore[type-var]
 
-    int_range = max_value - min_value
+    int_range = max_value - min_value  # type: ignore[operator]
     sparks = []
 
     for i in number_list:
@@ -95,12 +95,12 @@ def sparkline(
             sparks.append(' ')
             continue
 
-        if i < min_value or i > max_value:
+        if i < min_value or i > max_value:  # type: ignore[operator]
             cli.log.debug('Skipping out of bounds value %s', i)
             continue
 
         # Determine the bucket for this value
-        spark_int = (i-min_value) / int_range * 8
+        spark_int = (i-min_value) / int_range * 8  # type: ignore[operator]
 
         if spark_int > 7:
             spark_int = 7
@@ -109,15 +109,15 @@ def sparkline(
         color = positive_color
         reset = positive_reset
 
-        if i < 0:
+        if i < 0:  # type: ignore[operator]
             color = negative_color
             reset = negative_reset
 
-        if i < highlight_low:
+        if i < highlight_low:  # type: ignore[operator]
             color = highlight_low_color
             reset = highlight_low_reset
 
-        if i > highlight_high:
+        if i > highlight_high:  # type: ignore[operator]
             color = highlight_high_color
             reset = highlight_high_reset
 

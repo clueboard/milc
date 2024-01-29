@@ -3,9 +3,10 @@ flake8
 hjson
 mike
 mkdocs-git-revision-date-plugin
-mkdocs-material
+mkdocs-material<9
 mypy
 nose2
 pygments
+types-appdirs
 semver
 yapf

@@ -12,7 +12,7 @@ from pathlib import Path
 from platform import platform
 from tempfile import NamedTemporaryFile
 from types import TracebackType
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Type, Union
 
 try:
     import threading
@@ -21,9 +21,9 @@ except ImportError:
 
 import argcomplete
 import colorama
-from appdirs import user_config_dir  # type: ignore[import-untyped]
-from halo import Halo  # type: ignore[import-untyped]
-from spinners.spinners import Spinners  # type: ignore[import-untyped]
+from appdirs import user_config_dir  # type: ignore
+from halo import Halo  # type: ignore
+from spinners.spinners import Spinners  # type: ignore
 
 from .ansi import MILCFormatter, ansi_colors, ansi_config, ansi_escape, format_ansi
 from .attrdict import AttrDict
@@ -66,7 +66,7 @@ class MILC(object):
         self._config_store_true: Sequence[str] = []
         self._config_store_false: Sequence[str] = []
         self._entrypoint: Callable[[Any], Any] = lambda _: None
-        self._spinners: Dict[str, Dict[str, int | Sequence[str]]] = {}
+        self._spinners: Dict[str, Dict[str, Union[int, Sequence[str]]]] = {}
         self._subcommand = None
         self._inside_context_manager = False
         self.ansi = ansi_colors
@@ -132,7 +132,7 @@ class MILC(object):
         combined_output: bool = False,
         text: bool = True,
         **kwargs: Any,
-    ) -> subprocess.CompletedProcess[bytes | str]:
+    ) -> Any:  # FIXME: In python 3.10 we can use subprocess.CompletedProcess[bytes | str] instead
         """Run a command using `subprocess.run`, but using some different defaults.
 
         Unlike subprocess.run you must supply a sequence of arguments. You can use `shlex.split()` to build this from a string.
@@ -757,7 +757,7 @@ class MILC(object):
 
     def __exit__(
         self,
-        exc_type: Optional[type[BaseException]],
+        exc_type: Optional[Type[BaseException]],
         exc_val: Optional[BaseException],
         exc_tb: Optional[TracebackType],
     ) -> None:
@@ -775,7 +775,7 @@ class MILC(object):
         """
         return name in Spinners.__members__ or name in self._spinners
 
-    def add_spinner(self, name: str, spinner: Dict[str, int | Sequence[str]]) -> None:
+    def add_spinner(self, name: str, spinner: Dict[str, Union[int, Sequence[str]]]) -> None:
         """Adds a new spinner to the list of spinners.
 
         A spinner is a dictionary with two keys:
