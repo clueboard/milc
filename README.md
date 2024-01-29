@@ -164,5 +164,8 @@ the problem, not the whole problem. Those that solve the whole problem are
 very hard to use or get started with, or are otherwise very heavyweight. I
 wanted a comprehensive framework that was easy to get started with.
 
+MILC starts simple, but as your program grows you'll find the functionality
+you need is already available in most cases.
+
 If you'd like to see how MILC compares to other tools see
 [COMPARISONS.md](COMPARISONS.md).

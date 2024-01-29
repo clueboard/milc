@@ -2,6 +2,10 @@
 
 This is a list of breaking changes that have been made to MILC. If your script stops working after a minor or major version upgrade this document will tell you how to fix it.
 
+# Version 1.7.0
+* MILC is now fully type hinted
+* You can pass in custom loggers using [set_metadata](metadata.md)
+
 # Version 1.6.0
 
 * Added support for [Sparklines](sparklines.md)
