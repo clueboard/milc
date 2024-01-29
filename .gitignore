@@ -9,3 +9,4 @@ milc.egg-info
 venv
 site
 .venv
+.vscode

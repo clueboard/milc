@@ -1,43 +1,46 @@
+from typing import Any, Dict, List
+
+
 class AttrDict(object):
     """A dictionary that can also be accessed by attribute.
     """
-    def __contains__(self, key):
+    def __contains__(self, key: Any) -> bool:
         return self._data.__contains__(key)
 
-    def __iter__(self):
+    def __iter__(self) -> Any:
         return self._data.__iter__()
 
-    def __len__(self):
+    def __len__(self) -> Any:
         return self._data.__len__()
 
-    def __repr__(self):
+    def __repr__(self) -> Any:
         return self._data.__repr__()
 
-    def keys(self):
+    def keys(self) -> Any:
         return self._data.keys()
 
-    def items(self):
+    def items(self) -> Any:
         return self._data.items()
 
-    def values(self):
+    def values(self) -> Any:
         return self._data.values()
 
-    def __init__(self, *args, **kwargs):
-        self._data = {}
+    def __init__(self, *args: List[Any], **kwargs: Dict[Any, Any]) -> None:
+        self._data: Dict[Any, Any] = {}
 
-    def __getattr__(self, key):
+    def __getattr__(self, key: Any) -> Any:
         return self.__getitem__(key)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: Any) -> Any:
         """Returns an item.
         """
         return self._data[key]
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: Any, value: Any) -> None:
         self._data[key] = value
         self.__setattr__(key, value)
 
-    def __delitem__(self, key):
+    def __delitem__(self, key: Any) -> None:
         if key in self._data:
             del self._data[key]
 
@@ -48,7 +51,7 @@ class SparseAttrDict(AttrDict):
     This class never raises IndexError, instead it will return None if a
     key does not yet exist.
     """
-    def __getitem__(self, key):
+    def __getitem__(self, key: Any) -> Any:
         """Returns an item, creating it if it doesn't already exist
         """
         if key not in self._data:

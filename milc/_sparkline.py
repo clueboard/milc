@@ -3,19 +3,35 @@
 """
 from decimal import Decimal
 from math import inf
+from typing import Any, List, Optional, TypeGuard
 
 from milc import cli
 
 spark_chars = '▁▂▃▄▅▆▇█'
 
 
-def is_number(i):
+def is_number(i: Any) -> TypeGuard[bool]:
     """Returns true if i is a number. Used to filter non-numbers from a list.
     """
     return isinstance(i, (int, float, Decimal))
 
 
-def sparkline(number_list, *, min_value=None, max_value=None, highlight_low=-inf, highlight_high=inf, highlight_low_color='', highlight_high_color='', negative_color='{fg_red}', positive_color='', highlight_low_reset='{fg_reset}', highlight_high_reset='{fg_reset}', negative_reset='{fg_reset}', positive_reset='{fg_reset}'):
+def sparkline(
+    number_list: List[Optional[int]],
+    *,
+    min_value: Optional[int] = None,
+    max_value: Optional[int] = None,
+    highlight_low: float = -inf,
+    highlight_high: float = inf,
+    highlight_low_color: str = '',
+    highlight_high_color: str = '',
+    negative_color: str = '{fg_red}',
+    positive_color: str = '',
+    highlight_low_reset: str = '{fg_reset}',
+    highlight_high_reset: str = '{fg_reset}',
+    negative_reset: str = '{fg_reset}',
+    positive_reset: str = '{fg_reset}',
+) -> str:
     """Display a sparkline from a sequence of numbers.
 
     If you wish to exclude extreme values, or you want to limit the set of characters used, you can adjust `min_value` and `max_value` to your own values. Values between your actual min/max will exclude datapoints, while values outside your actual min/max will compress your data into fewer sparks.

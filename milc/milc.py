@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # coding=utf-8
 import argparse
 import logging
@@ -12,28 +11,38 @@ from functools import lru_cache
 from pathlib import Path
 from platform import platform
 from tempfile import NamedTemporaryFile
+from types import TracebackType
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 
 try:
     import threading
 except ImportError:
-    threading = None
+    threading = None  # type: ignore[assignment]
 
 import argcomplete
 import colorama
-from appdirs import user_config_dir
-from halo import Halo
-from spinners.spinners import Spinners
+from appdirs import user_config_dir  # type: ignore[import-untyped]
+from halo import Halo  # type: ignore[import-untyped]
+from spinners.spinners import Spinners  # type: ignore[import-untyped]
 
 from .ansi import MILCFormatter, ansi_colors, ansi_config, ansi_escape, format_ansi
 from .attrdict import AttrDict
 from .configuration import Configuration, SubparserWrapper, get_argument_name, get_argument_strings, handle_store_boolean
 from ._in_argv import _in_argv, _index_argv
 
+# FIXME: Replace Callable[..., Any] with better definitions
+
 
 class MILC(object):
     """MILC - An Opinionated Batteries Included Framework
     """
-    def __init__(self, name=None, version=None, author=None, logger=None):
+    def __init__(
+        self,
+        name: Optional[str] = None,
+        version: Optional[str] = None,
+        author: Optional[str] = None,
+        logger: Optional[logging.Logger] = None,
+    ) -> None:
         """Initialize the MILC object.
         """
         # Set some defaults
@@ -54,22 +63,21 @@ class MILC(object):
         self.prog_name = name
         self.version = version
         self.author = author
-        self._config_store_true = []
-        self._config_store_false = []
-        self._description = None
-        self._entrypoint = None
-        self._spinners = {}
+        self._config_store_true: Sequence[str] = []
+        self._config_store_false: Sequence[str] = []
+        self._entrypoint: Callable[[Any], Any] = lambda _: None
+        self._spinners: Dict[str, Dict[str, int | Sequence[str]]] = {}
         self._subcommand = None
         self._inside_context_manager = False
         self.ansi = ansi_colors
-        self.arg_only = {}
+        self.arg_only: Dict[str, List[str]] = {}
         self.config_file = self.find_config_file()
-        self.default_arguments = {}
+        self.default_arguments: Dict[str, Dict[str, Optional[str]]] = {}
         self.platform = platform()
         self.interactive = sys.stdin.isatty()
         self.release_lock()
-        self._deprecated_arguments = {}
-        self._deprecated_commands = {}
+        self._deprecated_arguments: Dict[str, str] = {}
+        self._deprecated_commands: Dict[str, str] = {}
 
         # Initialize all the things
         self.initialize_config()
@@ -77,24 +85,25 @@ class MILC(object):
         self.initialize_logging(logger)
 
     @property
-    def config_dir(self):
+    def config_dir(self) -> Path:
         return self.config_file.parent
 
     @property
-    def description(self):
-        return self._description
+    def description(self) -> Optional[str]:
+        return self._arg_parser.description
 
     @description.setter
-    def description(self, value):
-        self._description = self._arg_parser.description = value
+    def description(self, value: str) -> None:
+        self._arg_parser.description = value
 
-    def argv_name(self):
+    def argv_name(self) -> str:
         """Returns the name of our program by examining argv.
         """
         app_name = sys.argv[0][:-3] if sys.argv[0].endswith('.py') else sys.argv[0]
+
         return os.path.split(app_name)[-1]
 
-    def echo(self, text, *args, **kwargs):
+    def echo(self, text: str, *args: Any, **kwargs: Any) -> None:
         """Print colorized text to stdout.
 
         ANSI color strings (such as {fg_blue}) will be converted into ANSI
@@ -104,17 +113,26 @@ class MILC(object):
         If *args or **kwargs are passed they will be used to %-format the strings.
         """
         if args and kwargs:
-            raise RuntimeError('You can only specify *args or **kwargs, not both!')
+            raise ValueError('You can only specify *args or **kwargs, not both!')
 
-        args = args or kwargs
-        text = format_ansi(text % args)
+        if args:
+            text = format_ansi(text % args)
+        else:
+            text = format_ansi(text % kwargs)
 
         if not self.config.general.color:
             text = ansi_escape.sub('', text)
 
         print(text)
 
-    def run(self, command, capture_output=True, combined_output=False, text=True, **kwargs):
+    def run(
+        self,
+        command: Sequence[str],
+        capture_output: bool = True,
+        combined_output: bool = False,
+        text: bool = True,
+        **kwargs: Any,
+    ) -> subprocess.CompletedProcess[bytes | str]:
         """Run a command using `subprocess.run`, but using some different defaults.
 
         Unlike subprocess.run you must supply a sequence of arguments. You can use `shlex.split()` to build this from a string.
@@ -146,8 +164,7 @@ class MILC(object):
         # stdin is broken so things like milc.questions no longer work.
         # We pass `stdin=subprocess.DEVNULL` by default to prevent that.
         if 'windows' in self.platform.lower():
-            safecmd = map(shlex.quote, command)
-            safecmd = ' '.join(safecmd)
+            safecmd = ' '.join(map(shlex.quote, command))
             command = [os.environ['SHELL'], '-c', safecmd]
 
             if 'stdin' not in kwargs:
@@ -172,7 +189,7 @@ class MILC(object):
 
         return subprocess.run(command, **kwargs)
 
-    def initialize_argparse(self):
+    def initialize_argparse(self) -> None:
         """Prepare to process arguments from sys.argv.
         """
         kwargs = {
@@ -181,41 +198,44 @@ class MILC(object):
         }
 
         self.acquire_lock()
-        self.subcommands = {}
-        self._subparsers = None
-        self.argwarn = argcomplete.warn
+
+        self.subcommands: Dict[str, Any] = {}
+        self._subparsers: Optional[Any] = None  # FIXME: Find a better type signature
+        self.argwarn = argcomplete.warn  # type: ignore[attr-defined]
         self.args = AttrDict()
         self.args_passed = AttrDict()
-        self._arg_parser = argparse.ArgumentParser(**kwargs)
+        self._arg_parser = argparse.ArgumentParser(**kwargs)  # type: ignore[arg-type]
         self.set_defaults = self._arg_parser.set_defaults
+
         self.release_lock()
 
-    def print_help(self, *args, **kwargs):
+    def print_help(self, *args: Any, **kwargs: Any) -> None:
         """Print a help message for the main program or subcommand, depending on context.
         """
         if self._subcommand:
-            return self.subcommands[self._subcommand.__name__].print_help(*args, **kwargs)
+            self.subcommands[self._subcommand.__name__].print_help(*args, **kwargs)
+        else:
+            self._arg_parser.print_help(*args, **kwargs)
 
-        return self._arg_parser.print_help(*args, **kwargs)
-
-    def print_usage(self, *args, **kwargs):
+    def print_usage(self, *args: Any, **kwargs: Any) -> None:
         """Print brief description of how the main program or subcommand is invoked, depending on context.
         """
         if self._subcommand:
-            return self.subcommands[self._subcommand.__name__].print_usage(*args, **kwargs)
+            self.subcommands[self._subcommand.__name__].print_usage(*args, **kwargs)
+        else:
+            self._arg_parser.print_usage(*args, **kwargs)
 
-        return self._arg_parser.print_usage(*args, **kwargs)
-
-    def log_deprecated_warning(self, item_type, name, reason):
+    def log_deprecated_warning(self, item_type: str, name: str, reason: str) -> None:
         """Logs a warning with a custom message if a argument or command is deprecated.
         """
         self.log.warning("Warning: %s '%s' is deprecated:\n\t%s", item_type, name, reason)
 
-    def add_argument(self, *args, **kwargs):
+    def add_argument(self, *args: Any, **kwargs: Any) -> None:
         """Wrapper to add arguments and track whether they were passed on the command line.
         """
         if 'action' in kwargs and kwargs['action'] == 'store_boolean':
-            return handle_store_boolean(self, *args, **kwargs)
+            handle_store_boolean(self, *args, **kwargs)
+            return
 
         arg_name = get_argument_name(self._arg_parser, *args, **kwargs)
         arg_strings = get_argument_strings(self._arg_parser, *args, **kwargs)
@@ -229,7 +249,7 @@ class MILC(object):
         self.acquire_lock()
 
         if completer:
-            self._arg_parser.add_argument(*args, **kwargs).completer = completer
+            self._arg_parser.add_argument(*args, **kwargs).completer = completer  # type: ignore[attr-defined]
         else:
             self._arg_parser.add_argument(*args, **kwargs)
 
@@ -251,24 +271,27 @@ class MILC(object):
 
         self.release_lock()
 
-    def initialize_logging(self, logger):
+    def initialize_logging(self, logger: Optional[logging.Logger]) -> None:
         """Prepare the defaults for the logging infrastructure.
         """
         if not logger:
             logger = logging.getLogger(self.__class__.__name__)
 
         self.acquire_lock()
+
         self.log_file = None
         self.log_file_mode = 'a'
-        self.log_file_handler = None
+        self.log_file_handler: Optional[logging.FileHandler] = None
         self.log_print = True
         self.log_print_to = sys.stderr
         self.log_print_level = logging.INFO
         self.log_file_level = logging.INFO
         self.log_level = logging.INFO
         self.log = logger
+
         self.log.setLevel(logging.DEBUG)
         logging.root.setLevel(logging.DEBUG)
+
         self.release_lock()
 
         self.add_argument('-V', '--version', version=self.version, action='version', help='Display the version and exit')
@@ -282,9 +305,10 @@ class MILC(object):
         self.add_argument('--unicode', action='store_boolean', default=ansi_config['unicode'], help='unicode loglevels')
         self.add_argument('--interactive', action='store_true', help='Force interactive mode even when stdout is not a tty.')
         self.add_argument('--config-file', help='The location for the configuration file')
+
         self.arg_only['config_file'] = ['general']
 
-    def add_subparsers(self, title='Sub-commands', **kwargs):
+    def add_subparsers(self, title: str = 'Sub-commands', **kwargs: Any) -> None:
         if self._inside_context_manager:
             raise RuntimeError('You must run this before the with statement!')
 
@@ -292,24 +316,27 @@ class MILC(object):
         self._subparsers = self._arg_parser.add_subparsers(title=title, dest='subparsers', **kwargs)
         self.release_lock()
 
-    def acquire_lock(self, blocking=True):
+    def acquire_lock(self, blocking: bool = True) -> bool:
         """Acquire the MILC lock for exclusive access to properties.
         """
         if self._lock:
-            self._lock.acquire(blocking)
+            return self._lock.acquire(blocking)
 
-    def release_lock(self):
+        return True
+
+    def release_lock(self) -> None:
         """Release the MILC lock.
         """
         if self._lock:
             self._lock.release()
 
     @lru_cache(maxsize=None)
-    def find_config_file(self):
+    def find_config_file(self) -> Path:
         """Locate the config file.
         """
-        if _in_argv('--config-file'):
-            config_file_index = _index_argv('--config-file')
+        config_file_index = _index_argv('--config-file')
+
+        if config_file_index is not None:
             config_file_param = sys.argv[config_file_index]
 
             if '=' in config_file_param:
@@ -327,13 +354,13 @@ class MILC(object):
 
         return Path(filedir, filename).resolve()
 
-    def argument(self, *args, **kwargs):
+    def argument(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
         """Decorator to call self.add_argument or self.<subcommand>.add_argument.
         """
         if self._inside_context_manager:
             raise RuntimeError('You must run this before the with statement!')
 
-        def argument_function(handler):
+        def argument_function(handler: Callable[..., Any]) -> Callable[..., Any]:
             config_name = handler.__name__
             subcommand_name = config_name.replace("_", "-")
             arg_name = get_argument_name(self._arg_parser, *args, **kwargs)
@@ -384,7 +411,7 @@ class MILC(object):
 
         return argument_function
 
-    def parse_args(self):
+    def parse_args(self) -> None:
         """Parse the CLI args.
         """
         if self.args:
@@ -394,6 +421,7 @@ class MILC(object):
         argcomplete.autocomplete(self._arg_parser)
 
         self.acquire_lock()
+
         for key, value in vars(self._arg_parser.parse_args()).items():
             self.args[key] = value
 
@@ -402,7 +430,7 @@ class MILC(object):
 
         self.release_lock()
 
-    def read_config_file(self):
+    def read_config_file(self) -> Tuple[Configuration, Configuration]:
         """Read in the configuration file and return Configuration objects for it and the config_source.
         """
         config = Configuration()
@@ -435,14 +463,14 @@ class MILC(object):
 
         return config, config_source
 
-    def initialize_config(self):
+    def initialize_config(self) -> None:
         """Read in the configuration file and store it in self.config.
         """
         self.acquire_lock()
         self.config, self.config_source = self.read_config_file()
         self.release_lock()
 
-    def merge_args_into_config(self):
+    def merge_args_into_config(self) -> None:
         """Merge CLI arguments into self.config to create the runtime configuration.
         """
         self.acquire_lock()
@@ -472,7 +500,7 @@ class MILC(object):
 
         self.release_lock()
 
-    def _save_config_file(self, config):
+    def _save_config_file(self, config: AttrDict) -> None:
         """Write config to disk.
         """
         # Generate a sanitized version of our running configuration
@@ -497,7 +525,7 @@ class MILC(object):
             self.log.warning('Config file saving failed, not replacing %s with %s.', str(self.config_file), tmpfile.name)
         self.release_lock()
 
-    def write_config_option(self, section, option):
+    def write_config_option(self, section: str, option: Any) -> None:
         """Save a single config option to the config file.
         """
         if not self.config_file:
@@ -516,7 +544,7 @@ class MILC(object):
         # Housekeeping
         self.log.info('Wrote configuration to %s', shlex.quote(str(self.config_file)))
 
-    def save_config(self):
+    def save_config(self) -> None:
         """Save the current configuration to the config file.
         """
         self.log.debug("Saving config file to '%s'", str(self.config_file))
@@ -529,7 +557,7 @@ class MILC(object):
         self._save_config_file(self.config)
         self.log.info('Wrote configuration to %s', shlex.quote(str(self.config_file)))
 
-    def check_deprecated(self):
+    def check_deprecated(self) -> None:
         entry_name = self._entrypoint.__name__
 
         if entry_name in self._deprecated_commands:
@@ -549,7 +577,7 @@ class MILC(object):
             msg = self._deprecated_arguments[arg]
             self.log_deprecated_warning('Argument', arg, msg)
 
-    def __call__(self):
+    def __call__(self) -> Any:
         """Execute the entrypoint function.
         """
         if not self._inside_context_manager:
@@ -561,12 +589,13 @@ class MILC(object):
 
         if self._subcommand:
             return self._subcommand(self)
-        elif self._entrypoint:
+
+        elif self._entrypoint is not None:
             return self._entrypoint(self)
 
         raise RuntimeError('No entrypoint provided!')
 
-    def entrypoint(self, description, deprecated=None):
+    def entrypoint(self, description: str, deprecated: Optional[str] = None) -> Callable[..., Any]:
         """Decorator that marks the entrypoint used when a subcommand is not supplied.
         Args:
             description
@@ -582,13 +611,12 @@ class MILC(object):
         self.description = description
         self.release_lock()
 
-        def entrypoint_func(handler):
+        def entrypoint_func(handler: Callable[..., Any]) -> Callable[..., Any]:
             self.acquire_lock()
 
             if deprecated:
-                name = handler.__name__
-                self._deprecated_commands[name] = deprecated
-                self.description += f' [Deprecated]: {deprecated}'
+                self._deprecated_commands[handler.__name__] = deprecated
+                self.description = f'{self.description} [Deprecated]: {deprecated}'
 
             self._entrypoint = handler
             self.release_lock()
@@ -597,7 +625,14 @@ class MILC(object):
 
         return entrypoint_func
 
-    def add_subcommand(self, handler, description, hidden=False, deprecated=None, **kwargs):
+    def add_subcommand(
+        self,
+        handler: Callable[..., Any],
+        description: str,
+        hidden: bool = False,
+        deprecated: Optional[str] = None,
+        **kwargs: Any,
+    ) -> Callable[..., Any]:
         """Register a subcommand.
 
         Args:
@@ -628,9 +663,11 @@ class MILC(object):
             description += f' [Deprecated]: {deprecated}'
 
         self.acquire_lock()
-        if not hidden:
+
+        if not hidden and self._subparsers is not None:
             self._subparsers.metavar = "{%s,%s}" % (self._subparsers.metavar[1:-1], name) if self._subparsers.metavar else "{%s%s}" % (self._subparsers.metavar[1:-1], name)
             kwargs['help'] = description
+
         self.subcommands[name] = SubparserWrapper(self, name, self._subparsers.add_parser(name, **kwargs))
         self.subcommands[name].set_defaults(entrypoint=handler)
 
@@ -638,7 +675,7 @@ class MILC(object):
 
         return handler
 
-    def subcommand(self, description, hidden=False, **kwargs):
+    def subcommand(self, description: str, hidden: bool = False, **kwargs: Any) -> Callable[..., Any]:
         """Decorator to register a subcommand.
 
         Args:
@@ -649,12 +686,12 @@ class MILC(object):
             hidden
                 When True don't display this command in --help
         """
-        def subcommand_function(handler):
+        def subcommand_function(handler: Callable[..., Any]) -> Callable[..., Any]:
             return self.add_subcommand(handler, description, hidden=hidden, **kwargs)
 
         return subcommand_function
 
-    def setup_logging(self):
+    def setup_logging(self) -> None:
         """Called by __enter__() to setup the logging configuration.
         """
         if len(logging.root.handlers) != 0:
@@ -688,7 +725,7 @@ class MILC(object):
 
         self.release_lock()
 
-    def __enter__(self):
+    def __enter__(self) -> Any:
         if self._inside_context_manager:
             self.log.debug('Warning: context manager was entered again. This usually means that self.__call__() was called before the with statement. You probably do not want to do that.')
             return
@@ -708,7 +745,12 @@ class MILC(object):
 
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(
+        self,
+        exc_type: Optional[type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> None:
         self.acquire_lock()
         self._inside_context_manager = False
         self.release_lock()
@@ -718,12 +760,12 @@ class MILC(object):
             logging.exception(exc_val)
             exit(255)
 
-    def is_spinner(self, name):
+    def is_spinner(self, name: str) -> bool:
         """Returns true if name is a valid spinner.
         """
         return name in Spinners.__members__ or name in self._spinners
 
-    def add_spinner(self, name, spinner):
+    def add_spinner(self, name: str, spinner: Dict[str, int | Sequence[str]]) -> None:
         """Adds a new spinner to the list of spinners.
 
         A spinner is a dictionary with two keys:
@@ -745,7 +787,19 @@ class MILC(object):
 
         self._spinners[name] = spinner
 
-    def spinner(self, text, *args, spinner=None, animation='ellipsed', placement='left', color='blue', interval=-1, stream=sys.stdout, enabled=True, **kwargs):
+    def spinner(
+        self,
+        text: str,
+        *args: Any,
+        spinner: Optional[str] = None,
+        animation: str = 'ellipsed',
+        placement: str = 'left',
+        color: str = 'blue',
+        interval: int = -1,
+        stream: Any = sys.stdout,
+        enabled: bool = True,
+        **kwargs: Any,
+    ) -> Halo:
         """Create a spinner object for showing activity to the user.
 
         This uses halo <https://github.com/ManrajGrover/halo> behind the scenes, most of the arguments map to Halo objects 1:1.
@@ -818,12 +872,15 @@ class MILC(object):
             enabled
                 Enable or disable the spinner. Defaults to `True`.
         """
-        if isinstance(spinner, str) and spinner in self._spinners:
-            spinner = self._spinners[spinner]
+        spinner_name = spinner or 'line'  # FIXME: Grab one of the ascii spinners at random instead of line
+
+        if spinner in self._spinners:
+            spinner_name = ''
+            spinner_obj = self._spinners[spinner]
 
         return Halo(
             text=format_ansi(text % (args or kwargs)),
-            spinner=spinner if spinner else 'line',  # FIXME: Grab one of the ascii spinners at random instead of line
+            spinner=spinner_name or spinner_obj,
             animation=None if animation == 'ellipsed' else animation,
             placement=placement,
             color=color,

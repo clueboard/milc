@@ -43,6 +43,12 @@ def main(cli):
         build_ok = False
         cli.log.error('Improperly formatted code. Please run this: yapf -i -r .')
 
+    cli.log.info('Running mypy...')
+    cmd = ['mypy', '--strict', 'milc']
+    result = run(cmd, stdin=DEVNULL)
+    if result.returncode != 0:
+        build_ok = False
+
     if build_ok:
         cli.log.info('{fg_green}All tests passed!')
         return True

@@ -4,6 +4,7 @@ import sys
 import re
 import logging
 import colorama
+from typing import Any
 
 from .emoji import EMOJI_LOGLEVELS
 
@@ -41,7 +42,7 @@ for prefix, obj in ansi_styles:
         ansi_colors[prefix + '_' + color.lower()] = getattr(obj, color)
 
 
-def format_ansi(text):
+def format_ansi(text: str) -> str:
     """Return a copy of text with certain strings replaced with ansi.
     """
     # Avoid .format() so we don't have to worry about the log content
@@ -59,9 +60,10 @@ def format_ansi(text):
 class MILCFormatter(logging.Formatter):
     """Formats log records per the MILC configuration.
     """
-    def format(self, record):
+    def format(self, record: Any) -> Any:
         if ansi_config['unicode'] and record.levelname in EMOJI_LOGLEVELS:
             record.levelname = format_ansi(EMOJI_LOGLEVELS[record.levelname])
 
         msg = super().format(record)
+
         return format_ansi(msg)

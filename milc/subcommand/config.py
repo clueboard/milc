@@ -1,9 +1,12 @@
 """Read and write configuration settings
 """
+from typing import Any, Tuple
+
 import milc
+from milc.milc import MILC
 
 
-def print_config(section, key):
+def print_config(section: str, key: str) -> None:
     """Print a single config setting to stdout.
     """
     if milc.cli.config_source[section][key] == 'config_file':
@@ -12,7 +15,7 @@ def print_config(section, key):
         milc.cli.echo('{fg_cyan}%s.%s=%s', section, key, milc.cli.config[section][key])
 
 
-def show_config():
+def show_config() -> None:
     """Print the current configuration to stdout.
     """
     for section in sorted(milc.cli.config):
@@ -21,10 +24,10 @@ def show_config():
                 print_config(section, key)
 
 
-def parse_config_token(config_token):
+def parse_config_token(config_token: str) -> Tuple[str, str, Any]:
     """Split a user-supplied configuration-token into its components.
     """
-    section = option = value = None
+    section = option = value = ''
 
     if '=' in config_token and '.' not in config_token:
         milc.cli.log.error('Invalid configuration token, the key must be of the form <section>.<option>: %s', config_token)
@@ -45,10 +48,11 @@ def parse_config_token(config_token):
     return section, option, value
 
 
-def set_config(section, option, value):
+def set_config(section: str, option: str, value: str) -> None:
     """Set a config key in the running config.
     """
     log_string = '%s.%s{fg_cyan}:{fg_reset} %s {fg_cyan}->{fg_reset} %s'
+
     if milc.cli.args.read_only:
         log_string += ' {fg_red}(change not written)'
 
@@ -57,6 +61,7 @@ def set_config(section, option, value):
     if not milc.cli.args.read_only:
         if value == 'None':
             del milc.cli.config[section][option]
+
         else:
             milc.cli.config[section][option] = value
             milc.cli.config_source[section][option] = 'config_file'
@@ -66,7 +71,7 @@ def set_config(section, option, value):
 @milc.cli.argument('-ro', '--read-only', arg_only=True, action='store_true', help='Operate in read-only mode.')
 @milc.cli.argument('configs', nargs='*', arg_only=True, help='Configuration options to read or write.')
 @milc.cli.subcommand("Read and write configuration settings.")
-def config(cli):
+def config(cli: MILC) -> bool:
     """Read and write config settings.
 
     This script iterates over the config_tokens supplied as argument. Each config_token has the following form:
@@ -84,7 +89,8 @@ def config(cli):
     No validation is done to ensure that the supplied section.key is actually used by a subcommand.
     """
     if not milc.cli.args.configs:
-        return show_config()
+        show_config()
+        return False
 
     # Process config_tokens
     save_config = False

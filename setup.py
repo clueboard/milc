@@ -20,6 +20,7 @@ if __name__ == "__main__":
         maintainer_email=metadata['author-email'],
         long_description=Path('README.md').read_text(),
         long_description_content_type="text/markdown",
+        package_data={"milc": ["py.typed"]},
         packages=setuptools.find_packages(exclude=('tests',)),
         scripts=['milc-color'],
         classifiers=[
@@ -48,5 +49,6 @@ if __name__ == "__main__":
             "colorama",
             "halo",
             "spinners",
+            "types-colorama",
         ],
     )

@@ -1,19 +1,20 @@
 """Sometimes you need to ask the user a question. MILC provides basic functions for collecting and validating user input. You can find these in the `milc.questions` module.
 """
 from getpass import getpass
+from typing import Any, Callable, Optional, Sequence
 
-import milc
+from milc import cli
 from .ansi import format_ansi
 
 
-def yesno(prompt, *args, default=None, **kwargs):
+def yesno(prompt: str, *args: Any, default: Optional[bool] = None, **kwargs: Any) -> bool:
     """Displays `prompt` to the user and gets a yes or no response.
 
     Returns `True` for a yes and `False` for a no.
 
     | Argument | Description |
     |----------|-------------|
-    | prompt | The prompt to present to the user. Can include ANSI and format strings like milc's `cli.echo()`. |
+    | prompt | The prompt to present to the user. Can include ANSI and format strings like `cli.echo()`. |
     | default | Whether to default to a Yes or No when the user presses enter.<br><br>None- force the user to enter Y or N<br>True- Default to yes<br>False- Default to no |
 
     If you add `--yes` and `--no` arguments to your program the user can answer questions by passing command line flags.
@@ -23,27 +24,35 @@ def yesno(prompt, *args, default=None, **kwargs):
     @cli.argument('-n', '--no', action='store_true', arg_only=True, help='Answer no to all questions.')
     ```
     """
-    if not args and kwargs:
-        args = kwargs
+    if args and kwargs:
+        raise ValueError("You can't pass both args and kwargs!")
 
-    if 'no' in milc.cli.args and milc.cli.args.no:
+    # Check if we should return an answer without asking
+    if 'no' in cli.args and cli.args.no:
         return False
 
-    if 'yes' in milc.cli.args and milc.cli.args.yes:
+    if 'yes' in cli.args and cli.args.yes:
         return True
 
-    if not milc.cli.interactive:
+    if not cli.interactive:
         return False
 
-    if default is None:
-        prompt = prompt + ' [y/n] '
-    elif default:
-        prompt = prompt + ' [Y/n] '
+    # Format the prompt
+    if args:
+        formatted_prompt = prompt % args
     else:
-        prompt = prompt + ' [y/N] '
+        formatted_prompt = prompt % kwargs
 
+    if default is None:
+        formatted_prompt = formatted_prompt + ' [y/n] '
+    elif default:
+        formatted_prompt = formatted_prompt + ' [Y/n] '
+    else:
+        formatted_prompt = formatted_prompt + ' [y/N] '
+
+    # Get input from the user
     while True:
-        answer = input(format_ansi(prompt % args))
+        answer = input(format_ansi(formatted_prompt))
 
         if not answer and default is not None:
             return default
@@ -55,8 +64,18 @@ def yesno(prompt, *args, default=None, **kwargs):
             return False
 
 
-def password(prompt='Enter password:', *args, confirm=False, confirm_prompt='Confirm password:', confirm_limit=3, validate=None, **kwargs):
+def password(
+    prompt: str = 'Enter password:',
+    *args: Any,
+    confirm: bool = False,
+    confirm_prompt: str = 'Confirm password:',
+    confirm_limit: int = 3,
+    validate: Optional[Callable[[str], bool]] = None,
+    **kwargs: Any,
+) -> Optional[str]:
     """Securely receive a password from the user. Returns the password or None.
+
+    When running in non-interactive mode this will always return None. Otherwise it will return the confirmed password the user provides.
 
     | Argument | Description |
     |----------|-------------|
@@ -66,21 +85,24 @@ def password(prompt='Enter password:', *args, confirm=False, confirm_prompt='Con
     | confirm_limit | Number of attempts to confirm before giving up. Default: 3 |
     | validate | This is an optional function that can be used to validate the password, EG to check complexity. It should return True or False and have the following signature:<br><br>`def function_name(answer):` |
     """
-    if not milc.cli.interactive:
+    if not cli.interactive:
         return None
 
-    if not args and kwargs:
-        args = kwargs
+    if args:
+        formatted_prompt = prompt % args
+    else:
+        formatted_prompt = prompt % kwargs
 
-    if prompt[-1] != ' ':
-        prompt += ' '
+    if formatted_prompt[-1] != ' ':
+        formatted_prompt += ' '
 
     if confirm_prompt[-1] != ' ':
         confirm_prompt += ' '
 
     i = 0
+
     while not confirm_limit or i < confirm_limit:
-        pw = getpass(format_ansi(prompt % args))
+        pw = getpass(format_ansi(formatted_prompt))
 
         if pw:
             if validate is not None and not validate(pw):
@@ -90,15 +112,25 @@ def password(prompt='Enter password:', *args, confirm=False, confirm_prompt='Con
                 if getpass(format_ansi(confirm_prompt % args)) == pw:
                     return pw
                 else:
-                    milc.cli.log.error('Passwords do not match!')
+                    cli.log.error('Passwords do not match!')
 
             else:
                 return pw
 
             i += 1
 
+    return None
 
-def question(prompt, *args, default=None, confirm=False, answer_type=str, validate=None, **kwargs):
+
+def question(
+    prompt: str,
+    *args: Any,
+    default: Optional[str] = None,
+    confirm: bool = False,
+    answer_type: Callable[[str], str] = str,
+    validate: Optional[Callable[..., bool]] = None,
+    **kwargs: Any,
+) -> Optional[str]:
     """Allow the user to type in a free-form string to answer.
 
     | Argument | Description |
@@ -109,7 +141,7 @@ def question(prompt, *args, default=None, confirm=False, answer_type=str, valida
     | answer_type | Specify a type function for the answer. Will re-prompt the user if the function raises any errors. Common choices here include int, float, and decimal.Decimal. |
     | validate | This is an optional function that can be used to validate the answer. It should return True or False and have the following signature:<br><br>`def function_name(answer, *args, **kwargs):` |
     """
-    if not milc.cli.interactive:
+    if not cli.interactive:
         return default
 
     if default is not None:
@@ -129,19 +161,28 @@ def question(prompt, *args, default=None, confirm=False, answer_type=str, valida
                     try:
                         return answer_type(answer)
                     except Exception as e:
-                        milc.cli.log.error('Could not convert answer (%s) to type %s: %s', answer, answer_type.__name__, str(e))
+                        cli.log.error('Could not convert answer (%s) to type %s: %s', answer, answer_type.__name__, str(e))
+                        return None
 
             else:
                 try:
                     return answer_type(answer)
                 except Exception as e:
-                    milc.cli.log.error('Could not convert answer (%s) to type %s: %s', answer, answer_type.__name__, str(e))
+                    cli.log.error('Could not convert answer (%s) to type %s: %s', answer, answer_type.__name__, str(e))
 
         elif default is not None:
             return default
 
 
-def choice(heading, options, *args, default=None, confirm=False, prompt='Please enter your choice: ', **kwargs):
+def choice(
+    heading: str,
+    options: Sequence[str],
+    *args: Any,
+    default: Optional[int] = None,
+    confirm: bool = False,
+    prompt: str = 'Please enter your choice: ',
+    **kwargs: Any,
+) -> Optional[str]:
     """Present the user with a list of options and let them select one.
 
     Users can enter either the number or the text of their choice. This will return the value of the item they choose, not the numerical index.
@@ -159,22 +200,28 @@ def choice(heading, options, *args, default=None, confirm=False, prompt='Please 
     !!! warning
         This will return the value of the item they choose, not the numerical index.
     """
-    if not args and kwargs:
-        args = kwargs
+    if args:
+        formatted_heading = heading % args
+    else:
+        formatted_heading = heading % kwargs
 
-    if not milc.cli.interactive:
-        return default
+    if not cli.interactive:
+        if default is None:
+            return None
+        return options[default]
 
-    if prompt and default is not None:
-        prompt = prompt + ' [%s] ' % (default + 1,)
-    elif prompt[-1] != ' ':
+    if prompt[-1] != ' ':
         prompt += ' '
+
+    if default is not None:
+        prompt = '%s[%s] ' % (prompt, default + 1)
 
     while True:
         # Prompt for an answer.
-        milc.cli.echo(heading % args)
+        cli.echo(formatted_heading)
+
         for i, option in enumerate(options, 1):
-            milc.cli.echo('\t{fg_cyan}%d.{fg_reset} %s', i, option)
+            cli.echo('\t{fg_cyan}%d.{fg_reset} %s', i, option)
 
         answer = input(format_ansi(prompt))
 
@@ -184,24 +231,21 @@ def choice(heading, options, *args, default=None, confirm=False, prompt='Please 
 
         # Massage the answer into a valid integer
         if answer == '' and default is not None:
-            answer = default
+            answer_index = default
+        elif answer.isnumeric():
+            answer_index = int(answer) - 1
         else:
-            try:
-                answer = int(answer) - 1
-            except Exception as e:
-                milc.cli.log.error('Invalid choice: %s', answer)
-                milc.cli.log.debug('Could not convert %s to int: %s: %s', answer, e.__class__.__name__, e)
-                if milc.cli.config.general.verbose:
-                    milc.cli.log.exception(e)
-                continue
-
-        # Validate the answer
-        if answer >= len(options) or answer < 0:
-            milc.cli.log.error('Invalid choice: %s', answer + 1)
+            cli.log.error('Invalid choice: %s', answer)
+            cli.log.debug('Could not convert %s to int', answer)
             continue
 
-        if confirm and not yesno('Is the answer "%s" correct?', answer + 1, default=True):
+        # Validate the answer
+        if answer_index >= len(options) or answer_index < 0:
+            cli.log.error('Invalid choice: %s', answer_index + 1)
+            continue
+
+        if confirm and not yesno('Is the answer "%s" correct?', answer_index + 1, default=True):
             continue
 
         # Return the answer they chose.
-        return options[answer]
+        return options[answer_index]

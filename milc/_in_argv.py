@@ -1,7 +1,8 @@
 import sys
+from typing import Optional
 
 
-def _in_argv(argument):
+def _in_argv(argument: str) -> bool:
     """Returns true if the argument is found is sys.argv.
 
     Since long options can be passed as either '--option value' or '--option=value' we need to check for both forms.
@@ -13,7 +14,7 @@ def _in_argv(argument):
     return False
 
 
-def _index_argv(argument):
+def _index_argv(argument: str) -> Optional[int]:
     """Returns the location of the argument in sys.argv, or None.
 
     Since long options can be passed as either '--option value' or '--option=value' we need to check for both forms.

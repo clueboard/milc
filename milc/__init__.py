@@ -18,6 +18,7 @@ import logging
 import os
 import sys
 import warnings
+from typing import Optional
 
 from .emoji import EMOJI_LOGLEVELS
 from .milc import MILC
@@ -32,7 +33,13 @@ logging.basicConfig(filename=os.devnull)  # Disable logging until we can configu
 cli = MILC()
 
 
-def set_metadata(*, name=None, author=None, version=None, logger=None):
+def set_metadata(
+    *,
+    name: Optional[str] = None,
+    author: Optional[str] = None,
+    version: Optional[str] = None,
+    logger: Optional[logging.Logger] = None,
+) -> MILC:
     """Set metadata about your program.
 
     This allows you to set the application's name, version, and/or author
@@ -47,6 +54,8 @@ def set_metadata(*, name=None, author=None, version=None, logger=None):
         raise RuntimeError('You must run set_metadata() before cli()!')
 
     cli = MILC(name, version, author, logger)
+
+    return cli
 
 
 # Extra stuff people can import
