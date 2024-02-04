@@ -39,3 +39,31 @@ Users have several CLI arguments they can pass to control the output of logs. Th
     * Enable or disable ANSI color
 * `--unicode` and `--no-unicode`
     * Enable or disable unicode icons
+
+# Custom Loggers
+
+You may want to bypass MILC's logging and use your own logger instead. To do this use `cli.milc_options(logger=<MyLogger>)`. This should be done before you call `cli()` or do anything else.
+
+Example:
+
+```python
+import logging
+
+from milc import cli
+
+
+@cli.entrypoint('Hello, World!')
+def hello(cli):
+    cli.log.info('Hello, World!')
+
+if __name__ == '__main__':
+    my_logger = logging.getLogger('my-program')
+    # Configure my_logger the way you want/need here
+
+    cli.milc_options(logger=my_logger)
+    cli()
+
+```
+
+!!! warning
+    You should only call `cli.milc_options()` one time during your program's execution.

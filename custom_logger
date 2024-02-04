@@ -5,13 +5,13 @@ PYTHON_ARGCOMPLETE_OK
 """
 import logging
 
-from milc import set_metadata
+from milc import cli
 
 # Setup external logger
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger('custom_logger')
 
-set_metadata(logger=logging.getLogger('custom_logger'))
+cli.milc_options(logger=logging.getLogger('custom_logger'))
 
 # Import milc
 from milc import cli

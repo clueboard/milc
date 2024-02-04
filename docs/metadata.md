@@ -1,13 +1,13 @@
 # MILC Metadata
 
-In order to initialize some things, such as the configuration file location and the version number reported by `--version`, MILC needs to know some basic information before you import `cli`. If you need to set the program's name, author name, and/or version number do it like this:
+In order to initialize some things, such as the configuration file location and the version number reported by `--version`, MILC needs to know some basic information before the entrypoint is called. You can use `cli.milc_options()` to set this information.
+
+Example:
 
 ```python
-from milc import set_metadata
-
-set_metadata(name='Florzelbop', version='1.0.0', author='Jane Doe')
-
 from milc import cli
+
+cli.milc_options(name='Florzelbop', version='1.0.0', author='Jane Doe')
 ```
 
 You should only do this once, and you should do it as early in your program's execution as possible.
@@ -28,3 +28,7 @@ set_metadata(logger=custom_logger)
 
 from milc import cli
 ```
+
+## Deprecated: set_metadata()
+
+Earlier versions of MILC used `milc.set_metadata` instead. This is still supported but will throw a Deprecation warning.

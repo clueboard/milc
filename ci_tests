@@ -10,11 +10,9 @@ from pathlib import Path
 from shutil import rmtree
 from subprocess import CalledProcessError, DEVNULL, run
 
-from milc import set_metadata
-
-set_metadata(name='ci_tests', author='MILC', version='1.3.0')
-
 from milc import cli
+
+cli.milc_options(name='ci_tests', author='MILC', version='1.8.0')
 
 
 @cli.entrypoint('Run CI Tests...')

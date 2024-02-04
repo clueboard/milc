@@ -36,13 +36,7 @@ from ._in_argv import _in_argv, _index_argv
 class MILC(object):
     """MILC - An Opinionated Batteries Included Framework
     """
-    def __init__(
-        self,
-        name: Optional[str] = None,
-        version: Optional[str] = None,
-        author: Optional[str] = None,
-        logger: Optional[logging.Logger] = None,
-    ) -> None:
+    def __init__(self, name: Optional[str] = None, author: Optional[str] = None, version: Optional[str] = None, logger: Optional[logging.Logger] = None) -> None:
         """Initialize the MILC object.
         """
         # Set some defaults

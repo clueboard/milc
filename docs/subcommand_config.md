@@ -8,6 +8,9 @@ Configuration for MILC applications is a key/value system. Each key consists of 
 
 `import milc.subcommand.config`
 
+!!! warn
+    This must be imported after `cli.milc_options()` is used.
+
 Read on to see how users can utilize this subcommand.
 
 ## Simple Example

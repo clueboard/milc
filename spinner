@@ -5,11 +5,9 @@ PYTHON_ARGCOMPLETE_OK
 """
 from time import sleep
 
-from milc import set_metadata
-
-set_metadata(name='spinner', author='MILC', version='1.3.0')
-
 from milc import cli
+
+cli.milc_options(name='spinner', author='MILC', version='1.8.0')
 
 
 @cli.argument('-n', '--name', help='Name to greet', default='World')
