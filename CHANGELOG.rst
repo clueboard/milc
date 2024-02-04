@@ -2,6 +2,17 @@ Changelog
 =========
 
 
+1.8.0 (2024-02-04)
+------------------
+- New release: 1.7.0 → 1.8.0. [Zach White]
+- [ci] Updated API documentation. [Zach White]
+- Update the breaking changes log. [Zach White]
+- Improve how custom loggers work. [Zach White]
+- Minor updates for setup.py and setup.cfg. [Zach White]
+- Bump codeql to v3. [Zach White]
+- Minor: changelog update. [Zach White]
+
+
 1.7.0 (2024-01-29)
 ------------------
 - New release: 1.6.10 → 1.7.0. [Zach White]
