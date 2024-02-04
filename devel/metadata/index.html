@@ -764,19 +764,17 @@
 <span class="n">cli</span><span class="o">.</span><span class="n">milc_options</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Florzelbop&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;1.0.0&#39;</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s1">&#39;Jane Doe&#39;</span><span class="p">)</span>
 </code></pre></div>
 <p>You should only do this once, and you should do it as early in your program's execution as possible.</p>
-<div class="admonition danger">
-<p class="admonition-title">Danger</p>
-<p>Do not import <code>set_metadata</code> and <code>cli</code> at the same time! When you run <code>set_metadata</code> the <code>cli</code> object will be replaced, but your existing import will continue to reference the old <code>cli</code> object.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If you have spread your program among several files, or you are using <code>milc.subcommand.config</code>, you need to use <code>cli.milc_options()</code> before you import those modules.</p>
 </div>
 <h2 id="custom-loggers">Custom Loggers<a class="headerlink" href="#custom-loggers" title="Permanent link">&para;</a></h2>
 <p>You can also use this to pass in custom loggers.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">milc</span> <span class="kn">import</span> <span class="n">set_metadata</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">milc</span> <span class="kn">import</span> <span class="n">cli</span>
 
 <span class="kn">from</span> <span class="nn">my_program</span> <span class="kn">import</span> <span class="n">custom_logger</span>
 
-<span class="n">set_metadata</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">custom_logger</span><span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn">milc</span> <span class="kn">import</span> <span class="n">cli</span>
+<span class="n">cli</span><span class="o">.</span><span class="n">milc_options</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">custom_logger</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="deprecated-set_metadata">Deprecated: set_metadata()<a class="headerlink" href="#deprecated-set_metadata" title="Permanent link">&para;</a></h2>
 <p>Earlier versions of MILC used <code>milc.set_metadata</code> instead. This is still supported but will throw a Deprecation warning.</p>
