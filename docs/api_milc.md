@@ -143,6 +143,16 @@ def initialize_logging(logger: Optional[logging.Logger]) -> None
 
 Prepare the defaults for the logging infrastructure.
 
+<a id="milc.MILC.initialize_arguments"></a>
+
+#### initialize\_arguments
+
+```python
+def initialize_arguments() -> None
+```
+
+Setup and add default arguments.
+
 <a id="milc.MILC.acquire_lock"></a>
 
 #### acquire\_lock
