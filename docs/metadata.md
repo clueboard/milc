@@ -12,21 +12,19 @@ cli.milc_options(name='Florzelbop', version='1.0.0', author='Jane Doe')
 
 You should only do this once, and you should do it as early in your program's execution as possible.
 
-!!! danger
-    Do not import `set_metadata` and `cli` at the same time! When you run `set_metadata` the `cli` object will be replaced, but your existing import will continue to reference the old `cli` object.
+!!! warning
+    If you have spread your program among several files, or you are using `milc.subcommand.config`, you need to use `cli.milc_options()` before you import those modules.
 
 ## Custom Loggers
 
 You can also use this to pass in custom loggers.
 
 ```python
-from milc import set_metadata
+from milc import cli
 
 from my_program import custom_logger
 
-set_metadata(logger=custom_logger)
-
-from milc import cli
+cli.milc_options(logger=custom_logger)
 ```
 
 ## Deprecated: set_metadata()

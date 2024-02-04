@@ -18,12 +18,20 @@ from .milc import MILC
 class MILCInterface:
     def __init__(self) -> None:
         self._milc: Optional[MILC] = None
+        self._name = None
+        self._author = None
+        self._version = None
+        self._logger = None
 
     def milc_options(self, *, name: Optional[str] = None, author: Optional[str] = None, version: Optional[str] = None, logger: Optional[Logger] = None) -> None:
         if self._milc and self._milc._inside_context_manager:
             raise RuntimeError('You must run set_metadata() before cli()!')
 
-        self._milc = MILC(name, author, version, logger)
+        self._name = name or self._name
+        self._author = author or self._author
+        self._version = version or self._version
+        self._logger = logger or self._logger
+        self._milc = MILC(self._name, self._author, self._version, self._logger)
 
     @property
     def milc(self) -> MILC:
