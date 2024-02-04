@@ -18,14 +18,14 @@ from .milc import MILC
 class MILCInterface:
     def __init__(self) -> None:
         self._milc: Optional[MILC] = None
-        self._name = None
-        self._author = None
-        self._version = None
-        self._logger = None
+        self._name: Optional[str] = None
+        self._author: Optional[str] = None
+        self._version: Optional[str] = None
+        self._logger: Optional[Logger] = None
 
     def milc_options(self, *, name: Optional[str] = None, author: Optional[str] = None, version: Optional[str] = None, logger: Optional[Logger] = None) -> None:
         if self._milc and self._milc._inside_context_manager:
-            raise RuntimeError('You must run set_metadata() before cli()!')
+            raise RuntimeError('You must run cli.milc_options() before cli() or anything else!')
 
         self._name = name or self._name
         self._author = author or self._author
