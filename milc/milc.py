@@ -83,6 +83,7 @@ class MILC(object):
         self.initialize_config()
         self.initialize_argparse()
         self.initialize_logging(logger)
+        self.initialize_arguments()
 
     @property
     def config_dir(self) -> Path:
@@ -274,35 +275,42 @@ class MILC(object):
     def initialize_logging(self, logger: Optional[logging.Logger]) -> None:
         """Prepare the defaults for the logging infrastructure.
         """
-        if not logger:
-            logger = logging.getLogger(self.__class__.__name__)
-
         self.acquire_lock()
 
-        self.log_file = None
-        self.log_file_mode = 'a'
-        self.log_file_handler: Optional[logging.FileHandler] = None
-        self.log_print = True
-        self.log_print_to = sys.stderr
-        self.log_print_level = logging.INFO
-        self.log_file_level = logging.INFO
-        self.log_level = logging.INFO
-        self.log = logger
+        if logger:
+            self.milc_logger = False
+            self.log = logger
+        else:
+            self.milc_logger = True
+            self.log = logging.getLogger(self.__class__.__name__)
+            self.log_file = None
+            self.log_file_mode = 'a'
+            self.log_file_handler: Optional[logging.FileHandler] = None
+            self.log_print = True
+            self.log_print_to = sys.stderr
+            self.log_print_level = logging.INFO
+            self.log_file_level = logging.INFO
+            self.log_level = logging.INFO
 
-        self.log.setLevel(logging.DEBUG)
-        logging.root.setLevel(logging.DEBUG)
+            self.log.setLevel(logging.DEBUG)
+            logging.root.setLevel(logging.DEBUG)
 
         self.release_lock()
 
+        if self.milc_logger:
+            self.add_argument('-v', '--verbose', action='store_true', help='Make the logging more verbose')
+            self.add_argument('--datetime-fmt', default='%Y-%m-%d %H:%M:%S', help='Format string for datetimes')
+            self.add_argument('--log-fmt', default='%(levelname)s %(message)s', help='Format string for printed log output')
+            self.add_argument('--log-file-fmt', default='[%(levelname)s] [%(asctime)s] [file:%(pathname)s] [line:%(lineno)d] %(message)s', help='Format string for log file.')
+            self.add_argument('--log-file-level', default='info', choices=['debug', 'info', 'warning', 'error', 'critical'], help='Logging level for log file.')
+            self.add_argument('--log-file', help='File to write log messages to')
+            self.add_argument('--color', action='store_boolean', default=ansi_config['color'], help='color in output')
+            self.add_argument('--unicode', action='store_boolean', default=ansi_config['unicode'], help='unicode loglevels')
+
+    def initialize_arguments(self) -> None:
+        """Setup and add default arguments.
+        """
         self.add_argument('-V', '--version', version=self.version, action='version', help='Display the version and exit')
-        self.add_argument('-v', '--verbose', action='store_true', help='Make the logging more verbose')
-        self.add_argument('--datetime-fmt', default='%Y-%m-%d %H:%M:%S', help='Format string for datetimes')
-        self.add_argument('--log-fmt', default='%(levelname)s %(message)s', help='Format string for printed log output')
-        self.add_argument('--log-file-fmt', default='[%(levelname)s] [%(asctime)s] [file:%(pathname)s] [line:%(lineno)d] %(message)s', help='Format string for log file.')
-        self.add_argument('--log-file-level', default='info', choices=['debug', 'info', 'warning', 'error', 'critical'], help='Logging level for log file.')
-        self.add_argument('--log-file', help='File to write log messages to')
-        self.add_argument('--color', action='store_boolean', default=ansi_config['color'], help='color in output')
-        self.add_argument('--unicode', action='store_boolean', default=ansi_config['unicode'], help='unicode loglevels')
         self.add_argument('--interactive', action='store_true', help='Force interactive mode even when stdout is not a tty.')
         self.add_argument('--config-file', help='The location for the configuration file')
 
@@ -704,36 +712,37 @@ class MILC(object):
     def setup_logging(self) -> None:
         """Called by __enter__() to setup the logging configuration.
         """
-        if len(logging.root.handlers) != 0:
-            # MILC is the only thing that should have root log handlers
-            logging.root.handlers = []
+        if self.milc_logger:
+            if len(logging.root.handlers) != 0:
+                # MILC is the only thing that should have root log handlers
+                logging.root.handlers = []
 
-        self.acquire_lock()
+            self.acquire_lock()
 
-        if self.config.general.verbose:
-            self.log_print_level = logging.DEBUG
+            if self.config.general.verbose:
+                self.log_print_level = logging.DEBUG
 
-        ansi_config['color'] = self.config.general.color
-        ansi_config['unicode'] = self.config.general.unicode
+            ansi_config['color'] = self.config.general.color
+            ansi_config['unicode'] = self.config.general.unicode
 
-        self.log_file = self.config.general.log_file or self.log_file
-        self.log_file_format = MILCFormatter(self.config.general.log_file_fmt, self.config.general.datetime_fmt)
-        self.log_file_level = getattr(logging, self.config.general.log_file_level.upper())
-        self.log_format = MILCFormatter(self.config.general.log_fmt, self.config.general.datetime_fmt)
+            self.log_file = self.config.general.log_file or self.log_file
+            self.log_file_format = MILCFormatter(self.config.general.log_file_fmt, self.config.general.datetime_fmt)
+            self.log_file_level = getattr(logging, self.config.general.log_file_level.upper())
+            self.log_format = MILCFormatter(self.config.general.log_fmt, self.config.general.datetime_fmt)
 
-        if self.log_file:
-            self.log_file_handler = logging.FileHandler(self.log_file, self.log_file_mode)
-            self.log_file_handler.setLevel(self.log_file_level)
-            self.log_file_handler.setFormatter(self.log_file_format)
-            logging.root.addHandler(self.log_file_handler)
+            if self.log_file:
+                self.log_file_handler = logging.FileHandler(self.log_file, self.log_file_mode)
+                self.log_file_handler.setLevel(self.log_file_level)
+                self.log_file_handler.setFormatter(self.log_file_format)
+                logging.root.addHandler(self.log_file_handler)
 
-        if self.log_print:
-            self.log_print_handler = logging.StreamHandler(self.log_print_to)
-            self.log_print_handler.setLevel(self.log_print_level)
-            self.log_print_handler.setFormatter(self.log_format)
-            logging.root.addHandler(self.log_print_handler)
+            if self.log_print:
+                self.log_print_handler = logging.StreamHandler(self.log_print_to)
+                self.log_print_handler.setLevel(self.log_print_level)
+                self.log_print_handler.setFormatter(self.log_format)
+                logging.root.addHandler(self.log_print_handler)
 
-        self.release_lock()
+            self.release_lock()
 
     def __enter__(self) -> Any:
         if self._inside_context_manager:

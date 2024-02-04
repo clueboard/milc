@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+"""Hello World implementation using MILC.
+
+PYTHON_ARGCOMPLETE_OK
+"""
+import logging
+
+from milc import set_metadata
+
+# Setup external logger
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger('custom_logger')
+
+set_metadata(logger=logging.getLogger('custom_logger'))
+
+# Import milc
+from milc import cli
+
+
+@cli.entrypoint('Test a non-MILC logger.')
+def main(cli):
+    cli.log.info('Hello Info World!')
+    cli.log.debug('Hello Debug World!')
+
+
+if __name__ == '__main__':
+    cli()
