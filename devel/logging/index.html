@@ -454,6 +454,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#custom-loggers" class="md-nav__link">
+    Custom Loggers
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -746,6 +753,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#custom-loggers" class="md-nav__link">
+    Custom Loggers
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -763,8 +777,6 @@
 </a>
 
 
-
-  <h1>Logging</h1>
 
 <p>MILC comes with a robust logging system based on python's <code>logging</code> module. All you have to worry about are log messages, let MILC worry about presenting those messages to the user in configurable ways.</p>
 <h2 id="writing-log-entries">Writing Log Entries<a class="headerlink" href="#writing-log-entries" title="Permanent link">&para;</a></h2>
@@ -813,6 +825,29 @@
 </ul>
 </li>
 </ul>
+<h1 id="custom-loggers">Custom Loggers<a class="headerlink" href="#custom-loggers" title="Permanent link">&para;</a></h1>
+<p>You may want to bypass MILC's logging and use your own logger instead. To do this use <code>cli.milc_options(logger=&lt;MyLogger&gt;)</code>. This should be done before you call <code>cli()</code> or do anything else.</p>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">milc</span> <span class="kn">import</span> <span class="n">cli</span>
+
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">entrypoint</span><span class="p">(</span><span class="s1">&#39;Hello, World!&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">(</span><span class="n">cli</span><span class="p">):</span>
+    <span class="n">cli</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Hello, World!&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">my_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;my-program&#39;</span><span class="p">)</span>
+    <span class="c1"># Configure my_logger the way you want/need here</span>
+
+    <span class="n">cli</span><span class="o">.</span><span class="n">milc_options</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">my_logger</span><span class="p">)</span>
+    <span class="n">cli</span><span class="p">()</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You should only call <code>cli.milc_options()</code> one time during your program's execution.</p>
+</div>
 
               
             </article>

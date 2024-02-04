@@ -701,6 +701,10 @@
 <h1 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h1>
 <p>Configuration for MILC applications is a key/value system. Each key consists of a subcommand and an argument name separated by a period. This allows for a straightforward and direct translation between config keys and the arguments they set. You can provide your users with a subcommand for managing this configuration by importing the config subcommand:</p>
 <p><code>import milc.subcommand.config</code></p>
+<div class="admonition warn">
+<p class="admonition-title">Warn</p>
+<p>This must be imported after <code>cli.milc_options()</code> is used.</p>
+</div>
 <p>Read on to see how users can utilize this subcommand.</p>
 <h2 id="simple-example">Simple Example<a class="headerlink" href="#simple-example" title="Permanent link">&para;</a></h2>
 <p>As an example let's look at the command <code>my_cli foo --arg1 bar --arg2 bat</code>.</p>
