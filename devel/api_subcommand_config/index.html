@@ -701,22 +701,22 @@
 <p>Read and write configuration settings</p>
 <p><a id="subcommand.config.print_config"></a></p>
 <h4 id="print_config">print_config<a class="headerlink" href="#print_config" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">print_config</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">print_config</span><span class="p">(</span><span class="n">section</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 <p>Print a single config setting to stdout.</p>
 <p><a id="subcommand.config.show_config"></a></p>
 <h4 id="show_config">show_config<a class="headerlink" href="#show_config" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">show_config</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">show_config</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 <p>Print the current configuration to stdout.</p>
 <p><a id="subcommand.config.parse_config_token"></a></p>
 <h4 id="parse_config_token">parse_config_token<a class="headerlink" href="#parse_config_token" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">parse_config_token</span><span class="p">(</span><span class="n">config_token</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">parse_config_token</span><span class="p">(</span><span class="n">config_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
 </code></pre></div>
 <p>Split a user-supplied configuration-token into its components.</p>
 <p><a id="subcommand.config.set_config"></a></p>
 <h4 id="set_config">set_config<a class="headerlink" href="#set_config" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">set_config</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">option</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">set_config</span><span class="p">(</span><span class="n">section</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">option</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 <p>Set a config key in the running config.</p>
 <p><a id="subcommand.config.config"></a></p>
@@ -735,7 +735,7 @@
                    <span class="n">arg_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Configuration options to read or write.&#39;</span><span class="p">)</span>
 <span class="nd">@milc</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">subcommand</span><span class="p">(</span><span class="s2">&quot;Read and write configuration settings.&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">config</span><span class="p">(</span><span class="n">cli</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">config</span><span class="p">(</span><span class="n">cli</span><span class="p">:</span> <span class="n">MILC</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span>
 </code></pre></div>
 <p>Read and write config settings.</p>
 <p>This script iterates over the config_tokens supplied as argument. Each config_token has the following form:</p>

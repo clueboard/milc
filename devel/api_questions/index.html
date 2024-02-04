@@ -701,7 +701,10 @@
 <p>Sometimes you need to ask the user a question. MILC provides basic functions for collecting and validating user input. You can find these in the <code>milc.questions</code> module.</p>
 <p><a id="questions.yesno"></a></p>
 <h4 id="yesno">yesno<a class="headerlink" href="#yesno" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">yesno</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">yesno</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+          <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+          <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+          <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span>
 </code></pre></div>
 <p>Displays <code>prompt</code> to the user and gets a yes or no response.</p>
 <p>Returns <code>True</code> for a yes and <code>False</code> for a no.</p>
@@ -715,7 +718,7 @@
 <tbody>
 <tr>
 <td>prompt</td>
-<td>The prompt to present to the user. Can include ANSI and format strings like milc's <code>cli.echo()</code>.</td>
+<td>The prompt to present to the user. Can include ANSI and format strings like <code>cli.echo()</code>.</td>
 </tr>
 <tr>
 <td>default</td>
@@ -729,15 +732,16 @@
 </code></pre></div>
 <p><a id="questions.password"></a></p>
 <h4 id="password">password<a class="headerlink" href="#password" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">password</span><span class="p">(</span><span class="n">prompt</span><span class="o">=</span><span class="s1">&#39;Enter password:&#39;</span><span class="p">,</span>
-             <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-             <span class="n">confirm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-             <span class="n">confirm_prompt</span><span class="o">=</span><span class="s1">&#39;Confirm password:&#39;</span><span class="p">,</span>
-             <span class="n">confirm_limit</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-             <span class="n">validate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">password</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Enter password:&#39;</span><span class="p">,</span>
+             <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+             <span class="n">confirm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+             <span class="n">confirm_prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Confirm password:&#39;</span><span class="p">,</span>
+             <span class="n">confirm_limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+             <span class="n">validate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 </code></pre></div>
 <p>Securely receive a password from the user. Returns the password or None.</p>
+<p>When running in non-interactive mode this will always return None. Otherwise it will return the confirmed password the user provides.</p>
 <table>
 <thead>
 <tr>
@@ -770,13 +774,13 @@
 </table>
 <p><a id="questions.question"></a></p>
 <h4 id="question">question<a class="headerlink" href="#question" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">question</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span>
-             <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-             <span class="n">confirm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-             <span class="n">answer_type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-             <span class="n">validate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">question</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+             <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+             <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="n">confirm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+             <span class="n">answer_type</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">,</span>
+             <span class="n">validate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
 </code></pre></div>
 <p>Allow the user to type in a free-form string to answer.</p>
 <table>
@@ -811,13 +815,13 @@
 </table>
 <p><a id="questions.choice"></a></p>
 <h4 id="choice">choice<a class="headerlink" href="#choice" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">choice</span><span class="p">(</span><span class="n">heading</span><span class="p">,</span>
-           <span class="n">options</span><span class="p">,</span>
-           <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-           <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-           <span class="n">confirm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-           <span class="n">prompt</span><span class="o">=</span><span class="s1">&#39;Please enter your choice: &#39;</span><span class="p">,</span>
-           <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">choice</span><span class="p">(</span><span class="n">heading</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+           <span class="n">options</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+           <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+           <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+           <span class="n">confirm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+           <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Please enter your choice: &#39;</span><span class="p">,</span>
+           <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 </code></pre></div>
 <p>Present the user with a list of options and let them select one.</p>
 <p>Users can enter either the number or the text of their choice. This will return the value of the item they choose, not the numerical index.</p>

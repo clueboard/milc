@@ -781,7 +781,7 @@
 section or option does not yet exist.</p>
 <p><a id="configuration.Configuration.__getitem__"></a></p>
 <h4 id="__getitem__">__getitem__<a class="headerlink" href="#__getitem__" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span>
 </code></pre></div>
 <p>Returns a config section, creating it if it doesn't exist yet.</p>
 <p><a id="configuration.ConfigurationSection"></a></p>
@@ -790,19 +790,19 @@ section or option does not yet exist.</p>
 </code></pre></div>
 <p><a id="configuration.ConfigurationSection.__getitem__"></a></p>
 <h4 id="__getitem___1">__getitem__<a class="headerlink" href="#__getitem___1" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span>
 </code></pre></div>
 <p>Returns a config value, pulling from the <code>user</code> section as a fallback.
 This is called when the attribute is accessed either via the get method or through [ ] index.</p>
 <p><a id="configuration.ConfigurationSection.__getattr__"></a></p>
 <h4 id="__getattr__">__getattr__<a class="headerlink" href="#__getattr__" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span>
 </code></pre></div>
 <p>Returns the config value from the <code>user</code> section.
 This is called when the attribute is accessed via dot notation but does not exist.</p>
 <p><a id="configuration.ConfigurationSection.__setattr__"></a></p>
 <h4 id="__setattr__">__setattr__<a class="headerlink" href="#__setattr__" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 <p>Sets dictionary value when an attribute is set.</p>
 <p><a id="configuration.SubparserWrapper"></a></p>
@@ -812,28 +812,29 @@ This is called when the attribute is accessed via dot notation but does not exis
 <p>Wrap subparsers so we can track what options the user passed.</p>
 <p><a id="configuration.SubparserWrapper.completer"></a></p>
 <h4 id="completer">completer<a class="headerlink" href="#completer" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">completer</span><span class="p">(</span><span class="n">completer</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">completer</span><span class="p">(</span><span class="n">completer</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 <p>Add an arpcomplete completer to this subcommand.</p>
 <p><a id="configuration.SubparserWrapper.add_argument"></a></p>
 <h4 id="add_argument">add_argument<a class="headerlink" href="#add_argument" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 <p>Add an argument for this subcommand.</p>
 <p>This also stores the default for the argument in <code>self.cli.default_arguments</code>.</p>
 <p><a id="configuration.get_argument_strings"></a></p>
 <h4 id="get_argument_strings">get_argument_strings<a class="headerlink" href="#get_argument_strings" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_argument_strings</span><span class="p">(</span><span class="n">arg_parser</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_argument_strings</span><span class="p">(</span><span class="n">arg_parser</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+                         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 </code></pre></div>
 <p>Takes argparse arguments and returns a list of argument strings or positional names.</p>
 <p><a id="configuration.get_argument_name"></a></p>
 <h4 id="get_argument_name">get_argument_name<a class="headerlink" href="#get_argument_name" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_argument_name</span><span class="p">(</span><span class="n">arg_parser</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_argument_name</span><span class="p">(</span><span class="n">arg_parser</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span>
 </code></pre></div>
 <p>Takes argparse arguments and returns the dest name.</p>
 <p><a id="configuration.handle_store_boolean"></a></p>
 <h4 id="handle_store_boolean">handle_store_boolean<a class="headerlink" href="#handle_store_boolean" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">handle_store_boolean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">handle_store_boolean</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span>
 </code></pre></div>
 <p>Does the add_argument for action='store_boolean'.</p>
 

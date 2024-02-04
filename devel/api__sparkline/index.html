@@ -747,25 +747,25 @@
 <p>Display sparklines from a sequence of numbers.</p>
 <p><a id="_sparkline.is_number"></a></p>
 <h4 id="is_number">is_number<a class="headerlink" href="#is_number" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">is_number</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">is_number</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span>
 </code></pre></div>
 <p>Returns true if i is a number. Used to filter non-numbers from a list.</p>
 <p><a id="_sparkline.sparkline"></a></p>
 <h4 id="sparkline">sparkline<a class="headerlink" href="#sparkline" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">sparkline</span><span class="p">(</span><span class="n">number_list</span><span class="p">,</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">sparkline</span><span class="p">(</span><span class="n">number_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
               <span class="o">*</span><span class="p">,</span>
-              <span class="n">min_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-              <span class="n">max_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-              <span class="n">highlight_low</span><span class="o">=-</span><span class="n">inf</span><span class="p">,</span>
-              <span class="n">highlight_high</span><span class="o">=</span><span class="n">inf</span><span class="p">,</span>
-              <span class="n">highlight_low_color</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-              <span class="n">highlight_high_color</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-              <span class="n">negative_color</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{fg_red}</span><span class="s1">&#39;</span><span class="p">,</span>
-              <span class="n">positive_color</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-              <span class="n">highlight_low_reset</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{fg_reset}</span><span class="s1">&#39;</span><span class="p">,</span>
-              <span class="n">highlight_high_reset</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{fg_reset}</span><span class="s1">&#39;</span><span class="p">,</span>
-              <span class="n">negative_reset</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{fg_reset}</span><span class="s1">&#39;</span><span class="p">,</span>
-              <span class="n">positive_reset</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{fg_reset}</span><span class="s1">&#39;</span><span class="p">)</span>
+              <span class="n">min_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">max_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">highlight_low</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">-</span><span class="n">inf</span><span class="p">,</span>
+              <span class="n">highlight_high</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">inf</span><span class="p">,</span>
+              <span class="n">highlight_low_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+              <span class="n">highlight_high_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+              <span class="n">negative_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{fg_red}</span><span class="s1">&#39;</span><span class="p">,</span>
+              <span class="n">positive_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+              <span class="n">highlight_low_reset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{fg_reset}</span><span class="s1">&#39;</span><span class="p">,</span>
+              <span class="n">highlight_high_reset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{fg_reset}</span><span class="s1">&#39;</span><span class="p">,</span>
+              <span class="n">negative_reset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{fg_reset}</span><span class="s1">&#39;</span><span class="p">,</span>
+              <span class="n">positive_reset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{fg_reset}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span>
 </code></pre></div>
 <p>Display a sparkline from a sequence of numbers.</p>
 <p>If you wish to exclude extreme values, or you want to limit the set of characters used, you can adjust <code>min_value</code> and <code>max_value</code> to your own values. Values between your actual min/max will exclude datapoints, while values outside your actual min/max will compress your data into fewer sparks.</p>

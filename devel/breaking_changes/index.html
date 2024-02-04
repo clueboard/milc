@@ -696,6 +696,10 @@
 
 <h1 id="breaking-changes">Breaking Changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h1>
 <p>This is a list of breaking changes that have been made to MILC. If your script stops working after a minor or major version upgrade this document will tell you how to fix it.</p>
+<h1 id="version-180">Version 1.8.0<a class="headerlink" href="#version-180" title="Permanent link">&para;</a></h1>
+<ul>
+<li>MILC no longer does a logging.basicConfig before configuring logging. Modules which log during import time may emit extraneous messages with non-MILC formatting.</li>
+</ul>
 <h1 id="version-170">Version 1.7.0<a class="headerlink" href="#version-170" title="Permanent link">&para;</a></h1>
 <ul>
 <li>MILC is now fully type hinted</li>
