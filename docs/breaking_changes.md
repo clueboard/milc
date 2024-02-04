@@ -2,6 +2,9 @@
 
 This is a list of breaking changes that have been made to MILC. If your script stops working after a minor or major version upgrade this document will tell you how to fix it.
 
+# Version 1.8.0
+* MILC no longer does a logging.basicConfig before configuring logging. Modules which log during import time may emit extraneous messages with non-MILC formatting.
+
 # Version 1.7.0
 * MILC is now fully type hinted
 * You can pass in custom loggers using [set_metadata](metadata.md)
