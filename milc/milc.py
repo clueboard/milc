@@ -91,6 +91,14 @@ class MILC(object):
     def description(self, value: str) -> None:
         self._arg_parser.description = value
 
+    @property
+    def subcommand_name(self) -> Optional[str]:
+        if self._subcommand is not None:
+            name: str = self._subcommand.__name__
+            return name
+
+        return None
+
     def argv_name(self) -> str:
         """Returns the name of our program by examining argv.
         """

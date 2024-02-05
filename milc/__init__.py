@@ -21,6 +21,7 @@ import warnings
 from typing import Any, Optional
 
 from .emoji import EMOJI_LOGLEVELS
+from .milc import MILC
 from .milc_interface import MILCInterface
 
 if 'MILC_IGNORE_DEPRECATED' not in os.environ:
@@ -37,7 +38,7 @@ def set_metadata(
     author: Optional[str] = None,
     version: Optional[str] = None,
     logger: Optional[logging.Logger] = None,
-) -> Any:
+) -> MILCInterface:
     """Set metadata about your program.
 
     Deprecated: Use `cli.milc_options()` instead.

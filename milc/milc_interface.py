@@ -2,6 +2,7 @@
 
 This is where the public interface for `cli` is kept. This allows us to reinstantiate MILC without having to recreate the cli object, as well as allowing us to have a well defined public API.
 """
+import warnings
 import sys
 from logging import Logger
 from pathlib import Path
@@ -67,6 +68,24 @@ class MILCInterface:
     @property
     def log(self) -> Logger:
         return self.milc.log
+
+    @property
+    def platform(self) -> str:
+        return self.milc.platform
+
+    @property
+    def _subcommand(self) -> Any:
+        warnings.warn("cli._subcommand has been deprecated, please use cli.subcommand_name to get the subcommand name instead.", stacklevel=2)
+
+        return self.milc._subcommand
+
+    @property
+    def subcommands(self) -> Dict[str, Any]:
+        return self.milc.subcommands
+
+    @property
+    def subcommand_name(self) -> Any:
+        return self.milc._subcommand
 
     def echo(self, text: str, *args: Any, **kwargs: Any) -> None:
         """Print colorized text to stdout.
