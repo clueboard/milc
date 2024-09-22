@@ -32,7 +32,7 @@ Use `cli.save_config()` to save the user's configuration file. It will be writte
 
 # Configuration File Location
 
-MILC uses [appdirs](https://github.com/ActiveState/appdirs) to determine the configuration file location. You can set your application's name and author by using `milc.set_metadata`:
+MILC uses [platformdirs](https://github.com/tox-dev/platformdirs) to determine the configuration file location. You can set your application's name and author by using `milc.set_metadata`:
 
 ```python
 from milc import set_metadata
