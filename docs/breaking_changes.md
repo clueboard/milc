@@ -2,6 +2,9 @@
 
 This is a list of breaking changes that have been made to MILC. If your script stops working after a minor or major version upgrade this document will tell you how to fix it.
 
+# Version 1.9.0
+* Appdirs [has been deprecated](https://github.com/ActiveState/appdirs/issues/79#issuecomment-877645712) and replaced with [platformdirs](https://github.com/tox-dev/platformdirs).
+
 # Version 1.8.0
 * MILC no longer does a logging.basicConfig before configuring logging. Modules which log during import time may emit extraneous messages with non-MILC formatting.
 
