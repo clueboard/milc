@@ -7,7 +7,7 @@ from time import sleep
 
 from milc import cli
 
-cli.milc_options(name='spinner', author='MILC', version='1.8.0')
+cli.milc_options(name='spinner', author='MILC', version='1.9.0')
 
 
 @cli.argument('-n', '--name', help='Name to greet', default='World')
