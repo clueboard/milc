@@ -21,8 +21,8 @@ except ImportError:
 
 import argcomplete
 import colorama
-from appdirs import user_config_dir
 from halo import Halo  # type: ignore
+from platformdirs import user_config_dir
 from spinners.spinners import Spinners  # type: ignore
 
 from .ansi import MILCFormatter, ansi_colors, ansi_config, ansi_escape, format_ansi

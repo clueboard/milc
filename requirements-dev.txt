@@ -7,6 +7,5 @@ mkdocs-material<9
 mypy
 nose2
 pygments
-types-appdirs
 semver
 yapf
