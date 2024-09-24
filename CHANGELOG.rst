@@ -2,6 +2,22 @@ Changelog
 =========
 
 
+1.9.0 (2024-09-24)
+------------------
+- New release: 1.8.0 → 1.9.0. [Zach White]
+- [ci] Updated API documentation. [Zach White]
+- Document change to platformdirs. [Zach White]
+- Replace deprecated appdirs with platformdirs fork (#72) [Alexandre
+  Detiste]
+- Add some properties clients are using to MILCInterface. [Zach White]
+- Fix typing. [Zach White]
+- Preserve name, author, version, and logger in case cli.milc_options()
+  is called multiple times. [Zach White]
+- Use an interface so we don't have to replace the milc.cli object.
+  [Zach White]
+- Minor: changelog update. [Zach White]
+
+
 1.8.0 (2024-02-04)
 ------------------
 - New release: 1.7.0 → 1.8.0. [Zach White]
