@@ -500,11 +500,11 @@ class MILC(object):
             if argument in ('subparsers', 'entrypoint'):
                 continue
 
-            # Find the argument's section
-            if argument in self.default_arguments['general']:
-                section = 'general'
-            else:
+            # Find the argument's section. This is backwards because mypy is sticking its nose where it doesn't belong.
+            if argument not in self.default_arguments['general']:
                 section = subcommand_name
+            else:
+                section = 'general'
 
             if argument not in self.arg_only or section not in self.arg_only[argument]:
                 # Determine the arg value and source
@@ -688,7 +688,8 @@ class MILC(object):
             self._subparsers.metavar = "{%s,%s}" % (self._subparsers.metavar[1:-1], name) if self._subparsers.metavar else "{%s%s}" % (self._subparsers.metavar[1:-1], name)
             kwargs['help'] = description
 
-        self.subcommands[name] = SubparserWrapper(self, name, self._subparsers.add_parser(name, **kwargs))
+        # Type ignored because we explicitly add a subparser above
+        self.subcommands[name] = SubparserWrapper(self, name, self._subparsers.add_parser(name, **kwargs)) # type: ignore[union-attr]
         self.subcommands[name].set_defaults(entrypoint=handler)
 
         self.release_lock()
