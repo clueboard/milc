@@ -84,8 +84,8 @@ class MILCInterface:
         return self.milc.subcommands
 
     @property
-    def subcommand_name(self) -> Any:
-        return self.milc._subcommand
+    def subcommand_name(self) -> Optional[str]:
+        return self.milc.subcommand_name
 
     def echo(self, text: str, *args: Any, **kwargs: Any) -> None:
         """Print colorized text to stdout.
