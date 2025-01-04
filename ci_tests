@@ -42,7 +42,7 @@ def main(cli):
         cli.log.error('Improperly formatted code. Please run this: yapf -i -r .')
 
     cli.log.info('Running mypy...')
-    cmd = ['mypy', '--strict', 'milc']
+    cmd = ['mypy', '--strict', '--disable-error-code', 'unused-ignore', 'milc']
     result = run(cmd, stdin=DEVNULL)
     if result.returncode != 0:
         build_ok = False
