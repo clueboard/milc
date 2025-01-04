@@ -689,7 +689,7 @@ class MILC(object):
             kwargs['help'] = description
 
         # Type ignored because we explicitly add a subparser above
-        self.subcommands[name] = SubparserWrapper(self, name, self._subparsers.add_parser(name, **kwargs)) # type: ignore[union-attr]
+        self.subcommands[name] = SubparserWrapper(self, name, self._subparsers.add_parser(name, **kwargs))  # type: ignore[union-attr]
         self.subcommands[name].set_defaults(entrypoint=handler)
 
         self.release_lock()
