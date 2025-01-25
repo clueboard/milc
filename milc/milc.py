@@ -118,10 +118,13 @@ class MILC(object):
         if args and kwargs:
             raise ValueError('You can only specify *args or **kwargs, not both!')
 
+        # FIXME: For V2, when we can break backwards compatibility, format_ansi first and then do the %-formatting
         if args:
             text = format_ansi(text % args)
-        else:
+        elif kwargs:
             text = format_ansi(text % kwargs)
+        else:
+            text = format_ansi(text)
 
         if not self.config.general.color:
             text = ansi_escape.sub('', text)
