@@ -7,7 +7,7 @@ from time import sleep
 
 from milc import set_metadata
 
-set_metadata(name='spinner_qmk', author='MILC', version='1.9.0')
+set_metadata(name='spinner_qmk', author='MILC', version='1.9.1')
 
 from milc import cli
 

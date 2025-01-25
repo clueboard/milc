@@ -12,7 +12,7 @@ from subprocess import CalledProcessError, DEVNULL, run
 
 from milc import cli
 
-cli.milc_options(name='ci_tests', author='MILC', version='1.9.0')
+cli.milc_options(name='ci_tests', author='MILC', version='1.9.1')
 
 
 @cli.entrypoint('Run CI Tests...')

@@ -7,7 +7,7 @@ import os
 
 from milc import cli
 
-cli.milc_options(name='example', author='Milc Milcenson', version='1.9.0')
+cli.milc_options(name='example', author='Milc Milcenson', version='1.9.1')
 
 # This needs to be imported after we use cli.milc_options()
 import milc.subcommand.config  # noqa
