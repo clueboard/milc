@@ -2,6 +2,30 @@ Changelog
 =========
 
 
+1.9.1 (2025-01-25)
+------------------
+- New release: 1.9.0 → 1.9.1. [Zach White]
+- Let's try 3.10. [Zach White]
+- Make cli.echo more robust. [Zach White]
+- Move from python 3.7 to latest. [Zach White]
+- Fix the `milc.cli.subcommand_name` property value (#73) [Sergey
+  Vlasov]
+
+  The implementation of the `subcommand_name` property in `MILCInterface`
+  was wrong (it actually returned the `_subcommand` function object
+  instead of the subcommand name).
+- Mypy. [Zach White]
+- Flake8. [Zach White]
+- Mypy. [Zach White]
+- Style update. [Zach White]
+- Properly (I hope) fix CI. [Zach White]
+- Style update. [Zach White]
+- Fix windows too. [Zach White]
+- Style update. [Zach White]
+- Update the python version support. [Zach White]
+- Minor: changelog update. [Zach White]
+
+
 1.9.0 (2024-09-24)
 ------------------
 - New release: 1.8.0 → 1.9.0. [Zach White]
