@@ -12,7 +12,7 @@ from pathlib import Path
 from platform import platform
 from tempfile import NamedTemporaryFile
 from types import TracebackType
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Type, Union
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Type, TypeVar, Union
 
 try:
     import threading
@@ -23,6 +23,7 @@ import argcomplete
 import colorama
 from halo import Halo  # type: ignore
 from platformdirs import user_config_dir
+from typing_extensions import ParamSpec
 from spinners.spinners import Spinners  # type: ignore
 
 from .ansi import MILCFormatter, ansi_colors, ansi_config, ansi_escape, format_ansi
@@ -30,7 +31,8 @@ from .attrdict import AttrDict
 from .configuration import Configuration, SubparserWrapper, get_argument_name, get_argument_strings, handle_store_boolean
 from ._in_argv import _in_argv, _index_argv
 
-# FIXME: Replace Callable[..., Any] with better definitions
+P = ParamSpec("P")
+R = TypeVar("R")
 
 
 class MILC(object):
@@ -59,7 +61,7 @@ class MILC(object):
         self.author = author
         self._config_store_true: Sequence[str] = []
         self._config_store_false: Sequence[str] = []
-        self._entrypoint: Callable[[Any], Any] = lambda _: None
+        self._entrypoint: Callable[..., Any] = lambda _: None
         self._spinners: Dict[str, Dict[str, Union[int, Sequence[str]]]] = {}
         self._subcommand = None
         self._inside_context_manager = False
@@ -407,13 +409,13 @@ class MILC(object):
                 if _in_argv(arg):
                     self.args_passed[config_name][arg_name] = True
 
-    def argument(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
+    def argument(self, *args: Any, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         """Decorator to call self.add_argument or self.<subcommand>.add_argument.
         """
         if self._inside_context_manager:
             raise RuntimeError('You must run this before the with statement!')
 
-        def argument_function(handler: Callable[..., Any]) -> Callable[..., Any]:
+        def argument_function(handler: Callable[P, R]) -> Callable[P, R]:
             config_name = handler.__name__
             subcommand_name = config_name.replace("_", "-")
             arg_name = get_argument_name(self._arg_parser, *args, **kwargs)
@@ -618,7 +620,7 @@ class MILC(object):
 
         raise RuntimeError('No entrypoint provided!')
 
-    def entrypoint(self, description: str, deprecated: Optional[str] = None) -> Callable[..., Any]:
+    def entrypoint(self, description: str, deprecated: Optional[str] = None) -> Callable[[Callable[P, R]], Callable[P, R]]:
         """Decorator that marks the entrypoint used when a subcommand is not supplied.
         Args:
             description
@@ -634,7 +636,7 @@ class MILC(object):
         self.description = description
         self.release_lock()
 
-        def entrypoint_func(handler: Callable[..., Any]) -> Callable[..., Any]:
+        def entrypoint_func(handler: Callable[P, R]) -> Callable[P, R]:
             self.acquire_lock()
 
             if deprecated:
@@ -650,12 +652,12 @@ class MILC(object):
 
     def add_subcommand(
         self,
-        handler: Callable[..., Any],
+        handler: Callable[P, R],
         description: str,
         hidden: bool = False,
         deprecated: Optional[str] = None,
         **kwargs: Any,
-    ) -> Callable[..., Any]:
+    ) -> Callable[P, R]:
         """Register a subcommand.
 
         Args:
@@ -699,7 +701,7 @@ class MILC(object):
 
         return handler
 
-    def subcommand(self, description: str, hidden: bool = False, **kwargs: Any) -> Callable[..., Any]:
+    def subcommand(self, description: str, hidden: bool = False, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         """Decorator to register a subcommand.
 
         Args:
@@ -710,7 +712,7 @@ class MILC(object):
             hidden
                 When True don't display this command in --help
         """
-        def subcommand_function(handler: Callable[..., Any]) -> Callable[..., Any]:
+        def subcommand_function(handler: Callable[P, R]) -> Callable[P, R]:
             return self.add_subcommand(handler, description, hidden=hidden, **kwargs)
 
         return subcommand_function
