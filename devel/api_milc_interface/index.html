@@ -8,14 +8,14 @@
       
       
       
-        <link rel="canonical" href="https://milc.clueboard.co/devel/breaking_changes/">
+        <link rel="canonical" href="https://milc.clueboard.co/devel/api_milc_interface/">
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-8.5.10">
     
     
       
-        <title>Breaking Changes - MILC &mdash; A Python 3 CLI Framework</title>
+        <title>Api milc interface - MILC &mdash; A Python 3 CLI Framework</title>
       
     
     
@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#breaking-changes" class="md-skip">
+        <a href="#milc_interface" class="md-skip">
           Skip to content
         </a>
       
@@ -107,7 +107,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Breaking Changes
+              Api milc interface
             
           </span>
         </div>
@@ -260,21 +260,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../breaking_changes/" class="md-nav__link">
         Breaking Changes
       </a>
-      
     </li>
   
 
@@ -681,6 +671,34 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#milcinterface-objects" class="md-nav__link">
+    MILCInterface Objects
+  </a>
+  
+    <nav class="md-nav" aria-label="MILCInterface Objects">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#arguments" class="md-nav__link">
+    Arguments
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -693,64 +711,199 @@
                 
                   
 
-  <a href="https://github.com/clueboard/milc/edit/master/docs/breaking_changes.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/clueboard/milc/edit/master/docs/api_milc_interface.md" title="Edit this page" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
-<h1 id="breaking-changes">Breaking Changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h1>
-<p>This is a list of breaking changes that have been made to MILC. If your script stops working after a minor or major version upgrade this document will tell you how to fix it.</p>
-<h1 id="version-190">Version 1.9.0<a class="headerlink" href="#version-190" title="Permanent link">&para;</a></h1>
+<p><a id="milc_interface"></a></p>
+<h1 id="milc_interface">milc_interface<a class="headerlink" href="#milc_interface" title="Permanent link">&para;</a></h1>
+<p>Public interface for MILC.</p>
+<p>This is where the public interface for <code>cli</code> is kept. This allows us to reinstantiate MILC without having to recreate the cli object, as well as allowing us to have a well defined public API.</p>
+<p><a id="milc_interface.MILCInterface"></a></p>
+<h2 id="milcinterface-objects">MILCInterface Objects<a class="headerlink" href="#milcinterface-objects" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">MILCInterface</span><span class="p">()</span>
+</code></pre></div>
+<p><a id="milc_interface.MILCInterface.echo"></a></p>
+<h4 id="echo">echo<a class="headerlink" href="#echo" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">echo</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+<p>Print colorized text to stdout.</p>
+<p>ANSI color strings (such as {fg_blue}) will be converted into ANSI
+escape sequences, and the ANSI reset sequence will be added to all
+strings.</p>
+<p>If <em>args or </em>*kwargs are passed they will be used to %-format the strings.</p>
+<p><a id="milc_interface.MILCInterface.run"></a></p>
+<h4 id="run">run<a class="headerlink" href="#run" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="n">command</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">capture_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">combined_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">text</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span>
+</code></pre></div>
+<p>Run a command using <code>subprocess.run</code>, but using some different defaults.</p>
+<p>Unlike subprocess.run you must supply a sequence of arguments. You can use <code>shlex.split()</code> to build this from a string.</p>
+<p>The **kwargs arguments get passed directly to <code>subprocess.run</code>.</p>
+<p><strong>Arguments</strong>:</p>
+<p>command
+  A sequence where the first item is the command to run, and any remaining items are arguments to pass.</p>
+<p>capture_output
+  Set to False to have output written to the terminal instead of being available in the returned <code>subprocess.CompletedProcess</code> instance.</p>
+<p>combined_output
+  When true STDERR will be written to STDOUT. Equivalent to the shell construct <code>2&gt;&amp;1</code>.</p>
+<p>text
+  Set to False to disable encoding and get <code>bytes()</code> from <code>.stdout</code> and <code>.stderr</code>.</p>
+<p><a id="milc_interface.MILCInterface.print_help"></a></p>
+<h4 id="print_help">print_help<a class="headerlink" href="#print_help" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">print_help</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+<p>Print a help message for the main program or subcommand, depending on context.</p>
+<p><a id="milc_interface.MILCInterface.print_usage"></a></p>
+<h4 id="print_usage">print_usage<a class="headerlink" href="#print_usage" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">print_usage</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+<p>Print brief description of how the main program or subcommand is invoked, depending on context.</p>
+<p><a id="milc_interface.MILCInterface.add_argument"></a></p>
+<h4 id="add_argument">add_argument<a class="headerlink" href="#add_argument" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+<p>Wrapper to add arguments and track whether they were passed on the command line.</p>
+<p><a id="milc_interface.MILCInterface.acquire_lock"></a></p>
+<h4 id="acquire_lock">acquire_lock<a class="headerlink" href="#acquire_lock" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">acquire_lock</span><span class="p">(</span><span class="n">blocking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span>
+</code></pre></div>
+<p>Acquire the MILC lock for exclusive access to properties.</p>
+<p><a id="milc_interface.MILCInterface.release_lock"></a></p>
+<h4 id="release_lock">release_lock<a class="headerlink" href="#release_lock" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">release_lock</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+<p>Release the MILC lock.</p>
+<p><a id="milc_interface.MILCInterface.argument"></a></p>
+<h4 id="argument">argument<a class="headerlink" href="#argument" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">argument</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+</code></pre></div>
+<p>Decorator to add an argument to a MILC command or subcommand.</p>
+<p><a id="milc_interface.MILCInterface.save_config"></a></p>
+<h4 id="save_config">save_config<a class="headerlink" href="#save_config" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">save_config</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+<p>Save the current configuration to the config file.</p>
+<p><a id="milc_interface.MILCInterface.__call__"></a></p>
+<h4 id="__call__">__call__<a class="headerlink" href="#__call__" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Any</span>
+</code></pre></div>
+<p>Execute the entrypoint function.</p>
+<p><a id="milc_interface.MILCInterface.entrypoint"></a></p>
+<h4 id="entrypoint">entrypoint<a class="headerlink" href="#entrypoint" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">entrypoint</span><span class="p">(</span><span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+               <span class="n">deprecated</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+</code></pre></div>
+<p>Decorator that marks the entrypoint used when a subcommand is not supplied.</p>
+<p><strong>Arguments</strong>:</p>
+<p>description
+  A one-line description to display in --help</p>
+<p>deprecated
+  Deprecation message. When set the subcommand will marked as deprecated and this message will be displayed in the help output.</p>
+<p><a id="milc_interface.MILCInterface.subcommand"></a></p>
+<h4 id="subcommand">subcommand<a class="headerlink" href="#subcommand" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">subcommand</span><span class="p">(</span><span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+               <span class="n">hidden</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+               <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+</code></pre></div>
+<p>Decorator to register a subcommand.</p>
+<p><strong>Arguments</strong>:</p>
+<p>description
+  A one-line description to display in --help</p>
+<p>hidden
+  When True don't display this command in --help</p>
+<p><a id="milc_interface.MILCInterface.add_spinner"></a></p>
+<h4 id="add_spinner">add_spinner<a class="headerlink" href="#add_spinner" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_spinner</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spinner</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span>
+                                                    <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+<p>Adds a new spinner to the list of spinners.</p>
+<p>A spinner is a dictionary with two keys:</p>
+<div class="codehilite"><pre><span></span><code>interval
+    An integer that sets how long (in ms) to wait between frames.
+
+frames
+    A list of frames for this spinner
+</code></pre></div>
+
+<p><a id="milc_interface.MILCInterface.spinner"></a></p>
+<h4 id="spinner">spinner<a class="headerlink" href="#spinner" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">spinner</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+            <span class="n">spinner</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">animation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;ellipsed&#39;</span><span class="p">,</span>
+            <span class="n">placement</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+            <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span>
+            <span class="n">interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">stream</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span>
+            <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Halo</span>
+</code></pre></div>
+<p>Create a spinner object for showing activity to the user.</p>
+<p>This uses halo <a href="https://github.com/ManrajGrover/halo">https://github.com/ManrajGrover/halo</a> behind the scenes, most of the arguments map to Halo objects 1:1.</p>
+<p>There are 3 basic ways to use this:</p>
 <ul>
-<li>Appdirs <a href="https://github.com/ActiveState/appdirs/issues/79#issuecomment-877645712">has been deprecated</a> and replaced with <a href="https://github.com/tox-dev/platformdirs">platformdirs</a>.</li>
+<li>Instantiating a spinner and then using <code>.start()</code> and <code>.stop()</code> on your object.</li>
+<li>Using a context manager (<code>with cli.spinner(...):</code>)</li>
+<li>Decorate a function (<code>@cli.spinner(...)</code>)</li>
 </ul>
-<h1 id="version-180">Version 1.8.0<a class="headerlink" href="#version-180" title="Permanent link">&para;</a></h1>
-<ul>
-<li>MILC no longer does a logging.basicConfig before configuring logging. Modules which log during import time may emit extraneous messages with non-MILC formatting.</li>
-</ul>
-<h1 id="version-170">Version 1.7.0<a class="headerlink" href="#version-170" title="Permanent link">&para;</a></h1>
-<ul>
-<li>MILC is now fully type hinted</li>
-<li>You can pass in custom loggers using <a href="../metadata/">set_metadata</a></li>
-</ul>
-<h1 id="version-160">Version 1.6.0<a class="headerlink" href="#version-160" title="Permanent link">&para;</a></h1>
-<ul>
-<li>Added support for <a href="../sparklines/">Sparklines</a></li>
-<li>Moved documentation to <a href="https://squidfunk.github.io/mkdocs-material/">Material for MkDocs</a><ul>
-<li>Latest release documentation can always be found here: <a href="https://milc.clueboard.co/latest">https://milc.clueboard.co/latest</a></li>
-<li>Latest in development documentation can always be found here: <a href="https://milc.clueboard.co/devel">https://milc.clueboard.co/devel</a></li>
-<li>Legacy docsify documentation for MILC 1.5.0 can be found here: <a href="https://milc.clueboard.co/1.5.0">https://milc.clueboard.co/1.5.0</a></li>
-</ul>
-</li>
-</ul>
-<h1 id="version-150">Version 1.5.0<a class="headerlink" href="#version-150" title="Permanent link">&para;</a></h1>
-<ul>
-<li>Added <code>cli.config_dir</code> to find the location of the config directory.</li>
-<li><a href="../argument_parsing/#deprecated">Arguments</a>, <a href="../api_milc/#entrypoint">commands</a>, and <a href="../api_milc/#add_subcommand">subcommands</a> can now be marked as deprecated.</li>
-</ul>
-<h1 id="version-140">Version 1.4.0<a class="headerlink" href="#version-140" title="Permanent link">&para;</a></h1>
-<ul>
-<li>The <code>config</code> subcommand now filters out configuration that has not been explicitly set. The new <code>--all</code> flag will allow you to see all possible configuration options and their default values.</li>
-<li>Setting program metadata through environment variables has been deprecated. In its place is the new <code>set_metadata()</code> function. See <a href="../metadata/">Metadata</a> for more detail.</li>
-<li>MILC now tracks whether a script is running interactively or not with <code>cli.interactive</code>. You can pass <code>--interactive</code> to force a script into interactive mode even when stdout is not a TTY. <code>milc.questions</code> will always return the default answer when running non-interactively, unless <code>--yes</code> or <code>--no</code> are passed.</li>
-</ul>
-<h1 id="version-130">Version 1.3.0<a class="headerlink" href="#version-130" title="Permanent link">&para;</a></h1>
-<ul>
-<li>You can now set the program version number with <code>os.environ['MILC_APP_VERSION'] = '1.2.3'</code></li>
-<li>New global arguments: --unicode and --no-unicode</li>
-<li>ANSIFormatter, ANSIStrippingFormatter, ANSIEmojiLoglevelFormatter, and ANSIStrippingEmojiLoglevelFormatter have been removed in favor of <code>format_ansi()</code> being color aware. The new <code>MILCFormatter</code> is being used in its place.</li>
-</ul>
-<h1 id="version-120">Version 1.2.0<a class="headerlink" href="#version-120" title="Permanent link">&para;</a></h1>
-<ul>
-<li>The config file is now resolved to the actual file which should avoid overwriting symlinks. <a href="https://github.com/qmk/qmk_cli/issues/43">https://github.com/qmk/qmk_cli/issues/43</a></li>
-</ul>
-<h1 id="version-110">Version 1.1.0<a class="headerlink" href="#version-110" title="Permanent link">&para;</a></h1>
-<ul>
-<li>Configuration: 0 and 1 are now considered integers, not boolean</li>
-</ul>
-<h1 id="version-100">Version 1.0.0<a class="headerlink" href="#version-100" title="Permanent link">&para;</a></h1>
-<p>Initial Version</p>
+<h4 id="instantiating-a-spinner">Instantiating a spinner<a class="headerlink" href="#instantiating-a-spinner" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="n">spinner</span> <span class="o">=</span> <span class="n">cli</span><span class="o">.</span><span class="n">spinner</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Loading&#39;</span><span class="p">,</span> <span class="n">spinner</span><span class="o">=</span><span class="s1">&#39;dots&#39;</span><span class="p">)</span>
+<span class="n">spinner</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="c1"># Do something here</span>
+
+<span class="n">spinner</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</code></pre></div>
+<h4 id="using-a-context-manager">Using a context manager<a class="headerlink" href="#using-a-context-manager" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">cli</span><span class="o">.</span><span class="n">spinner</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Loading&#39;</span><span class="p">,</span> <span class="n">spinner</span><span class="o">=</span><span class="s1">&#39;dots&#39;</span><span class="p">):</span>
+    <span class="c1"># Do something here</span>
+</code></pre></div>
+<h4 id="decorate-a-function">Decorate a function<a class="headerlink" href="#decorate-a-function" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nd">@cli</span><span class="o">.</span><span class="n">spinner</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Loading&#39;</span><span class="p">,</span> <span class="n">spinner</span><span class="o">=</span><span class="s1">&#39;dots&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">long_running_function</span><span class="p">():</span>
+    <span class="c1"># Do something here</span>
+</code></pre></div>
+<h3 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code>text
+    The text to display next to the spinner. ANSI color strings
+    (such as {fg_blue}) will be converted into ANSI escape
+    sequences, and the ANSI reset sequence will be added to the
+    end of the string.
+
+    If *args or **kwargs are passed they will be used to
+    %-format the text.
+
+spinner
+    The name of the spinner to use. Available names are here:
+    &lt;https://raw.githubusercontent.com/sindresorhus/cli-spinners/dac4fc6571059bb9e9bc204711e9dfe8f72e5c6f/spinners.json&gt;
+
+animation
+    The animation to apply to the text if it doesn&#39;t fit the
+    terminal. One of `ellipsed`, `bounce`, `marquee`.
+
+placement
+    Which side of the text to display the spinner on. One of
+    `left`, `right`.
+
+color
+    Color of the spinner. One of `blue`, `grey`, `red`, `green`,
+    `yellow`, `magenta`, `cyan`, `white`
+
+interval
+    How long in ms to wait between frames. Defaults to the spinner interval (recommended.)
+
+stream
+    Stream to write the output. Defaults to sys.stdout.
+
+enabled
+    Enable or disable the spinner. Defaults to `True`.
+</code></pre></div>
 
 
 
@@ -766,42 +919,6 @@
       </main>
       
         <footer class="md-footer">
-  
-    
-    <nav class="md-footer__inner md-grid" aria-label="Footer" >
-      
-        
-        <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Home
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../installation/" class="md-footer__link md-footer__link--next" aria-label="Next: Installation" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Installation
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
