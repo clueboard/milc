@@ -52,5 +52,6 @@ if __name__ == "__main__":
             "platformdirs",
             "spinners",
             "types-colorama",
+            "typing_extensions",
         ],
     )

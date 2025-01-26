@@ -189,7 +189,8 @@ Locate the config file.
 #### argument
 
 ```python
-def argument(*args: Any, **kwargs: Any) -> Callable[..., Any]
+def argument(*args: Any,
+             **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]
 ```
 
 Decorator to call self.add_argument or self.<subcommand>.add_argument.
@@ -269,8 +270,10 @@ Execute the entrypoint function.
 #### entrypoint
 
 ```python
-def entrypoint(description: str,
-               deprecated: Optional[str] = None) -> Callable[..., Any]
+def entrypoint(
+    description: str,
+    deprecated: Optional[str] = None
+) -> Callable[[Callable[P, R]], Callable[P, R]]
 ```
 
 Decorator that marks the entrypoint used when a subcommand is not supplied.
@@ -288,11 +291,11 @@ Decorator that marks the entrypoint used when a subcommand is not supplied.
 #### add\_subcommand
 
 ```python
-def add_subcommand(handler: Callable[..., Any],
+def add_subcommand(handler: Callable[P, R],
                    description: str,
                    hidden: bool = False,
                    deprecated: Optional[str] = None,
-                   **kwargs: Any) -> Callable[..., Any]
+                   **kwargs: Any) -> Callable[P, R]
 ```
 
 Register a subcommand.
@@ -320,7 +323,7 @@ Register a subcommand.
 ```python
 def subcommand(description: str,
                hidden: bool = False,
-               **kwargs: Any) -> Callable[..., Any]
+               **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]
 ```
 
 Decorator to register a subcommand.
