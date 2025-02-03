@@ -100,7 +100,10 @@ def sparkline(
             continue
 
         # Determine the bucket for this value
-        spark_int = (i-min_value) / int_range * 8  # type: ignore[operator]
+        if int_range == 0:
+            spark_int = 0
+        else:
+            spark_int = (i-min_value) / int_range * 8  # type: ignore[operator]
 
         if spark_int > 7:
             spark_int = 7
