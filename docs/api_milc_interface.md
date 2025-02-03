@@ -117,7 +117,8 @@ Release the MILC lock.
 #### argument
 
 ```python
-def argument(*args: Any, **kwargs: Any) -> Callable[..., Any]
+def argument(*args: Any,
+             **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]
 ```
 
 Decorator to add an argument to a MILC command or subcommand.
@@ -147,8 +148,10 @@ Execute the entrypoint function.
 #### entrypoint
 
 ```python
-def entrypoint(description: str,
-               deprecated: Optional[str] = None) -> Callable[..., Any]
+def entrypoint(
+    description: str,
+    deprecated: Optional[str] = None
+) -> Callable[[Callable[P, R]], Callable[P, R]]
 ```
 
 Decorator that marks the entrypoint used when a subcommand is not supplied.
@@ -168,7 +171,7 @@ Decorator that marks the entrypoint used when a subcommand is not supplied.
 ```python
 def subcommand(description: str,
                hidden: bool = False,
-               **kwargs: Any) -> Callable[..., Any]
+               **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]
 ```
 
 Decorator to register a subcommand.

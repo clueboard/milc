@@ -1,10 +1,15 @@
 """Sometimes you need to ask the user a question. MILC provides basic functions for collecting and validating user input. You can find these in the `milc.questions` module.
 """
 from getpass import getpass
-from typing import Any, Callable, Optional, Sequence, Union
+from typing import Any, Callable, Optional, Sequence, TypeVar, Union, overload
+
+from typing_extensions import Concatenate, ParamSpec
 
 from milc import cli
 from .ansi import format_ansi
+
+T = TypeVar("T")
+P = ParamSpec("P")
 
 
 def yesno(prompt: str, *args: Any, default: Optional[bool] = None, **kwargs: Any) -> bool:
@@ -122,7 +127,7 @@ def password(
     return None
 
 
-def _cast_answer(answer_type: Callable[[str], str], answer: str) -> Any:
+def _cast_answer(answer_type: Callable[[str], T], answer: str) -> Optional[T]:
     """Attempt to convert answer to answer_type.
     """
     try:
@@ -132,25 +137,23 @@ def _cast_answer(answer_type: Callable[[str], str], answer: str) -> Any:
         return None
 
 
-def question(
+# NOTE: can't have a default value on an argument whose type annotation has a TypeVar
+# this means that `answer_type: Callable[[str], T] = str` (which would make T==str) throws error
+# see https://github.com/python/mypy/issues/3737
+#
+# as such, we work-around with an inner function (without any defaults) that receives all values
+# from the public API, then we also add two overloads
+#   * not passing an `answer_type` (aka: the overload with `: None`) -> returns str | None
+#   * providing `answer_type` (overload with `Callable[...]`) -> returns casted value (T) | None
+def _question(
     prompt: str,
     *args: Any,
-    default: Optional[str] = None,
-    confirm: bool = False,
-    answer_type: Callable[[str], str] = str,
-    validate: Optional[Callable[..., bool]] = None,
+    default: Optional[str],
+    confirm: bool,
+    answer_type: Callable[[str], T],
+    validate: Optional[Callable[Concatenate[str, P], bool]],
     **kwargs: Any,
-) -> Union[str, Any]:
-    """Allow the user to type in a free-form string to answer.
-
-    | Argument | Description |
-    |----------|-------------|
-    | prompt | The prompt to present to the user. Can include ANSI and format strings like milc's `cli.echo()`. |
-    | default | The value to return when the user doesn't enter any value. Use None to prompt until they enter a value. |
-    | confirm | Present the user with a confirmation dialog before accepting their answer. |
-    | answer_type | Specify a type function for the answer. Will re-prompt the user if the function raises any errors. Common choices here include int, float, and decimal.Decimal. |
-    | validate | This is an optional function that can be used to validate the answer. It should return True or False and have the following signature:<br><br>`def function_name(answer, *args, **kwargs):` |
-    """
+) -> Union[str, T, None]:
     if not cli.interactive:
         return default
 
@@ -175,6 +178,62 @@ def question(
 
         elif default is not None:
             return default
+
+
+@overload
+def question(
+    prompt: str,
+    *args: Any,
+    default: Optional[str] = None,
+    confirm: bool = False,
+    answer_type: None = ...,
+    validate: Optional[Callable[Concatenate[str, P], bool]] = None,
+    **kwargs: Any,
+) -> Optional[str]:
+    ...
+
+
+@overload
+def question(
+    prompt: str,
+    *args: Any,
+    default: Optional[str] = None,
+    confirm: bool = False,
+    answer_type: Callable[[str], T] = ...,
+    validate: Optional[Callable[Concatenate[str, P], bool]] = None,
+    **kwargs: Any,
+) -> Optional[T]:
+    ...
+
+
+def question(
+    prompt: str,
+    *args: Any,
+    default: Optional[str] = None,
+    confirm: bool = False,
+    answer_type: Optional[Callable[[str], T]] = None,
+    validate: Optional[Callable[Concatenate[str, P], bool]] = None,
+    **kwargs: Any,
+) -> Union[str, T, None]:
+    """Allow the user to type in a free-form string to answer.
+
+    | Argument | Description |
+    |----------|-------------|
+    | prompt | The prompt to present to the user. Can include ANSI and format strings like milc's `cli.echo()`. |
+    | default | The value to return when the user doesn't enter any value. Use None to prompt until they enter a value. |
+    | confirm | Present the user with a confirmation dialog before accepting their answer. |
+    | answer_type | Specify a type function for the answer. Will re-prompt the user if the function raises any errors. Common choices here include int, float, and decimal.Decimal. |
+    | validate | This is an optional function that can be used to validate the answer. It should return True or False and have the following signature:<br><br>`def function_name(answer, *args, **kwargs):` |
+    """
+    return _question(
+        prompt,
+        *args,
+        default=default,
+        confirm=confirm,
+        answer_type=answer_type or str,
+        validate=validate,
+        **kwargs,
+    )
 
 
 def choice(
