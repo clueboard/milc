@@ -141,8 +141,8 @@ def _cast_answer(answer_type: Callable[[str], T], answer: str) -> Optional[T]:
 # this means that `answer_type: Callable[[str], T] = str` (which would make T==str) throws error
 # see https://github.com/python/mypy/issues/3737
 #
-# as such, we work-around with an inner function (without any defaults) that receives all values
-# from the public API, then we also add two overloads
+# as such, we work-around with an inner function (without any defaults) that receives all of its
+# arguments from the user-facing API, then we also add two overloads
 #   * not passing an `answer_type` (aka: the overload with `: None`) -> returns str | None
 #   * providing `answer_type` (overload with `Callable[...]`) -> returns casted value (T) | None
 def _question(
@@ -184,10 +184,10 @@ def _question(
 def question(
     prompt: str,
     *args: Any,
-    default: Optional[str] = None,
-    confirm: bool = False,
+    default: Optional[str] = ...,
+    confirm: bool = ...,
     answer_type: None = ...,
-    validate: Optional[Callable[Concatenate[str, P], bool]] = None,
+    validate: Optional[Callable[Concatenate[str, P], bool]] = ...,
     **kwargs: Any,
 ) -> Optional[str]:
     ...
@@ -197,10 +197,10 @@ def question(
 def question(
     prompt: str,
     *args: Any,
-    default: Optional[str] = None,
-    confirm: bool = False,
+    default: Optional[str] = ...,
+    confirm: bool = ...,
     answer_type: Callable[[str], T] = ...,
-    validate: Optional[Callable[Concatenate[str, P], bool]] = None,
+    validate: Optional[Callable[Concatenate[str, P], bool]] = ...,
     **kwargs: Any,
 ) -> Optional[T]:
     ...
