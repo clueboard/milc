@@ -7,13 +7,17 @@ import sys
 from logging import Logger
 from pathlib import Path
 from types import TracebackType
-from typing import Any, Callable, Dict, Optional, Sequence, Type, Union
+from typing import Any, Callable, Dict, Optional, Sequence, Type, TypeVar, Union
 
 from halo import Halo  # type: ignore
+from typing_extensions import ParamSpec
 
 from .attrdict import AttrDict
 from .configuration import Configuration
 from .milc import MILC
+
+P = ParamSpec("P")
+R = TypeVar("R")
 
 
 class MILCInterface:
@@ -145,7 +149,7 @@ class MILCInterface:
         """
         return self.milc.release_lock()
 
-    def argument(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
+    def argument(self, *args: Any, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         """Decorator to add an argument to a MILC command or subcommand.
         """
         return self.milc.argument(*args, **kwargs)
@@ -160,7 +164,7 @@ class MILCInterface:
         """
         return self.milc()
 
-    def entrypoint(self, description: str, deprecated: Optional[str] = None) -> Callable[..., Any]:
+    def entrypoint(self, description: str, deprecated: Optional[str] = None) -> Callable[[Callable[P, R]], Callable[P, R]]:
         """Decorator that marks the entrypoint used when a subcommand is not supplied.
         Args:
             description
@@ -171,7 +175,7 @@ class MILCInterface:
         """
         return self.milc.entrypoint(description, deprecated)
 
-    def subcommand(self, description: str, hidden: bool = False, **kwargs: Any) -> Callable[..., Any]:
+    def subcommand(self, description: str, hidden: bool = False, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         """Decorator to register a subcommand.
 
         Args:
