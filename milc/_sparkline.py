@@ -103,7 +103,7 @@ def sparkline(
         if int_range == 0:
             spark_int = 0
         else:
-            spark_int = (i-min_value) / int_range * 8  # type: ignore[operator,assignment]
+            spark_int = int((i-min_value) / int_range * 8)  # type: ignore[operator,assignment]
 
         if spark_int > 7:
             spark_int = 7
@@ -128,6 +128,6 @@ def sparkline(
             reset = ''
 
         # Add this spark to the list
-        sparks.append(''.join((color, spark_chars[int(spark_int)], reset)))
+        sparks.append(''.join((color, spark_chars[spark_int], reset)))
 
     return ''.join(sparks)
