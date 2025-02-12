@@ -137,14 +137,43 @@ def _cast_answer(answer_type: Callable[[str], T], answer: str) -> Optional[T]:
         return None
 
 
-# NOTE: can't have a default value on an argument whose type annotation has a TypeVar
-# this means that `answer_type: Callable[[str], T] = str` (which would make T==str) throws error
+@overload
+def question(
+    prompt: str,
+    *args: Any,
+    default: Optional[str] = ...,
+    confirm: bool = ...,
+    answer_type: None = ...,
+    validate: Optional[Callable[Concatenate[str, P], bool]] = ...,
+    **kwargs: Any,
+) -> Optional[str]:
+    ...
+
+
+@overload
+def question(
+    prompt: str,
+    *args: Any,
+    default: Optional[str] = ...,
+    confirm: bool = ...,
+    answer_type: Callable[[str], T] = ...,
+    validate: Optional[Callable[Concatenate[str, P], bool]] = ...,
+    **kwargs: Any,
+) -> Optional[T]:
+    ...
+
+
+# NOTE: can't have a default value on an argument whose type annotation is a TypeVar
+# this means that `answer_type: Callable[[str], T] = str` gives a typing error
 # see https://github.com/python/mypy/issues/3737
 #
-# as such, we work-around with an inner function (without any defaults) that receives all of its
-# arguments from the user-facing API, then we also add two overloads
-#   * not passing an `answer_type` (aka: the overload with `: None`) -> returns str | None
-#   * providing `answer_type` (overload with `Callable[...]`) -> returns casted value (T) | None
+# due to this, we leave `question` without a default, and the actual implementation
+# lives on a private function that receives all of its arguments from the public API.
+# by doing this, the default value is "resolved" on callsite instead, making mypy happy.
+#
+# for better expresiveness, @overload variants are defined, to let the user know:
+#   a) no `answer_type` provided: return str | None
+#   b) `answer_type` converts str into T: return T | None
 def _question(
     prompt: str,
     *args: Any,
@@ -178,32 +207,6 @@ def _question(
 
         elif default is not None:
             return default
-
-
-@overload
-def question(
-    prompt: str,
-    *args: Any,
-    default: Optional[str] = ...,
-    confirm: bool = ...,
-    answer_type: None = ...,
-    validate: Optional[Callable[Concatenate[str, P], bool]] = ...,
-    **kwargs: Any,
-) -> Optional[str]:
-    ...
-
-
-@overload
-def question(
-    prompt: str,
-    *args: Any,
-    default: Optional[str] = ...,
-    confirm: bool = ...,
-    answer_type: Callable[[str], T] = ...,
-    validate: Optional[Callable[Concatenate[str, P], bool]] = ...,
-    **kwargs: Any,
-) -> Optional[T]:
-    ...
 
 
 def question(
