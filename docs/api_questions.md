@@ -66,9 +66,9 @@ def question(prompt: str,
              *args: Any,
              default: Optional[str] = None,
              confirm: bool = False,
-             answer_type: Callable[[str], str] = str,
-             validate: Optional[Callable[..., bool]] = None,
-             **kwargs: Any) -> Union[str, Any]
+             answer_type: Optional[Callable[[str], T]] = None,
+             validate: Optional[Callable[Concatenate[str, P], bool]] = None,
+             **kwargs: Any) -> Union[str, T, None]
 ```
 
 Allow the user to type in a free-form string to answer.
