@@ -167,13 +167,43 @@ def question(
 # this means that `answer_type: Callable[[str], T] = str` gives a typing error
 # see https://github.com/python/mypy/issues/3737
 #
-# due to this, we leave `question` without a default, and the actual implementation
+# due to this, we leave the default as `None`, while the actual implementation
 # lives on a private function that receives all of its arguments from the public API.
 # by doing this, the default value is "resolved" on callsite instead, making mypy happy.
 #
 # for better expresiveness, @overload variants are defined, to let the user know:
 #   a) no `answer_type` provided: return str | None
 #   b) `answer_type` converts str into T: return T | None
+def question(
+    prompt: str,
+    *args: Any,
+    default: Optional[str] = None,
+    confirm: bool = False,
+    answer_type: Optional[Callable[[str], T]] = None,
+    validate: Optional[Callable[Concatenate[str, P], bool]] = None,
+    **kwargs: Any,
+) -> Union[str, T, None]:
+    """Allow the user to type in a free-form string to answer.
+
+    | Argument | Description |
+    |----------|-------------|
+    | prompt | The prompt to present to the user. Can include ANSI and format strings like milc's `cli.echo()`. |
+    | default | The value to return when the user doesn't enter any value. Use None to prompt until they enter a value. |
+    | confirm | Present the user with a confirmation dialog before accepting their answer. |
+    | answer_type | Specify a type function for the answer. Will re-prompt the user if the function raises any errors. Common choices here include int, float, and decimal.Decimal. |
+    | validate | This is an optional function that can be used to validate the answer. It should return True or False and have the following signature:<br><br>`def function_name(answer, *args, **kwargs):` |
+    """
+    return _question(
+        prompt,
+        *args,
+        default=default,
+        confirm=confirm,
+        answer_type=answer_type or str,
+        validate=validate,
+        **kwargs,
+    )
+
+
 def _question(
     prompt: str,
     *args: Any,
@@ -207,36 +237,6 @@ def _question(
 
         elif default is not None:
             return default
-
-
-def question(
-    prompt: str,
-    *args: Any,
-    default: Optional[str] = None,
-    confirm: bool = False,
-    answer_type: Optional[Callable[[str], T]] = None,
-    validate: Optional[Callable[Concatenate[str, P], bool]] = None,
-    **kwargs: Any,
-) -> Union[str, T, None]:
-    """Allow the user to type in a free-form string to answer.
-
-    | Argument | Description |
-    |----------|-------------|
-    | prompt | The prompt to present to the user. Can include ANSI and format strings like milc's `cli.echo()`. |
-    | default | The value to return when the user doesn't enter any value. Use None to prompt until they enter a value. |
-    | confirm | Present the user with a confirmation dialog before accepting their answer. |
-    | answer_type | Specify a type function for the answer. Will re-prompt the user if the function raises any errors. Common choices here include int, float, and decimal.Decimal. |
-    | validate | This is an optional function that can be used to validate the answer. It should return True or False and have the following signature:<br><br>`def function_name(answer, *args, **kwargs):` |
-    """
-    return _question(
-        prompt,
-        *args,
-        default=default,
-        confirm=confirm,
-        answer_type=answer_type or str,
-        validate=validate,
-        **kwargs,
-    )
 
 
 def choice(
