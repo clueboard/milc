@@ -1,4 +1,7 @@
-from typing import Any, Hashable, List
+from typing import TYPE_CHECKING, Any, Hashable, List
+
+if TYPE_CHECKING:
+    from .milc import MILC
 
 from .attrdict import AttrDict
 
@@ -129,8 +132,7 @@ def get_argument_name(arg_parser: Any, *args: Any, **kwargs: Any) -> Any:
         return arg_parser._get_positional_kwargs(*args, **kwargs)['dest']
 
 
-# FIXME: We should not be using self in this way
-def handle_store_boolean(self: Any, *args: Any, **kwargs: Any) -> Any:
+def handle_store_boolean(self: 'MILC | SubparserWrapper', *args: Any, **kwargs: Any) -> Any:
     """Does the add_argument for action='store_boolean'.
     """
     disabled_args = None
