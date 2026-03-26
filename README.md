@@ -1,6 +1,6 @@
 # MILC - An Opinionated Batteries-Included Python 3 CLI Framework
 
-MILC is a framework for writing CLI applications in Python 3.7+. It gives you
+MILC is a framework for writing CLI applications in Python 3.8+. It gives you
 all the features users expect from a modern CLI tool out of the box:
 
 * CLI Argument Parsing, with or without subcommands
@@ -121,7 +121,13 @@ Contributions are welcome! You don't need to open an issue first, if
 you've developed a new feature or fixed a bug in MILC simply open
 a PR and we'll review it.
 
-Please follow this checklist before submitting a PR:
+Set up your development environment:
+
+    python3 -m venv .venv
+    source .venv/bin/activate  # Windows: .venv\Scripts\activate
+    pip install -r requirements.txt -r requirements-dev.txt
+
+Please follow this checklist before submitting a PR (with your venv active):
 
 * [ ] Format your code: `yapf -i -r .`
 * [ ] Generate docs: `./generate_docs`
