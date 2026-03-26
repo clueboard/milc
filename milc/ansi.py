@@ -10,7 +10,7 @@ from typing import Any
 from .emoji import EMOJI_LOGLEVELS
 
 ansi_config = {
-    'color': 'NO_COLOR' not in os.environ,
+    'color': not os.environ.get('NO_COLOR'),
     'unicode': sys.stdout.encoding.lower().startswith('utf'),
 }
 
