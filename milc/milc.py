@@ -173,7 +173,8 @@ class MILC(object):
         # We pass `stdin=subprocess.DEVNULL` by default to prevent that.
         if 'windows' in self.platform.lower():
             safecmd = ' '.join(map(shlex.quote, command))
-            command = [os.environ['SHELL'], '-c', safecmd]
+            shell = os.environ.get('SHELL', 'cmd.exe')
+            command = [shell, '-c', safecmd]
 
             if 'stdin' not in kwargs:
                 kwargs['stdin'] = subprocess.DEVNULL
