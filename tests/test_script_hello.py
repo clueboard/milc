@@ -1,4 +1,5 @@
-from os import unlink
+import os
+import subprocess
 from tempfile import NamedTemporaryFile
 
 from .common import check_assert, check_command, check_returncode
@@ -58,7 +59,7 @@ def test_hello_no_color_log_file():
         check_assert(result, result.stdout == 'INFO Hello, World, from cli.log.info!\nHello, World, from cli.echo!\n')
     log_file_contents = log_file.read().decode('utf-8')
     log_file.close()
-    unlink(log_file.name)
+    os.unlink(log_file.name)
     if 'Hello, World, from cli.log.info!' not in log_file_contents:
         print('Log File Contents:')
         print(log_file_contents)
@@ -73,7 +74,7 @@ def test_hello_no_color_no_unicode_log_file():
     check_assert(result, result.stdout == 'INFO Hello, World, from cli.log.info!\nHello, World, from cli.echo!\n')
     log_file_contents = log_file.read().decode('utf-8')
     log_file.close()
-    unlink(log_file.name)
+    os.unlink(log_file.name)
     if 'Hello, World, from cli.log.info!' not in log_file_contents:
         print('Log File Contents:')
         print(log_file_contents)
@@ -94,3 +95,13 @@ def test_hello_no_color_no_unicode_verbose():
     result = check_command('./hello', '--no-color', '--no-unicode', '-v')
     check_returncode(result)
     check_assert(result, result.stdout == 'DEBUG You used -v you lucky person!\nINFO Hello, World, from cli.log.info!\nHello, World, from cli.echo!\n')
+
+
+def test_hello_no_color_env():
+    """Verify that setting NO_COLOR env var disables color output."""
+    env = {**os.environ, 'NO_COLOR': '1'}
+    result = subprocess.run(['./hello', '--no-unicode'], env=env, capture_output=True, text=True)
+    combined = result.stdout + result.stderr
+    check_returncode(result)
+    check_assert(result, '\x1b[' not in combined)
+    check_assert(result, 'Hello, World, from cli.log.info!' in combined)

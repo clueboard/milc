@@ -1,5 +1,6 @@
 """ANSI color support for MILC.
 """
+import os
 import sys
 import re
 import logging
@@ -9,7 +10,7 @@ from typing import Any
 from .emoji import EMOJI_LOGLEVELS
 
 ansi_config = {
-    'color': True,
+    'color': 'NO_COLOR' not in os.environ,
     'unicode': sys.stdout.encoding.lower().startswith('utf'),
 }
 
