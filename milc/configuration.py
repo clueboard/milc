@@ -65,6 +65,7 @@ class SubparserWrapper(object):
         self.cli = cli
         self.submodule = submodule
         self.subparser = subparser
+        self._arg_parser = self.cli._arg_parser
 
         for attr in dir(subparser):
             if not hasattr(self, attr):
@@ -138,7 +139,7 @@ def handle_store_boolean(self: 'MILC | SubparserWrapper', *args: Any, **kwargs: 
     disabled_args = None
     disabled_kwargs = kwargs.copy()
     disabled_kwargs['action'] = 'store_false'
-    disabled_kwargs['dest'] = get_argument_name(getattr(self, 'cli', self)._arg_parser, *args, **kwargs)
+    disabled_kwargs['dest'] = get_argument_name(self._arg_parser, *args, **kwargs)
     disabled_kwargs['help'] = 'Disable ' + kwargs['help']
     kwargs['action'] = 'store_true'
     kwargs['help'] = 'Enable ' + kwargs['help']
@@ -149,6 +150,7 @@ def handle_store_boolean(self: 'MILC | SubparserWrapper', *args: Any, **kwargs: 
             break
 
     self.add_argument(*args, **kwargs)
+    assert disabled_args is not None
     self.add_argument(*disabled_args, **disabled_kwargs)
 
     return (args, kwargs, disabled_args, disabled_kwargs)
