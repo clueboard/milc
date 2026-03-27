@@ -903,6 +903,7 @@ class MILC(object):
                 Enable or disable the spinner. Defaults to `True`.
         """
         spinner_name = spinner or 'line'  # FIXME: Grab one of the ascii spinners at random instead of line
+        spinner_obj: Any = None
 
         if spinner in self._spinners:
             spinner_name = ''
