@@ -23,8 +23,8 @@ def main(cli):
     if Path('build').exists():
         rmtree('build')
 
-    cli.log.info('Running nose2 tests...')
-    cmd = ['nose2']
+    cli.log.info('Running pytest...')
+    cmd = ['pytest']
     result = run(cmd, stdin=DEVNULL)
     if result.returncode != 0:
         build_ok = False

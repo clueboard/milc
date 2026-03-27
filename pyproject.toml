@@ -51,7 +51,7 @@ dev = [
     "mkdocs-git-revision-date-plugin",
     "mkdocs-material<9",
     "ty",
-    "nose2",
+    "pytest",
     "pygments",
     "ruff",
     "semver",
@@ -65,6 +65,9 @@ release = [
     "pydoc-markdown",
     "twine",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [tool.setuptools]
 script-files = ["milc-color"]
