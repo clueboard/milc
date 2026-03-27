@@ -2,8 +2,8 @@
 import argparse
 import logging
 import os
-import subprocess
 import shlex
+import subprocess
 import sys
 from configparser import RawConfigParser
 from decimal import Decimal
@@ -26,13 +26,13 @@ import argcomplete
 import colorama
 from halo import Halo  # type: ignore
 from platformdirs import user_config_dir
-from typing_extensions import ParamSpec
 from spinners.spinners import Spinners  # type: ignore
+from typing_extensions import ParamSpec
 
+from ._in_argv import _in_argv, _index_argv
 from .ansi import MILCFormatter, ansi_colors, ansi_config, ansi_escape, format_ansi
 from .attrdict import AttrDict
 from .configuration import Configuration, SubparserWrapper, get_argument_name, get_argument_strings, handle_store_boolean
-from ._in_argv import _in_argv, _index_argv
 
 P = ParamSpec("P")
 R = TypeVar("R")

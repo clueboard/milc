@@ -4,8 +4,11 @@ import os
 import sys
 import re
 import logging
-import colorama
+import re
+import sys
 from typing import Any
+
+import colorama
 
 from .emoji import EMOJI_LOGLEVELS
 

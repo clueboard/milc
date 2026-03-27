@@ -58,7 +58,7 @@ line-length = 200
 exclude = ["venv", ".venv"]
 
 [tool.ruff.lint]
-select = ["E", "F", "N", "C90"]
+select = ["E", "F", "I", "N", "C90"]
 ignore = ["E226", "E501"]
 
 [tool.ruff.lint.per-file-ignores]

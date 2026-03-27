@@ -2,8 +2,8 @@
 
 This is where the public interface for `cli` is kept. This allows us to reinstantiate MILC without having to recreate the cli object, as well as allowing us to have a well defined public API.
 """
-import warnings
 import sys
+import warnings
 from logging import Logger
 from pathlib import Path
 from types import TracebackType

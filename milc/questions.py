@@ -6,6 +6,7 @@ from typing import Any, Callable, Optional, Sequence, TypeVar, Union, overload
 from typing_extensions import Concatenate, ParamSpec
 
 from milc import cli
+
 from .ansi import format_ansi
 
 T = TypeVar("T")
