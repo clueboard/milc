@@ -1,9 +1,7 @@
 """ANSI color support for MILC.
 """
-import os
-import sys
-import re
 import logging
+import os
 import re
 import sys
 from typing import Any
