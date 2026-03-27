@@ -88,7 +88,6 @@ def sparkline(
     if max_value is None:
         max_value = max(filter(is_number, number_list))
 
-    assert min_value is not None and max_value is not None
     int_range = float(max_value) - float(min_value)
     sparks = []
 
