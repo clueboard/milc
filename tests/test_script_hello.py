@@ -6,21 +6,21 @@ from .common import check_assert, check_command, check_returncode
 
 
 def test_hello():
-    result = check_command('./hello')
+    result = check_command('python', 'hello')
     check_returncode(result)
     check_assert(result, 'Hello, World, from cli.log.info!' in result.stdout)
     check_assert(result, 'Hello, World, from cli.echo!' in result.stdout)
 
 
 def test_hello_help():
-    result = check_command('./hello', '--help')
+    result = check_command('python', 'hello', '--help')
     check_returncode(result)
     check_assert(result, '[-n NAME]' in result.stdout)
     check_assert(result, '[--no-comma]' in result.stdout)
 
 
 def test_hello_no_color():
-    result = check_command('./hello', '--no-color')
+    result = check_command('python', 'hello', '--no-color')
     check_returncode(result)
     if 'ℹ' in result.stdout:
         check_assert(result, result.stdout == 'ℹ Hello, World, from cli.log.info!\nHello, World, from cli.echo!\n')
@@ -29,13 +29,13 @@ def test_hello_no_color():
 
 
 def test_hello_no_color_no_unicode():
-    result = check_command('./hello', '--no-color', '--no-unicode')
+    result = check_command('python', 'hello', '--no-color', '--no-unicode')
     check_returncode(result)
     check_assert(result, result.stdout == 'INFO Hello, World, from cli.log.info!\nHello, World, from cli.echo!\n')
 
 
 def test_hello_no_color_no_comma():
-    result = check_command('./hello', '--no-color', '--no-comma')
+    result = check_command('python', 'hello', '--no-color', '--no-comma')
     check_returncode(result)
     if 'ℹ' in result.stdout:
         check_assert(result, result.stdout == 'ℹ Hello World, from cli.log.info!\nHello World, from cli.echo!\n')
@@ -44,14 +44,14 @@ def test_hello_no_color_no_comma():
 
 
 def test_hello_no_color_no_unicode_no_comma():
-    result = check_command('./hello', '--no-color', '--no-unicode', '--no-comma')
+    result = check_command('python', 'hello', '--no-color', '--no-unicode', '--no-comma')
     check_returncode(result)
     check_assert(result, result.stdout == 'INFO Hello World, from cli.log.info!\nHello World, from cli.echo!\n')
 
 
 def test_hello_no_color_log_file():
     log_file = NamedTemporaryFile(delete=False)
-    result = check_command('./hello', '--no-color', '--log-file', log_file.name)
+    result = check_command('python', 'hello', '--no-color', '--log-file', log_file.name)
     check_returncode(result)
     if 'ℹ' in result.stdout:
         check_assert(result, result.stdout == 'ℹ Hello, World, from cli.log.info!\nHello, World, from cli.echo!\n')
@@ -69,7 +69,7 @@ def test_hello_no_color_log_file():
 
 def test_hello_no_color_no_unicode_log_file():
     log_file = NamedTemporaryFile(delete=False)
-    result = check_command('./hello', '--no-color', '--no-unicode', '--log-file', log_file.name)
+    result = check_command('python', 'hello', '--no-color', '--no-unicode', '--log-file', log_file.name)
     check_returncode(result)
     check_assert(result, result.stdout == 'INFO Hello, World, from cli.log.info!\nHello, World, from cli.echo!\n')
     log_file_contents = log_file.read().decode('utf-8')
@@ -83,7 +83,7 @@ def test_hello_no_color_no_unicode_log_file():
 
 
 def test_hello_no_color_verbose():
-    result = check_command('./hello', '--no-color', '-v')
+    result = check_command('python', 'hello', '--no-color', '-v')
     check_returncode(result)
     if '☐' in result.stdout:
         check_assert(result, result.stdout == '☐ You used -v you lucky person!\nℹ Hello, World, from cli.log.info!\nHello, World, from cli.echo!\n')
@@ -92,7 +92,7 @@ def test_hello_no_color_verbose():
 
 
 def test_hello_no_color_no_unicode_verbose():
-    result = check_command('./hello', '--no-color', '--no-unicode', '-v')
+    result = check_command('python', 'hello', '--no-color', '--no-unicode', '-v')
     check_returncode(result)
     check_assert(result, result.stdout == 'DEBUG You used -v you lucky person!\nINFO Hello, World, from cli.log.info!\nHello, World, from cli.echo!\n')
 
@@ -100,7 +100,7 @@ def test_hello_no_color_no_unicode_verbose():
 def test_hello_no_color_env():
     """Verify that setting NO_COLOR env var disables color output."""
     env = {**os.environ, 'NO_COLOR': '1'}
-    result = subprocess.run(['./hello', '--no-unicode'], env=env, capture_output=True, text=True)
+    result = subprocess.run(['python', 'hello', '--no-unicode'], env=env, capture_output=True, text=True)
     combined = result.stdout + result.stderr
     check_returncode(result)
     check_assert(result, '\x1b[' not in combined)
