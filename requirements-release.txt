@@ -1,7 +1,0 @@
--r requirements-dev.txt
-build
-bumpversion
-gitchangelog
-hjson
-pydoc-markdown
-twine

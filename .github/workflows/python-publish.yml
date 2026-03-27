@@ -20,29 +20,25 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
       with:
-        python-version: '3.14'
-        cache: 'pip'
+        enable-cache: true
     - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install build
-        pip install -r requirements-release.txt
+      run: uv sync --python 3.14 --group release
     - name: Configure git
       run: |
         git config --local user.email "skullydazed@gmail.com"
         git config --local user.name "Zach White"
     - name: Generate documentation
       run: |
-        ./generate_docs --commit
+        uv run ./generate_docs --commit
     - name: Bump version
       run: |
-        bumpversion ${{ github.event.inputs.version_part }}
+        uv run bumpversion ${{ github.event.inputs.version_part }}
     - name: Generate changelog
       run: |
-        gitchangelog > CHANGELOG.rst
+        uv run gitchangelog > CHANGELOG.rst
         git add CHANGELOG.rst
         git commit -m'minor: changelog update'
     - name: Push changes
@@ -53,11 +49,11 @@ jobs:
         tags: true
     - name: Update docs
       run: |
-        ./release_docs latest
+        uv run ./release_docs latest
     - name: Build and publish
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
       run: |
-        python -m build
-        twine upload dist/*
+        uv build
+        uv run twine upload dist/*

@@ -44,6 +44,28 @@ dependencies = [
 [project.urls]
 Homepage = "https://milc.clueboard.co/"
 
+[dependency-groups]
+dev = [
+    "hjson",
+    "mike",
+    "mkdocs-git-revision-date-plugin",
+    "mkdocs-material<9",
+    "mypy",
+    "nose2",
+    "pygments",
+    "ruff",
+    "semver",
+    "yapf",
+]
+release = [
+    {include-group = "dev"},
+    "build",
+    "bumpversion",
+    "gitchangelog",
+    "pydoc-markdown",
+    "twine",
+]
+
 [tool.setuptools]
 script-files = ["milc-color"]
 

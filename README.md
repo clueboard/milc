@@ -123,11 +123,9 @@ a PR and we'll review it.
 
 Set up your development environment:
 
-    python3 -m venv .venv
-    source .venv/bin/activate  # Windows: .venv\Scripts\activate
-    pip install -r requirements.txt -r requirements-dev.txt
+    uv sync --group dev
 
-Please follow this checklist before submitting a PR (with your venv active):
+Please follow this checklist before submitting a PR:
 
 * [ ] Format your code: `yapf -i -r .`
 * [ ] Generate docs: `./generate_docs`
