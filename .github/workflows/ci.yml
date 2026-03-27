@@ -52,4 +52,4 @@ jobs:
     - name: Install dependencies
       run: uv sync --python ${{ matrix.python-version }} --group dev
     - name: Run CI tests
-      run: uv run ./ci_tests --ci
+      run: uv run python ci_tests --ci
