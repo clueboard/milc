@@ -17,7 +17,6 @@ on:
       - spinner
       - spinner_qmk
       - pyproject.toml
-      - uv.lock
   pull_request:
     branches:
       - master
@@ -34,7 +33,6 @@ on:
       - spinner
       - spinner_qmk
       - pyproject.toml
-      - uv.lock
 
 jobs:
   ci_tests:
@@ -52,6 +50,6 @@ jobs:
       with:
         enable-cache: true
     - name: Install dependencies
-      run: uv sync --python ${{ matrix.python-version }} --group dev --frozen
+      run: uv sync --python ${{ matrix.python-version }} --group dev
     - name: Run CI tests
       run: uv run ./ci_tests

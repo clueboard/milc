@@ -10,3 +10,4 @@ venv
 site
 .venv
 .vscode
+uv.lock
