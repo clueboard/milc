@@ -83,3 +83,21 @@ def test_SparseAttrDict_attribute():
     assert simple_dict.a is True
     assert simple_dict.b is False
     assert simple_dict.c is None
+
+
+def test_AttrDict_delete():
+    """Ensure deleting a key removes it from both dict and attribute access."""
+    simple_dict = attrdict_setup()
+    del simple_dict['a']
+
+    try:
+        simple_dict['a']
+        raise AssertionError('dict access should raise KeyError after deletion')
+    except KeyError:
+        pass
+
+    try:
+        simple_dict.a
+        raise AssertionError('attribute access should raise KeyError after deletion')
+    except KeyError:
+        pass
