@@ -149,8 +149,10 @@ def handle_store_boolean(self: 'MILC | SubparserWrapper', *args: Any, **kwargs: 
             disabled_args = ('--no-' + flag[2:],)
             break
 
+    if disabled_args is None:
+        raise ValueError("action='store_boolean' requires at least one long flag (e.g. '--flag')")
+
     self.add_argument(*args, **kwargs)
-    assert disabled_args is not None
     self.add_argument(*disabled_args, **disabled_kwargs)
 
     return (args, kwargs, disabled_args, disabled_kwargs)
