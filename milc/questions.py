@@ -115,7 +115,7 @@ def password(
                 continue
 
             elif confirm:
-                if getpass(format_ansi(confirm_prompt % args)) == pw:
+                if getpass(format_ansi(confirm_prompt % (args or kwargs))) == pw:
                     return pw
                 else:
                     cli.log.error('Passwords do not match!')
