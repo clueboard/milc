@@ -85,7 +85,7 @@ ignore = ["E226", "E501"]
 
 [tool.ruff.lint.per-file-ignores]
 "**/__init__.py" = ["F401"]
-"tests/**" = ["N802"]
+"tests/**" = ["N802", "N999"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 12
