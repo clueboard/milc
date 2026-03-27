@@ -42,18 +42,18 @@ class ConfigurationSection(Configuration):
         """Returns the config value from the `user` section.
         This is called when the attribute is accessed via dot notation but does not exist.
         """
-        if key[0] != '_' and key in self._parent['user']:
-            return self._parent['user'][key]
+        if key[0] != '_':
+            return self.__getitem__(key)
 
         return None
 
     def __setattr__(self, key: str, value: Any) -> None:
         """Sets dictionary value when an attribute is set.
         """
-        super().__setattr__(key, value)
-
         if key[0] != '_':
             self._data[key] = value
+        else:
+            object.__setattr__(self, key, value)
 
 
 class SubparserWrapper(object):
