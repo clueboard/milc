@@ -12,7 +12,10 @@ from pathlib import Path
 from platform import platform
 from tempfile import NamedTemporaryFile
 from types import TracebackType
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Tuple, Type, TypeVar, Union
+
+if TYPE_CHECKING:
+    from argparse import _SubParsersAction
 
 try:
     import threading
@@ -209,7 +212,7 @@ class MILC(object):
         self.acquire_lock()
 
         self.subcommands: Dict[str, Any] = {}
-        self._subparsers: Optional[Any] = None  # FIXME: Find a better type signature
+        self._subparsers: Optional['_SubParsersAction[Any]'] = None
         self.argwarn = argcomplete.warn  # type: ignore[attr-defined]
         self.args = AttrDict()
         self.args_passed = AttrDict()
@@ -690,7 +693,7 @@ class MILC(object):
         self.acquire_lock()
 
         if not hidden and self._subparsers is not None:
-            self._subparsers.metavar = "{%s,%s}" % (self._subparsers.metavar[1:-1], name) if self._subparsers.metavar else "{%s%s}" % (self._subparsers.metavar[1:-1], name)
+            self._subparsers.metavar = "{%s,%s}" % (self._subparsers.metavar[1:-1], name) if self._subparsers.metavar else "{%s%s}" % (self._subparsers.metavar[1:-1], name)  # type: ignore[index]
             kwargs['help'] = description
 
         # Type ignored because we explicitly add a subparser above
