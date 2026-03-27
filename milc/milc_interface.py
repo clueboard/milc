@@ -9,7 +9,7 @@ from pathlib import Path
 from types import TracebackType
 from typing import Any, Callable, Dict, Optional, Sequence, Type, TypeVar, Union
 
-from halo import Halo  # type: ignore
+from halo import Halo
 from typing_extensions import ParamSpec
 
 from .attrdict import AttrDict

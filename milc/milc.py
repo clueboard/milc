@@ -17,16 +17,13 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence,
 if TYPE_CHECKING:
     from argparse import _SubParsersAction
 
-try:
-    import threading
-except ImportError:
-    threading = None  # type: ignore[assignment]
+import threading
 
 import argcomplete
 import colorama
-from halo import Halo  # type: ignore
+from halo import Halo
 from platformdirs import user_config_dir
-from spinners.spinners import Spinners  # type: ignore
+from spinners.spinners import Spinners
 from typing_extensions import ParamSpec
 
 from ._in_argv import _in_argv, _index_argv
@@ -55,7 +52,7 @@ class MILC(object):
             author = os.environ.get('MILC_APP_AUTHOR', name.upper())
 
         # Setup a lock for thread safety
-        self._lock = threading.RLock() if threading else None
+        self._lock = threading.RLock()
 
         # Define some basic info
         self.acquire_lock()
@@ -216,7 +213,7 @@ class MILC(object):
         self.argwarn = argcomplete.warn  # type: ignore[attr-defined]
         self.args = AttrDict()
         self.args_passed = AttrDict()
-        self._arg_parser = argparse.ArgumentParser(**kwargs)  # type: ignore[arg-type]
+        self._arg_parser = argparse.ArgumentParser(**kwargs)  # type: ignore
         self.set_defaults = self._arg_parser.set_defaults
 
         self.release_lock()
@@ -261,7 +258,7 @@ class MILC(object):
         self.acquire_lock()
 
         if completer:
-            self._arg_parser.add_argument(*args, **kwargs).completer = completer  # type: ignore[attr-defined]
+            self._arg_parser.add_argument(*args, **kwargs).completer = completer  # type: ignore
         else:
             self._arg_parser.add_argument(*args, **kwargs)
 
@@ -420,7 +417,7 @@ class MILC(object):
             raise RuntimeError('You must run this before the with statement!')
 
         def argument_function(handler: Callable[P, R]) -> Callable[P, R]:
-            config_name = handler.__name__
+            config_name = getattr(handler, '__name__')
             subcommand_name = config_name.replace("_", "-")
             arg_name = get_argument_name(self._arg_parser, *args, **kwargs)
 
@@ -587,7 +584,7 @@ class MILC(object):
         self.log.info('Wrote configuration to %s', shlex.quote(str(self.config_file)))
 
     def check_deprecated(self) -> None:
-        entry_name = self._entrypoint.__name__
+        entry_name = getattr(self._entrypoint, '__name__')
 
         if entry_name in self._deprecated_commands:
             msg = self._deprecated_commands[entry_name]
@@ -643,7 +640,7 @@ class MILC(object):
             self.acquire_lock()
 
             if deprecated:
-                self._deprecated_commands[handler.__name__] = deprecated
+                self._deprecated_commands[getattr(handler, '__name__')] = deprecated
                 self.description = f'{self.description} [Deprecated]: {deprecated}'
 
             self._entrypoint = handler
@@ -684,7 +681,7 @@ class MILC(object):
         if self._subparsers is None:
             self.add_subparsers(metavar="")
 
-        name = handler.__name__.replace("_", "-")
+        name = getattr(handler, '__name__').replace("_", "-")
 
         if deprecated:
             self._deprecated_commands[name] = deprecated
@@ -693,11 +690,14 @@ class MILC(object):
         self.acquire_lock()
 
         if not hidden and self._subparsers is not None:
-            self._subparsers.metavar = "{%s,%s}" % (self._subparsers.metavar[1:-1], name) if self._subparsers.metavar else "{%s%s}" % (self._subparsers.metavar[1:-1], name)  # type: ignore[index]
+            if self._subparsers.metavar:
+                self._subparsers.metavar = "{%s,%s}" % (self._subparsers.metavar[1:-1], name)
+            else:
+                self._subparsers.metavar = "{%s}" % name
             kwargs['help'] = description
 
-        # Type ignored because we explicitly add a subparser above
-        self.subcommands[name] = SubparserWrapper(self, name, self._subparsers.add_parser(name, **kwargs))  # type: ignore[union-attr]
+        assert self._subparsers is not None  # guaranteed by add_subparsers() call above
+        self.subcommands[name] = SubparserWrapper(self, name, self._subparsers.add_parser(name, **kwargs))
         self.subcommands[name].set_defaults(entrypoint=handler)
 
         self.release_lock()

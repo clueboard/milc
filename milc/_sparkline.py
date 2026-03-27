@@ -3,14 +3,16 @@
 """
 from decimal import Decimal
 from math import inf
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Union
+
+from typing_extensions import TypeGuard
 
 from milc import cli
 
 spark_chars = '▁▂▃▄▅▆▇█'
 
 
-def is_number(i: Any) -> bool:
+def is_number(i: Any) -> TypeGuard[Union[int, float, Decimal]]:
     """Returns true if i is a number. Used to filter non-numbers from a list.
     """
     return isinstance(i, (int, float, Decimal))
@@ -19,8 +21,8 @@ def is_number(i: Any) -> bool:
 def sparkline(
     number_list: List[Optional[int]],
     *,
-    min_value: Optional[int] = None,
-    max_value: Optional[int] = None,
+    min_value: Optional[Union[int, float, Decimal]] = None,
+    max_value: Optional[Union[int, float, Decimal]] = None,
     highlight_low: float = -inf,
     highlight_high: float = inf,
     highlight_low_color: str = '',
@@ -81,12 +83,13 @@ def sparkline(
             A MILC or ANSI color code to reset the color code applied in `positive_color`. This is usually `{fg_reset}`, `{bg_reset}`, or `{style_reset_all}`.
     """
     if min_value is None:
-        min_value = min(filter(is_number, number_list))  # type: ignore[type-var]
+        min_value = min(filter(is_number, number_list))
 
     if max_value is None:
-        max_value = max(filter(is_number, number_list))  # type: ignore[type-var]
+        max_value = max(filter(is_number, number_list))
 
-    int_range = max_value - min_value  # type: ignore[operator]
+    assert min_value is not None and max_value is not None
+    int_range = float(max_value) - float(min_value)
     sparks = []
 
     for i in number_list:
@@ -95,7 +98,7 @@ def sparkline(
             sparks.append(' ')
             continue
 
-        if i < min_value or i > max_value:  # type: ignore[operator]
+        if i < min_value or i > max_value:
             cli.log.debug('Skipping out of bounds value %s', i)
             continue
 
@@ -103,7 +106,7 @@ def sparkline(
         if int_range == 0:
             spark_int = 0
         else:
-            spark_int = int((i-min_value) / int_range * 8)  # type: ignore[operator,assignment]
+            spark_int = int((float(i) - float(min_value)) / int_range * 8)
 
         if spark_int > 7:
             spark_int = 7
@@ -112,15 +115,15 @@ def sparkline(
         color = positive_color
         reset = positive_reset
 
-        if i < 0:  # type: ignore[operator]
+        if i < 0:
             color = negative_color
             reset = negative_reset
 
-        if i < highlight_low:  # type: ignore[operator]
+        if i < highlight_low:
             color = highlight_low_color
             reset = highlight_low_reset
 
-        if i > highlight_high:  # type: ignore[operator]
+        if i > highlight_high:
             color = highlight_high_color
             reset = highlight_high_reset
 

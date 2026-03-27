@@ -134,7 +134,7 @@ def _cast_answer(answer_type: Callable[[str], T], answer: str) -> Optional[T]:
     try:
         return answer_type(answer)
     except Exception as e:
-        cli.log.error('Could not convert answer (%s) to type %s: %s', answer, answer_type.__name__, str(e))
+        cli.log.error('Could not convert answer (%s) to type %s: %s', answer, getattr(answer_type, '__name__', repr(answer_type)), str(e))
         return None
 
 

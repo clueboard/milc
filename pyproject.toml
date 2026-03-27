@@ -50,7 +50,7 @@ dev = [
     "mike",
     "mkdocs-git-revision-date-plugin",
     "mkdocs-material<9",
-    "mypy",
+    "ty",
     "nose2",
     "pygments",
     "ruff",
@@ -143,4 +143,3 @@ split_penalty_import_names = 0
 split_penalty_logical_operator = 300
 use_tabs = false
 
-[tool.mypy]
