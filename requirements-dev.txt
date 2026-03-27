@@ -1,5 +1,5 @@
 -r requirements.txt
-flake8
+ruff
 hjson
 mike
 mkdocs-git-revision-date-plugin

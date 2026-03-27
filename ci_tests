@@ -28,8 +28,8 @@ def main(cli):
     if result.returncode != 0:
         build_ok = False
 
-    cli.log.info('Running flake8...')
-    cmd = ['flake8']
+    cli.log.info('Running ruff...')
+    cmd = ['ruff', 'check']
     result = run(cmd, stdin=DEVNULL)
     if result.returncode != 0:
         build_ok = False
