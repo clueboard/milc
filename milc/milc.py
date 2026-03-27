@@ -786,10 +786,9 @@ class MILC(object):
         self._inside_context_manager = False
         self.release_lock()
 
-        if exc_type is not None and not isinstance(SystemExit(), exc_type):
-            print(exc_type)
-            logging.exception(exc_val)
-            exit(255)
+        if exc_type is not None and not issubclass(exc_type, SystemExit):
+            self.log.error('%s: %s', exc_type.__name__, exc_val)
+            sys.exit(255)
 
     def is_spinner(self, name: str) -> bool:
         """Returns true if name is a valid spinner.
