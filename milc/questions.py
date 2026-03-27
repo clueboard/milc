@@ -106,7 +106,7 @@ def password(
 
     i = 0
 
-    while not confirm_limit or i < confirm_limit:
+    while confirm_limit == 0 or i < confirm_limit:
         pw = getpass(format_ansi(formatted_prompt))
 
         if pw:
