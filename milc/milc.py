@@ -167,13 +167,14 @@ class MILC(object):
         if not capture_output and combined_output:
             raise ValueError("Can't use capture_output=False and combined_output=True at the same time.")
 
-        # On some windows platforms (msys2, possibly others) you have to
-        # execute the command through a subshell. As well, after execution
-        # stdin is broken so things like milc.questions no longer work.
-        # We pass `stdin=subprocess.DEVNULL` by default to prevent that.
-        if 'windows' in self.platform.lower():
+        # On msys2/cygwin windows platforms you have to execute the command
+        # through a subshell. As well, after execution stdin is broken so
+        # things like milc.questions no longer work. We pass
+        # `stdin=subprocess.DEVNULL` by default to prevent that.
+        # On native Windows (no MSYSTEM env var), subprocess.run works directly.
+        if 'windows' in self.platform.lower() and os.environ.get('MSYSTEM'):
             safecmd = ' '.join(map(shlex.quote, command))
-            shell = os.environ.get('SHELL', 'cmd.exe')
+            shell = os.environ.get('SHELL', 'bash')
             command = [shell, '-c', safecmd]
 
             if 'stdin' not in kwargs:

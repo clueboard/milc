@@ -1,13 +1,15 @@
-from milc import cli
+import os
+import subprocess
 
 
 def check_command(command, *args, input=None):
     cmd = [command, *args]
+    env = {**os.environ, 'PYTHONUTF8': '1'}
 
     if input:
-        return cli.run(cmd, combined_output=True, stdin=None, input=input)
+        return subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding='utf-8', input=input, env=env)
 
-    return cli.run(cmd, combined_output=True)
+    return subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding='utf-8', env=env)
 
 
 def check_returncode(result, expected=0):

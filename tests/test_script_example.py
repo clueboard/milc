@@ -1,18 +1,19 @@
 import os
 import re
+import sys
 from tempfile import mkstemp
 
 from .common import check_assert, check_command, check_returncode
 
 
 def test_example():
-    result = check_command('python', 'example', '-h')
+    result = check_command(sys.executable, 'example', '-h')
     check_returncode(result)
     check_assert(result, '{config,dashed-hello,hello,goodbye,config-file}' in result.stdout)
 
 
 def test_example_version():
-    result = check_command('python', 'example', '--version')
+    result = check_command(sys.executable, 'example', '--version')
     check_returncode(result)
     check_assert(result, re.match(r'[0-9]*\.[0-9]*\.[0-9]*', result.stdout))
 
@@ -24,18 +25,18 @@ def test_example_config():
         os.close(fd)
 
         # Check initial state
-        result = check_command('python', 'example', '--no-color', '--config-file', tempfile, 'config')
+        result = check_command(sys.executable, 'example', '--no-color', '--config-file', tempfile, 'config')
         check_returncode(result)
         check_assert(result, result.stdout == '')
 
         # Set some values in the configuration
-        result = check_command('python', 'example', '--no-color', '--config-file', tempfile, 'config', 'general.name=Test', 'user.comma=true')
+        result = check_command(sys.executable, 'example', '--no-color', '--config-file', tempfile, 'config', 'general.name=Test', 'user.comma=true')
         check_returncode(result)
         check_assert(result, 'general.name: World -> Test' in result.stdout)
         check_assert(result, 'user.comma: None -> true' in result.stdout)
 
         # Make sure we get them back
-        result = check_command('python', 'example', '--no-color', '--config-file', tempfile, 'config')
+        result = check_command(sys.executable, 'example', '--no-color', '--config-file', tempfile, 'config')
         check_returncode(result)
         check_assert(result, result.stdout == 'general.name=Test\nhello.comma=True\nuser.comma=True\n')
 
@@ -50,18 +51,18 @@ def test_numeric_arguments():
         os.close(fd)
 
         # Set the count
-        result = check_command('python', 'example', '--no-color', '--config-file', tempfile, 'config', 'hello.count=2')
+        result = check_command(sys.executable, 'example', '--no-color', '--config-file', tempfile, 'config', 'hello.count=2')
         check_returncode(result)
         check_assert(result, 'hello.count: 1 -> 2' in result.stdout)
 
         # Make sure we get 2 prints
-        result = check_command('python', 'example', '--no-color', '--config-file', tempfile, 'hello')
+        result = check_command(sys.executable, 'example', '--no-color', '--config-file', tempfile, 'hello')
         check_returncode(result)
         print(repr(result.stdout))
         check_assert(result, result.stdout == 'Hello, World!\nHello, World!\n')
 
         # Make sure we get 1 prints
-        result = check_command('python', 'example', '--no-color', '--config-file', tempfile, 'hello', '--count', '1')
+        result = check_command(sys.executable, 'example', '--no-color', '--config-file', tempfile, 'hello', '--count', '1')
         check_returncode(result)
         print(repr(result.stdout))
         check_assert(result, result.stdout == 'Hello, World!\n')
@@ -71,13 +72,13 @@ def test_numeric_arguments():
 
 
 def test_example_hello():
-    result = check_command('python', 'example', '--config-file', '/dev/null', 'hello')
+    result = check_command(sys.executable, 'example', '--config-file', os.devnull, 'hello')
     check_returncode(result)
     check_assert(result, result.stdout == 'Hello, World!\n')
 
 
 def test_example_hello_help():
-    result = check_command('python', 'example', '--config-file', '/dev/null', 'hello', '--help')
+    result = check_command(sys.executable, 'example', '--config-file', os.devnull, 'hello', '--help')
     check_returncode(result)
     check_assert(result, '[--no-comma]' in result.stdout)
     check_assert(result, '[--print-help]' in result.stdout)
@@ -85,43 +86,43 @@ def test_example_hello_help():
 
 
 def test_example_hello_no_color():
-    result = check_command('python', 'example', '--no-color', '--config-file', '/dev/null', 'hello')
+    result = check_command(sys.executable, 'example', '--no-color', '--config-file', os.devnull, 'hello')
     check_returncode(result)
     check_assert(result, result.stdout == 'Hello, World!\n')
 
 
 def test_example_hello_no_color_no_unicode():
-    result = check_command('python', 'example', '--no-color', '--no-unicode', '--config-file', '/dev/null', 'hello')
+    result = check_command(sys.executable, 'example', '--no-color', '--no-unicode', '--config-file', os.devnull, 'hello')
     check_returncode(result)
     check_assert(result, result.stdout == 'Hello, World!\n')
 
 
 def test_example_hello_no_color_no_comma():
-    result = check_command('python', 'example', '--no-color', '--config-file', '/dev/null', 'hello', '--no-comma')
+    result = check_command(sys.executable, 'example', '--no-color', '--config-file', os.devnull, 'hello', '--no-comma')
     check_returncode(result)
     check_assert(result, result.stdout == 'Hello World!\n')
 
 
 def test_example_hello_no_color_no_unicode_no_comma():
-    result = check_command('python', 'example', '--no-color', '--no-unicode', '--config-file', '/dev/null', 'hello', '--no-comma')
+    result = check_command(sys.executable, 'example', '--no-color', '--no-unicode', '--config-file', os.devnull, 'hello', '--no-comma')
     check_returncode(result)
     check_assert(result, result.stdout == 'Hello World!\n')
 
 
 def test_example_dashed_hello():
-    result = check_command('python', 'example', '--config-file', '/dev/null', 'dashed-hello')
+    result = check_command(sys.executable, 'example', '--config-file', os.devnull, 'dashed-hello')
     check_returncode(result)
     check_assert(result, result.stdout == 'Hello, dashed-subcommand World!\n')
 
 
 def test_example_dashed_hello_dashed_name():
-    result = check_command('python', 'example', '--config-file', '/dev/null', 'dashed-hello', '--dashed-name', 'Tester')
+    result = check_command(sys.executable, 'example', '--config-file', os.devnull, 'dashed-hello', '--dashed-name', 'Tester')
     check_returncode(result)
     check_assert(result, result.stdout == 'Hello, dashed-subcommand Tester!\n')
 
 
 def test_example_config_file():
-    result = check_command('python', 'example', 'config-file')
+    result = check_command(sys.executable, 'example', 'config-file')
     check_returncode(result)
     lines = result.stdout.split('\n')
     filename = lines[0].split('=', 1)[1]
