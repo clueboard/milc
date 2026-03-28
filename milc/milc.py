@@ -233,7 +233,7 @@ class MILC(object):
             self._arg_parser.print_usage(*args, **kwargs)
 
     def log_deprecated_warning(self, item_type: str, name: str, reason: str) -> None:
-        """Logs a warning with a custom message if a argument or command is deprecated.
+        """Logs a warning with a custom message if an argument or command is deprecated.
         """
         self.log.warning("Warning: %s '%s' is deprecated:\n\t%s", item_type, name, reason)
 
@@ -540,14 +540,20 @@ class MILC(object):
 
         # Write the config file atomically.
         self.acquire_lock()
-        with NamedTemporaryFile(mode='w', dir=str(self.config_dir), delete=False) as tmpfile:
-            sane_config.write(tmpfile)
+        tmpfile_name = None
+        try:
+            with NamedTemporaryFile(mode='w', dir=str(self.config_dir), delete=False) as tmpfile:
+                tmpfile_name = tmpfile.name
+                sane_config.write(tmpfile)
 
-        if os.path.getsize(tmpfile.name) > 0:
-            os.replace(tmpfile.name, str(self.config_file))
-        else:
-            self.log.warning('Config file saving failed, not replacing %s with %s.', str(self.config_file), tmpfile.name)
-        self.release_lock()
+            if os.path.getsize(tmpfile_name) > 0:
+                os.replace(tmpfile_name, str(self.config_file))
+            else:
+                self.log.warning('Config file saving failed, not replacing %s with %s.', str(self.config_file), tmpfile_name)
+        finally:
+            if tmpfile_name and os.path.exists(tmpfile_name):
+                os.unlink(tmpfile_name)
+            self.release_lock()
 
     def write_config_option(self, section: str, option: Any) -> None:
         """Save a single config option to the config file.
@@ -661,7 +667,7 @@ class MILC(object):
         Args:
 
             handler
-                The function to exececute for this subcommand.
+                The function to execute for this subcommand.
 
             description
                 A one-line description to display in --help

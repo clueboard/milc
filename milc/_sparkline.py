@@ -19,7 +19,7 @@ def is_number(i: Any) -> TypeGuard[Union[int, float, Decimal]]:
 
 
 def sparkline(
-    number_list: List[Optional[int]],
+    number_list: List[Optional[Union[int, float, Decimal]]],
     *,
     min_value: Optional[Union[int, float, Decimal]] = None,
     max_value: Optional[Union[int, float, Decimal]] = None,
@@ -59,7 +59,7 @@ def sparkline(
             When a number is greater than this value it will be highlighted with `highlight_high_color`.
 
         highlight_low_color
-            A MILC or ANSI color code to apply to integers greater than highlight_low.
+            A MILC or ANSI color code to apply to integers less than highlight_low.
 
         highlight_high_color
             A MILC or ANSI color code to apply to integers greater than highlight_high.
