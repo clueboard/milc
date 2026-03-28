@@ -4,6 +4,7 @@ import logging
 import os
 import re
 import sys
+from copy import copy
 from typing import Any
 
 import colorama
@@ -64,6 +65,7 @@ class MILCFormatter(logging.Formatter):
     """
     def format(self, record: Any) -> Any:
         if ansi_config['unicode'] and record.levelname in EMOJI_LOGLEVELS:
+            record = copy(record)
             record.levelname = format_ansi(EMOJI_LOGLEVELS[record.levelname])
 
         msg = super().format(record)
