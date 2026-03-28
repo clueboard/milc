@@ -13,6 +13,24 @@ T = TypeVar("T")
 P = ParamSpec("P")
 
 
+def _format_prompt(prompt: str, args: tuple, kwargs: dict) -> str:
+    """Apply args or kwargs to a prompt string, or return the prompt unchanged.
+
+    Args:
+        prompt: The prompt string, optionally containing %-style format specifiers.
+        args: Positional format arguments. Applied when non-empty.
+        kwargs: Keyword format arguments. Applied when args is empty and kwargs is non-empty.
+
+    Returns:
+        The formatted prompt string, or the original prompt if neither args nor kwargs are provided.
+    """
+    if args:
+        return prompt % args
+    elif kwargs:
+        return prompt % kwargs
+    return prompt
+
+
 def yesno(prompt: str, *args: Any, default: Optional[bool] = None, **kwargs: Any) -> bool:
     """Displays `prompt` to the user and gets a yes or no response.
 
@@ -44,10 +62,7 @@ def yesno(prompt: str, *args: Any, default: Optional[bool] = None, **kwargs: Any
         return False
 
     # Format the prompt
-    if args:
-        formatted_prompt = prompt % args
-    else:
-        formatted_prompt = prompt % kwargs
+    formatted_prompt = _format_prompt(prompt, args, kwargs)
 
     if default is None:
         formatted_prompt = formatted_prompt + ' [y/n] '
@@ -94,10 +109,7 @@ def password(
     if not cli.interactive:
         return None
 
-    if args:
-        formatted_prompt = prompt % args
-    else:
-        formatted_prompt = prompt % kwargs
+    formatted_prompt = _format_prompt(prompt, args, kwargs)
 
     if formatted_prompt[-1] != ' ':
         formatted_prompt += ' '
@@ -115,7 +127,7 @@ def password(
                 continue
 
             elif confirm:
-                if getpass(format_ansi(confirm_prompt % (args or kwargs))) == pw:
+                if getpass(format_ansi(_format_prompt(confirm_prompt, args, kwargs))) == pw:
                     return pw
                 else:
                     cli.log.error('Passwords do not match!')
@@ -223,7 +235,7 @@ def _question(
         prompt += ' '
 
     while True:
-        answer = input(format_ansi(prompt % (args or kwargs)))
+        answer = input(format_ansi(_format_prompt(prompt, args, kwargs)))
 
         if answer:
             if validate is not None and not validate(answer, *args, **kwargs):
@@ -266,10 +278,7 @@ def choice(
     !!! warning
         This will return the value of the item they choose, not the numerical index.
     """
-    if args:
-        formatted_heading = heading % args
-    else:
-        formatted_heading = heading % kwargs
+    formatted_heading = _format_prompt(heading, args, kwargs)
 
     if not cli.interactive:
         if default is None:
