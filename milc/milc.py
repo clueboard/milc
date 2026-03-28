@@ -551,9 +551,11 @@ class MILC(object):
             else:
                 self.log.warning('Config file saving failed, not replacing %s with %s.', str(self.config_file), tmpfile_name)
         finally:
-            if tmpfile_name and os.path.exists(tmpfile_name):
-                os.unlink(tmpfile_name)
-            self.release_lock()
+            try:
+                if tmpfile_name and os.path.exists(tmpfile_name):
+                    os.unlink(tmpfile_name)
+            finally:
+                self.release_lock()
 
     def write_config_option(self, section: str, option: Any) -> None:
         """Save a single config option to the config file.
