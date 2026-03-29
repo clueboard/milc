@@ -73,7 +73,10 @@ def yesno(prompt: str, *args: Any, default: Optional[bool] = None, **kwargs: Any
 
     # Get input from the user
     while True:
-        answer = input(format_ansi(formatted_prompt))
+        try:
+            answer = input(format_ansi(formatted_prompt))
+        except EOFError:
+            return default if default is not None else False
 
         if not answer and default is not None:
             return default
@@ -120,11 +123,14 @@ def password(
     i = 0
 
     while confirm_limit == 0 or i < confirm_limit:
-        pw = getpass(format_ansi(formatted_prompt))
+        try:
+            pw = getpass(format_ansi(formatted_prompt))
+        except EOFError:
+            return None
 
         if pw:
             if validate is not None and not validate(pw):
-                continue
+                pass
 
             elif confirm:
                 if getpass(format_ansi(_format_prompt(confirm_prompt, args, kwargs))) == pw:
@@ -235,7 +241,10 @@ def _question(
         prompt += ' '
 
     while True:
-        answer = input(format_ansi(_format_prompt(prompt, args, kwargs)))
+        try:
+            answer = input(format_ansi(_format_prompt(prompt, args, kwargs)))
+        except EOFError:
+            return default
 
         if answer:
             if validate is not None and not validate(answer, *args, **kwargs):
@@ -292,7 +301,10 @@ def choice(
         prompt = '%s[%s] ' % (prompt, default + 1)
 
     while True:
-        answer = _choice_get_answer(options, default, prompt, formatted_heading)
+        try:
+            answer = _choice_get_answer(options, default, prompt, formatted_heading)
+        except EOFError:
+            return options[default] if default is not None else None
 
         if answer:
             if confirm and not yesno('Is the answer "%s" correct?', answer, default=True):

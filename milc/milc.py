@@ -7,7 +7,6 @@ import subprocess
 import sys
 from configparser import RawConfigParser
 from decimal import Decimal
-from functools import lru_cache
 from pathlib import Path
 from platform import platform
 from tempfile import NamedTemporaryFile
@@ -59,8 +58,8 @@ class MILC(object):
         self.prog_name = name
         self.version = version
         self.author = author
-        self._config_store_true: Sequence[str] = []
-        self._config_store_false: Sequence[str] = []
+        self._config_store_true: List[str] = []
+        self._config_store_false: List[str] = []
         self._entrypoint: Callable[..., Any] = lambda _: None
         self._spinners: Dict[str, Dict[str, Union[int, Sequence[str]]]] = {}
         self._subcommand = None
@@ -344,7 +343,6 @@ class MILC(object):
         if self._lock:
             self._lock.release()
 
-    @lru_cache(maxsize=None)
     def find_config_file(self) -> Path:
         """Locate the config file.
         """
@@ -359,6 +357,9 @@ class MILC(object):
 
             else:
                 # assume the file name is next space-sep arg
+                if config_file_index + 1 >= len(sys.argv):
+                    print('ERROR: --config-file requires a value.', file=sys.stderr)
+                    sys.exit(1)
                 config_file = sys.argv[config_file_index + 1]
 
             return Path(config_file).expanduser().resolve()
@@ -373,7 +374,7 @@ class MILC(object):
         """
         if 'deprecated' in kwargs:
             self._deprecated_arguments[arg_name] = kwargs['deprecated']
-            if kwargs['help']:
+            if kwargs.get('help'):
                 kwargs['help'] += f" [Deprecated]: {kwargs['deprecated']}"
             else:
                 kwargs['help'] = f"[Deprecated]: {kwargs['deprecated']}"
@@ -791,7 +792,7 @@ class MILC(object):
         self._inside_context_manager = False
         self.release_lock()
 
-        if exc_type is not None and not issubclass(exc_type, SystemExit):
+        if exc_type is not None and not issubclass(exc_type, (SystemExit, KeyboardInterrupt)):
             self.log.error('%s: %s', exc_type.__name__, exc_val)
             sys.exit(255)
 
@@ -914,8 +915,15 @@ class MILC(object):
             spinner_name = ''
             spinner_obj = self._spinners[spinner]
 
+        if args:
+            text = format_ansi(text % args)
+        elif kwargs:
+            text = format_ansi(text % kwargs)
+        else:
+            text = format_ansi(text)
+
         return Halo(
-            text=format_ansi(text % (args or kwargs)),
+            text=text,
             spinner=spinner_name or spinner_obj,
             animation=None if animation == 'ellipsed' else animation,
             placement=placement,

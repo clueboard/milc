@@ -35,7 +35,7 @@ def parse_config_token(config_token: str) -> Tuple[str, str, Any]:
 
     # Separate the key (<section>.<option>) from the value
     if '=' in config_token:
-        key, value = config_token.split('=')
+        key, value = config_token.split('=', 1)
     else:
         key = config_token
 
@@ -60,7 +60,10 @@ def set_config(section: str, option: str, value: str) -> None:
 
     if not milc.cli.args.read_only:
         if value == 'None':
-            del milc.cli.config[section][option]
+            if option in milc.cli.config[section]:
+                del milc.cli.config[section][option]
+            else:
+                milc.cli.log.debug('No such configuration key: %s.%s', section, option)
 
         else:
             milc.cli.config[section][option] = value
