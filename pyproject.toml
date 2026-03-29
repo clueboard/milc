@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "milc"
-version = "1.9.1"
+version = "1.10.0"
 description = "Opinionated Batteries-Included Python 3 CLI Framework."
 readme = "README.md"
 license = { file = "LICENSE" }
