@@ -2,6 +2,314 @@ Changelog
 =========
 
 
+1.10.0 (2026-03-29)
+-------------------
+- New release: 1.9.1 → 1.10.0. [Zach White]
+- [ci] Updated API documentation. [Zach White]
+- Fix multiple bugs found in library review (#2) [Claude Sonnet 4.6,
+  Zach White]
+
+  - _sparkline.py: handle all-non-numeric input gracefully (use min/max
+    default=None + early return); replace `if spark_int > 7` with min()
+    to stay within complexity limit
+  - milc.py: fix IndexError when --config-file is last argv token; fix
+    spinner() format string crash when called with no args; fix KeyError
+    in _handle_deprecated() when help= is omitted; fix __exit__()
+    absorbing KeyboardInterrupt (now exits cleanly); correct
+    _config_store_true/false type annotations from Sequence to List;
+    remove @lru_cache from find_config_file() to prevent self reference leak
+  - questions.py: catch EOFError in all input functions (yesno, password,
+    _question, choice); fix password() infinite loop when validate always
+    returns False
+  - subcommand/config.py: fix ValueError on config tokens with multiple =
+    signs (split with maxsplit=1); fix KeyError when deleting non-existent
+    config option
+- Fix LogRecord mutation corrupting multi-handler output in
+  MILCFormatter. [Claude Sonnet 4.6, Zach White]
+
+  LogRecord objects are shared across all handlers. MILCFormatter.format()
+  was mutating record.levelname in place, causing the second handler (e.g.,
+  file handler) to receive an already-modified ANSI/emoji string instead of
+  the original level name. Fix by operating on a shallow copy of the record
+  so the original is never modified.
+- Fix exception safety, format string bug, and type annotation issues
+  found in library review (#84) [Copilot, skullydazed]
+
+  * Initial plan
+
+  * Fix _save_config_file exception safety, format string bug in questions, type annotation in sparkline, and typos
+- Bump nltk from 3.9.1 to 3.9.4 (#83) [dependabot[bot], dependabot[bot]]
+
+  Bumps [nltk](https://github.com/nltk/nltk) from 3.9.1 to 3.9.4.
+  - [Changelog](https://github.com/nltk/nltk/blob/develop/ChangeLog)
+  - [Commits](https://github.com/nltk/nltk/compare/3.9.1...3.9.4)
+
+  ---
+  updated-dependencies:
+  - dependency-name: nltk
+    dependency-version: 3.9.4
+    dependency-type: indirect
+  ...
+- Bump tornado from 6.4.2 to 6.5.5 (#82) [dependabot[bot],
+  dependabot[bot]]
+
+  Bumps [tornado](https://github.com/tornadoweb/tornado) from 6.4.2 to 6.5.5.
+  - [Changelog](https://github.com/tornadoweb/tornado/blob/master/docs/releases.rst)
+  - [Commits](https://github.com/tornadoweb/tornado/compare/v6.4.2...v6.5.5)
+
+  ---
+  updated-dependencies:
+  - dependency-name: tornado
+    dependency-version: 6.5.5
+    dependency-type: indirect
+  ...
+- Bump urllib3 from 2.2.3 to 2.6.3 (#80) [dependabot[bot],
+  dependabot[bot]]
+
+  Bumps [urllib3](https://github.com/urllib3/urllib3) from 2.2.3 to 2.6.3.
+  - [Release notes](https://github.com/urllib3/urllib3/releases)
+  - [Changelog](https://github.com/urllib3/urllib3/blob/main/CHANGES.rst)
+  - [Commits](https://github.com/urllib3/urllib3/compare/2.2.3...2.6.3)
+
+  ---
+  updated-dependencies:
+  - dependency-name: urllib3
+    dependency-version: 2.6.3
+    dependency-type: indirect
+  ...
+- Bump black from 23.12.1 to 26.3.1 (#79) [dependabot[bot],
+  dependabot[bot]]
+
+  Bumps [black](https://github.com/psf/black) from 23.12.1 to 26.3.1.
+  - [Release notes](https://github.com/psf/black/releases)
+  - [Changelog](https://github.com/psf/black/blob/main/CHANGES.md)
+  - [Commits](https://github.com/psf/black/compare/23.12.1...26.3.1)
+
+  ---
+  updated-dependencies:
+  - dependency-name: black
+    dependency-version: 26.3.1
+    dependency-type: indirect
+  ...
+- Bump pymdown-extensions from 10.15 to 10.16.1 (#81) [dependabot[bot],
+  dependabot[bot]]
+
+  Bumps [pymdown-extensions](https://github.com/facelessuser/pymdown-extensions) from 10.15 to 10.16.1.
+  - [Release notes](https://github.com/facelessuser/pymdown-extensions/releases)
+  - [Commits](https://github.com/facelessuser/pymdown-extensions/compare/10.15...10.16.1)
+
+  ---
+  updated-dependencies:
+  - dependency-name: pymdown-extensions
+    dependency-version: 10.16.1
+    dependency-type: indirect
+  ...
+- Track uv.lock for reproducible CI. [Claude Sonnet 4.6, Zach White]
+
+  uv.lock was gitignored, causing setup-uv's cache to never invalidate
+  (no matching file for its cache-dependency-glob). Committing it gives
+  CI a stable, reproducible dev environment and fixes the cache warning.
+
+  Does not affect downstream users — uv.lock is ignored by pip and only
+  used by uv sync during development and CI.
+- Remove obsolete Python 3.6 stdin=None workaround. [Claude Sonnet 4.6,
+  Zach White]
+
+  Introduced in 30fb0eb to fix a Python 3.6 subprocess.run behavior.
+  In Python 3.8+ (now the minimum), stdin=None is identical to omitting
+  stdin entirely — both inherit the parent's stdin. Dead code that
+  misleads readers into thinking there's a meaningful edge case.
+- Fix confirm_prompt ignoring kwargs in password() [Claude Sonnet 4.6,
+  Zach White]
+
+  The confirm prompt used args directly, raising TypeError if the caller
+  formatted the original prompt with kwargs instead. Mirror the same
+  args or kwargs pattern used for the main prompt.
+- Initialize spinner_obj to None to prevent potential NameError. [Claude
+  Sonnet 4.6, Zach White]
+
+  spinner_obj was only defined inside the if-block, making the
+  spinner=spinner_name or spinner_obj expression fragile if spinner_name
+  is ever falsy without entering that block.
+- Remove unreachable assert in _sparkline.py. [Claude Sonnet 4.6, Zach
+  White]
+
+  The assert after the min/max assignments can never be False: min() and
+  max() either assign a value or raise ValueError on empty input. Dead code
+  that misleads readers into thinking it is a real guard.
+- Replace assert with ValueError in handle_store_boolean. [Claude Sonnet
+  4.6, Zach White]
+
+  assert is stripped by python -O and gives an unhelpful AssertionError.
+  Raises ValueError with a clear message instead, and moves the check before
+  add_argument calls so the first flag isn't registered before the error fires.
+- Fix broken __exit__ error handling. [Claude Sonnet 4.6, Zach White]
+
+  Four issues in MILC.__exit__:
+  - isinstance(SystemExit(), exc_type) is semantically inverted; use issubclass
+  - print(exc_type) emits unhelpful class repr with no message
+  - logging.exception() outside an except block captures no traceback
+  - exit() is a REPL convenience wrapper; use sys.exit()
+- Switch AttrDict from UserDict to MutableMapping with private _data
+  store. [Claude Sonnet 4.6, Zach White]
+
+  UserDict uses self.data as its backing store, making 'data' a reserved key
+  for attribute access — a problem for a CLI library where --data is a likely
+  argument name. MutableMapping lets us own the internal store name (_data),
+  eliminating the reserved-key hazard entirely.
+
+  Key implementation notes:
+  - __contains__ is overridden to check _data directly, bypassing
+    MutableMapping's default which calls self[key] and would cause infinite
+    recursion in ConfigurationSection.__getitem__
+  - __getattr__ delegates to self.__getitem__ (not _data directly) so
+    subclass overrides like Configuration's auto-creation are respected
+  - ConfigurationSection.__setattr__ simplified: non-_ keys write only to
+    _data; _-prefixed internal state goes to object.__setattr__
+  - ConfigurationSection.__getattr__ now delegates to __getitem__ rather
+    than only checking _parent['user'], fixing attribute access for values
+    set via bracket notation
+- Rewrite AttrDict using collections.UserDict to fix stale attribute
+  bug. [Claude Sonnet 4.6, Zach White]
+
+  __setitem__ was writing keys to both self._data and self.__dict__, but
+  __delitem__ only removed from _data, leaving stale values accessible via
+  attribute access. Switching to UserDict eliminates the dual-storage pattern
+  entirely — UserDict manages its own self.data backing store and provides all
+  dict protocol methods, so __getattr__ is the only override needed.
+
+  Also adds test_AttrDict_delete to cover this case.
+- Fix Windows CI hang by using stdin pipe instead of DEVNULL. [Claude
+  Sonnet 4.6, Zach White]
+
+  On Windows CI with ConPTY, nul device can report isatty()==True, causing
+  cli.interactive=True and question loops to hang. Always using input= ensures
+  stdin is a real pipe, which never reports isatty()==True on any platform.
+- Fix Windows CI hang by closing stdin for subprocess calls. [Claude
+  Sonnet 4.6, Zach White]
+- Migrate from nose2 to pytest. [Claude Sonnet 4.6, Zach White]
+- Fix Windows CI test failures on native Windows runners. [Claude Sonnet
+  4.6, Zach White]
+
+  - Scope milc.run() shell wrapping to msys2 only (MSYSTEM env var check),
+    since cmd.exe does not support the -c flag used previously
+  - Replace cli.run() in test helper with subprocess.run directly, using
+    sys.executable so tests always use the correct venv Python
+  - Add PYTHONUTF8=1 and encoding='utf-8' for correct Unicode handling
+    across all Python versions on Windows
+  - Replace '/dev/null' with os.devnull in test_script_example.py
+  - Use sys.executable throughout all test_script_* files
+- Fixup tests on windows. [Zach White]
+- Migrate from mypy to ty for type checking. [Claude Sonnet 4.6, Zach
+  White]
+
+  Replace mypy with ty in dev dependencies and ci_tests. Fix all 23
+  diagnostics ty surfaces: add TypeGuard to is_number, remove the
+  Python-3-era threading try/except, replace mypy-specific
+  type: ignore[rule] comments with blanket ignores or proper fixes,
+  use getattr for __name__ on Callable types, fix a latent logic bug
+  in the subparser metavar ternary, and cast sparkline arithmetic to
+  float to avoid mixed-type operator errors.
+- Fix windows CI. [Zach White]
+- Make the ci_tests automatically fix what it can. [Zach White]
+- Ignore N999 for test files. [Claude Sonnet 4.6, Zach White]
+
+  Test files use CamelCase in their names to mirror the class under test
+  (e.g. test_configuration_Configuration.py). Suppress the ruff N999
+  module-naming violation for tests/**
+- Don't commit uv.lock for library package. [Claude Sonnet 4.6, Zach
+  White]
+
+  Libraries should resolve fresh against unpinned deps rather than
+  pinning to a lockfile. Add uv.lock to .gitignore and drop --frozen
+  from CI.
+- Migrate to uv for dependency management. [Claude Sonnet 4.6, Zach
+  White]
+
+  Replace pip + requirements files with uv. Deps consolidated into
+  [dependency-groups] in pyproject.toml (PEP 735). CI workflows updated
+  to use astral-sh/setup-uv@v5 with a frozen lockfile. uv.lock committed
+  for reproducible installs across all Python/OS matrix combinations.
+- Add isort support via ruff I ruleset, fix import ordering. [Claude
+  Sonnet 4.6, Zach White]
+- Migrate from setup.py/setup.cfg to pyproject.toml, replace flake8 with
+  ruff. [Claude Sonnet 4.6, Zach White]
+
+  - Add pyproject.toml with all package metadata, tool config (ruff, yapf, mypy)
+  - Delete setup.py; strip setup.cfg to bumpversion sections only
+  - Replace flake8 with ruff in requirements-dev.txt and ci_tests
+  - Update python-publish.yml to use python -m build instead of setup.py
+  - Add build to requirements-release.txt
+  - Bump minimum Python from 3.7 (EOL) to 3.8 to match CI reality
+- Type _subparsers as Optional[_SubParsersAction] [Claude Sonnet 4.6,
+  Zach White]
+
+  Replace Optional[Any] and its FIXME comment with the concrete private
+  argparse type, imported under TYPE_CHECKING to avoid runtime coupling.
+  Suppress the one index check on the metavar formatting line where mypy
+  cannot prove the str invariant that holds at runtime.
+- Clarify confirm_limit=0 sentinel in password loop. [Claude Sonnet 4.6,
+  Zach White]
+
+  Replace `not confirm_limit` with `confirm_limit == 0` so the intent is
+  explicit: 0 means no limit. The previous form would treat any falsy
+  value the same way.
+- Implement NO_COLOR standard support (#78) [Copilot, skullydazed]
+
+  * Initial plan
+
+  * Implement NO_COLOR standard support (issue #77)
+- Update README: Python 3.8+, add venv setup instructions. [Claude
+  Sonnet 4.6, Zach White]
+
+  Bump the stated minimum Python version from 3.7 to 3.8 to match the
+  CI matrix. Add a dev environment setup block to the Contributing
+  section so contributors know to activate their venv before running
+  ci_tests.
+- Fix mypy errors in handle_store_boolean. [Claude Sonnet 4.6, Zach
+  White]
+
+  Add _arg_parser assignment to SubparserWrapper.__init__ so both MILC
+  and SubparserWrapper satisfy the union type without the getattr hack.
+  Assert disabled_args is not None before unpacking to satisfy the
+  variadic argument type check.
+- Update CI to Python 3.8-3.14, fix runs-on matrix bug. [Claude Sonnet
+  4.6, Zach White]
+
+  Drop EOL 3.7, add 3.14 to the test matrix. Update single-version pins
+  in devel_docs and python-publish workflows to 3.14. Fix ci.yml runs-on
+  hardcoded to ubuntu-22.04 — it now uses ${{ matrix.os }} so Windows
+  jobs actually run on Windows.
+- Type handle_store_boolean self param as MILC | SubparserWrapper.
+  [Claude Sonnet 4.6, Zach White]
+
+  Replaces the `self: Any` hack with an explicit union type, using a
+  TYPE_CHECKING guard to import MILC without introducing a circular import.
+- Fix arg deduplication. [Zach White]
+- Fix KeyError when SHELL env var is not set on Windows. [Claude Sonnet
+  4.6, Zach White]
+
+  Use os.environ.get('SHELL', 'cmd.exe') instead of os.environ['SHELL']
+  to avoid crashes on Windows/MSYS2 where SHELL may not be defined.
+- Add AI contribution docs. [Zach White]
+- More typing (#76) [Pablo Martínez]
+
+  * some more typing improvements
+
+  * make comment more readable, do not leak defaults in `@overload`
+
+  * move `@overload`, try and word the comment better
+
+  * move things around
+- Move where spark_int gets cast to int. [Zach White]
+- Mypy. [Zach White]
+- Fix a divide by zero bug. [Zach White]
+- Fix location of typing marker (#75) [Pablo Martínez]
+- Bump python version for devel docs job. [Zach White]
+- Improve type hint for decorators (#74) [Pablo Martínez]
+- Minor: changelog update. [Zach White]
+
+
 1.9.1 (2025-01-25)
 ------------------
 - New release: 1.9.0 → 1.9.1. [Zach White]
