@@ -123,7 +123,8 @@ Takes argparse arguments and returns the dest name.
 #### handle\_store\_boolean
 
 ```python
-def handle_store_boolean(self: Any, *args: Any, **kwargs: Any) -> Any
+def handle_store_boolean(self: 'MILC | SubparserWrapper', *args: Any,
+                         **kwargs: Any) -> Any
 ```
 
 Does the add_argument for action='store_boolean'.

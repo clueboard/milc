@@ -121,7 +121,7 @@ Print brief description of how the main program or subcommand is invoked, depend
 def log_deprecated_warning(item_type: str, name: str, reason: str) -> None
 ```
 
-Logs a warning with a custom message if a argument or command is deprecated.
+Logs a warning with a custom message if an argument or command is deprecated.
 
 <a id="milc.MILC.add_argument"></a>
 
@@ -178,7 +178,6 @@ Release the MILC lock.
 #### find\_config\_file
 
 ```python
-@lru_cache(maxsize=None)
 def find_config_file() -> Path
 ```
 
@@ -304,7 +303,7 @@ Register a subcommand.
 
   
   handler
-  The function to exececute for this subcommand.
+  The function to execute for this subcommand.
   
   description
   A one-line description to display in --help

@@ -9,7 +9,7 @@ Display sparklines from a sequence of numbers.
 #### is\_number
 
 ```python
-def is_number(i: Any) -> bool
+def is_number(i: Any) -> TypeGuard[Union[int, float, Decimal]]
 ```
 
 Returns true if i is a number. Used to filter non-numbers from a list.
@@ -19,10 +19,10 @@ Returns true if i is a number. Used to filter non-numbers from a list.
 #### sparkline
 
 ```python
-def sparkline(number_list: List[Optional[int]],
+def sparkline(number_list: List[Optional[Union[int, float, Decimal]]],
               *,
-              min_value: Optional[int] = None,
-              max_value: Optional[int] = None,
+              min_value: Optional[Union[int, float, Decimal]] = None,
+              max_value: Optional[Union[int, float, Decimal]] = None,
               highlight_low: float = -inf,
               highlight_high: float = inf,
               highlight_low_color: str = '',
@@ -60,7 +60,7 @@ If you wish to color your sparkline according to other rules it is recommended t
         When a number is greater than this value it will be highlighted with `highlight_high_color`.
 
     highlight_low_color
-        A MILC or ANSI color code to apply to integers greater than highlight_low.
+        A MILC or ANSI color code to apply to integers less than highlight_low.
 
     highlight_high_color
         A MILC or ANSI color code to apply to integers greater than highlight_high.

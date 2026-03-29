@@ -7,20 +7,10 @@
 ## AttrDict Objects
 
 ```python
-class AttrDict(object)
+class AttrDict(MutableMapping)
 ```
 
 A dictionary that can also be accessed by attribute.
-
-<a id="attrdict.AttrDict.__getitem__"></a>
-
-#### \_\_getitem\_\_
-
-```python
-def __getitem__(key: Any) -> Any
-```
-
-Returns an item.
 
 <a id="attrdict.SparseAttrDict"></a>
 
