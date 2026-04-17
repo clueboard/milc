@@ -50,6 +50,10 @@ class MILCInterface:
         return self.milc.args
 
     @property
+    def args_passed(self) -> AttrDict:
+        return self.milc.args_passed
+
+    @property
     def config(self) -> Configuration:
         return self.milc.config
 
