@@ -10,7 +10,7 @@ readme = "README.md"
 license = { file = "LICENSE" }
 authors = [{ name = "skullydazed", email = "skullydazed@gmail.com" }]
 maintainers = [{ name = "skullydazed", email = "skullydazed@gmail.com" }]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
@@ -52,8 +52,7 @@ dev = [
     "mkdocs-material<9",
     "ty",
     "pytest",
-    "pygments<2.20; python_version < '3.9'",
-    "pygments>=2.20; python_version >= '3.9'",
+    "pygments",
     "ruff",
     "semver",
     "yapf",
