@@ -2,6 +2,16 @@ Changelog
 =========
 
 
+1.11.0 (2026-04-17)
+-------------------
+- New release: 1.10.0 → 1.11.0. [Zach White]
+- Remove python 3.8 support. [Zach White]
+- Fix pygments requirement for 3.8. [Zach White]
+- Add uv.lock to bumpversion. [Zach White]
+- Add args_passed property to MILCInterface (#87) [Copilot, skullydazed]
+- Minor: changelog update. [Zach White]
+
+
 1.10.0 (2026-03-29)
 -------------------
 - New release: 1.9.1 → 1.10.0. [Zach White]
