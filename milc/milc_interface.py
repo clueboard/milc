@@ -95,6 +95,10 @@ class MILCInterface:
     def subcommand_name(self) -> Optional[str]:
         return self.milc.subcommand_name
 
+    @property
+    def subcommand_path(self) -> Optional[list]:
+        return self.milc.subcommand_path
+
     def echo(self, text: str, *args: Any, **kwargs: Any) -> None:
         """Print colorized text to stdout.
 
@@ -179,7 +183,7 @@ class MILCInterface:
         """
         return self.milc.entrypoint(description, deprecated)
 
-    def subcommand(self, description: str, hidden: bool = False, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
+    def subcommand(self, description: str, hidden: bool = False, parent: Optional[Callable[..., Any]] = None, name: Optional[str] = None, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         """Decorator to register a subcommand.
 
         Args:
@@ -189,8 +193,15 @@ class MILCInterface:
 
             hidden
                 When True don't display this command in --help
+
+            parent
+                The parent subcommand function. When provided, this subcommand is registered
+                as a child of that subcommand.
+
+            name
+                Override the CLI token for this subcommand.
         """
-        return self.milc.subcommand(description, hidden, **kwargs)
+        return self.milc.subcommand(description, hidden, parent=parent, name=name, **kwargs)
 
     def __enter__(self) -> Any:
         return self.milc.__enter__()

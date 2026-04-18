@@ -28,7 +28,7 @@ from typing_extensions import ParamSpec
 from ._in_argv import _in_argv, _index_argv
 from .ansi import MILCFormatter, ansi_colors, ansi_config, ansi_escape, format_ansi
 from .attrdict import AttrDict
-from .configuration import Configuration, SubparserWrapper, get_argument_name, get_argument_strings, handle_store_boolean
+from .configuration import Configuration, ConfigurationSection, SubparserWrapper, _collect_config_sections, _config_navigate, get_argument_name, get_argument_strings, handle_store_boolean
 
 P = ParamSpec("P")
 R = TypeVar("R")
@@ -94,11 +94,19 @@ class MILC(object):
 
     @property
     def subcommand_name(self) -> Optional[str]:
-        if self._subcommand is not None:
-            name: str = self._subcommand.__name__
-            return name
+        """Returns the leaf CLI name of the active subcommand, e.g. 'add' for 'remote add'."""
+        if self._subcommand is None:
+            return None
+        key = self._subcommand_keys.get(id(self._subcommand))
+        return key.split('.')[-1] if key else self._subcommand.__name__
 
-        return None
+    @property
+    def subcommand_path(self) -> Optional[List[str]]:
+        """Returns the full subcommand path as a list, e.g. ['remote', 'add']."""
+        if self._subcommand is None:
+            return None
+        key = self._subcommand_keys.get(id(self._subcommand))
+        return key.split('.') if key else [self._subcommand.__name__]
 
     def argv_name(self) -> str:
         """Returns the name of our program by examining argv.
@@ -206,6 +214,7 @@ class MILC(object):
         self.acquire_lock()
 
         self.subcommands: Dict[str, Any] = {}
+        self._subcommand_keys: Dict[int, str] = {}
         self._subparsers: Optional['_SubParsersAction[Any]'] = None
         self.argwarn = argcomplete.warn  # type: ignore[attr-defined]
         self.args = AttrDict()
@@ -219,17 +228,21 @@ class MILC(object):
         """Print a help message for the main program or subcommand, depending on context.
         """
         if self._subcommand:
-            self.subcommands[self._subcommand.__name__].print_help(*args, **kwargs)
-        else:
-            self._arg_parser.print_help(*args, **kwargs)
+            key = self._subcommand_keys.get(id(self._subcommand))
+            if key and key in self.subcommands:
+                self.subcommands[key].print_help(*args, **kwargs)
+                return
+        self._arg_parser.print_help(*args, **kwargs)
 
     def print_usage(self, *args: Any, **kwargs: Any) -> None:
         """Print brief description of how the main program or subcommand is invoked, depending on context.
         """
         if self._subcommand:
-            self.subcommands[self._subcommand.__name__].print_usage(*args, **kwargs)
-        else:
-            self._arg_parser.print_usage(*args, **kwargs)
+            key = self._subcommand_keys.get(id(self._subcommand))
+            if key and key in self.subcommands:
+                self.subcommands[key].print_usage(*args, **kwargs)
+                return
+        self._arg_parser.print_usage(*args, **kwargs)
 
     def log_deprecated_warning(self, item_type: str, name: str, reason: str) -> None:
         """Logs a warning with a custom message if an argument or command is deprecated.
@@ -392,13 +405,14 @@ class MILC(object):
             self.arg_only[arg_name].append(config_name)
             del kwargs['arg_only']
         else:
-            if arg_name not in self.default_arguments:
+            if config_name not in self.default_arguments:
                 self.default_arguments[config_name] = {}
 
             self.default_arguments[config_name][arg_name] = kwargs.get('default')
 
-            if self.config[config_name][arg_name] is None:
-                self.config[config_name][arg_name] = kwargs.get('default')
+            config_section = _config_navigate(self.config, config_name)
+            if config_section[arg_name] is None:
+                config_section[arg_name] = kwargs.get('default')
 
             if config_name not in self.args_passed:
                 self.args_passed[config_name] = {}
@@ -416,18 +430,18 @@ class MILC(object):
             raise RuntimeError('You must run this before the with statement!')
 
         def argument_function(handler: Callable[P, R]) -> Callable[P, R]:
-            config_name = getattr(handler, '__name__')
-            subcommand_name = config_name.replace("_", "-")
+            dotted_key = self._subcommand_keys.get(id(handler))
             arg_name = get_argument_name(self._arg_parser, *args, **kwargs)
 
             self._handle_deprecated(arg_name, kwargs)
-            self._handle_arg_parsing(config_name, arg_name, args, kwargs)
 
             if handler is self._entrypoint:
+                self._handle_arg_parsing('general', arg_name, args, kwargs)
                 self.add_argument(*args, **kwargs)
 
-            elif subcommand_name in self.subcommands:
-                self.subcommands[subcommand_name].add_argument(*args, **kwargs)
+            elif dotted_key is not None and dotted_key in self.subcommands:
+                self._handle_arg_parsing(dotted_key.replace('-', '_'), arg_name, args, kwargs)
+                self.subcommands[dotted_key].add_argument(*args, **kwargs)
 
             else:
                 raise RuntimeError('Decorated function is not entrypoint or subcommand!')
@@ -465,8 +479,12 @@ class MILC(object):
             raw_config = RawConfigParser()
             raw_config.read(str(self.config_file))
 
-            # Iterate over the config file options and write them into config
+            # Iterate over the config file options and write them into config.
+            # Section names may be dotted (e.g. [remote.add]) for nested subcommands.
             for section in raw_config.sections():
+                config_section = _config_navigate(config, section)
+                config_source_section = _config_navigate(config_source, section)
+
                 for option in raw_config.options(section):
                     value = raw_config.get(section, option)
 
@@ -483,8 +501,8 @@ class MILC(object):
                         else:
                             value = int(value)
 
-                    config[section][option] = value
-                    config_source[section][option] = 'config_file'
+                    config_section[option] = value
+                    config_source_section[option] = 'config_file'
 
         return config, config_source
 
@@ -499,42 +517,60 @@ class MILC(object):
         """Merge CLI arguments into self.config to create the runtime configuration.
         """
         self.acquire_lock()
-        subcommand_name = self._subcommand.__name__ if self._subcommand else None
+        subcommand_name = None
+        if self._subcommand is not None:
+            dotted_key = self._subcommand_keys.get(
+                id(self._subcommand),
+                self._subcommand.__name__.replace('_', '-'),
+            )
+            subcommand_name = dotted_key.replace('-', '_')
 
         for argument in self.args:
             if argument in ('subparsers', 'entrypoint'):
                 continue
 
-            # Find the argument's section. This is backwards because mypy is sticking its nose where it doesn't belong.
-            if argument not in self.default_arguments['general']:
+            # Find the argument's section.
+            # Prefer the active subcommand section when the argument was registered there,
+            # since a subcommand arg with the same dest as a general arg should win.
+            if subcommand_name and argument in self.default_arguments.get(subcommand_name, {}):
                 section = subcommand_name
-            else:
+            elif argument in self.default_arguments.get('general', {}):
                 section = 'general'
+            else:
+                section = subcommand_name
+
+            if section is None:
+                continue
 
             if argument not in self.arg_only or section not in self.arg_only[argument]:
                 # Determine the arg value and source
                 arg_value = getattr(self.args, argument)
+                config_section = _config_navigate(self.config, section)
+                config_source_section = _config_navigate(self.config_source, section)
 
                 # Merge this argument into self.config
                 if self.args_passed[section][argument] or (argument in self._config_store_true and arg_value) or (argument in self._config_store_false and not arg_value):
-                    self.config[section][argument] = arg_value
-                    self.config_source[section][argument] = 'argument'
-                elif self.config[section][argument] is None:
+                    config_section[argument] = arg_value
+                    config_source_section[argument] = 'argument'
+                elif config_section[argument] is None:
                     # Capture the default value
-                    self.config[section][argument] = arg_value
+                    config_section[argument] = arg_value
 
         self.release_lock()
 
     def _save_config_file(self, config: AttrDict) -> None:
         """Write config to disk.
         """
-        # Generate a sanitized version of our running configuration
+        # Generate a sanitized version of our running configuration.
+        # _collect_config_sections recurses into nested ConfigurationSection objects,
+        # emitting (dotted_section_name, option_name, value) for every leaf.
         sane_config = RawConfigParser()
-        for section_name, section in config.items():
-            sane_config.add_section(section_name)
-            for option_name, value in section.items():
-                if self.config_source[section_name][option_name] == 'config_file' and value is not None:
-                    sane_config.set(section_name, option_name, str(value))
+        for section_name, option_name, value in _collect_config_sections(config):
+            if not sane_config.has_section(section_name):
+                sane_config.add_section(section_name)
+            config_source_section = _config_navigate(self.config_source, section_name)
+            if config_source_section[option_name] == 'config_file' and value is not None:
+                sane_config.set(section_name, option_name, str(value))
 
         if not self.config_dir.exists():
             self.config_dir.mkdir(parents=True, exist_ok=True)
@@ -598,7 +634,10 @@ class MILC(object):
             self.log_deprecated_warning('Entrypoint', entry_name, msg)
 
         if self._subcommand:
-            name = self._subcommand.__name__.replace("_", "-")
+            name = self._subcommand_keys.get(
+                id(self._subcommand),
+                self._subcommand.__name__.replace('_', '-'),
+            )
             if name in self._deprecated_commands:
                 msg = self._deprecated_commands[name]
                 self.log_deprecated_warning('Subcommand', name, msg)
@@ -663,6 +702,8 @@ class MILC(object):
         description: str,
         hidden: bool = False,
         deprecated: Optional[str] = None,
+        parent: Optional[Callable[..., Any]] = None,
+        name: Optional[str] = None,
         **kwargs: Any,
     ) -> Callable[P, R]:
         """Register a subcommand.
@@ -681,37 +722,66 @@ class MILC(object):
             deprecated
                 Deprecation message. When set the subcommand will be marked as deprecated
                 and this message will be displayed in help output.
+
+            parent
+                The parent subcommand function. When provided, this subcommand is registered
+                as a child of that subcommand (enabling nested commands like 'prog remote add').
+                Must be a function object previously registered as a subcommand.
+
+            name
+                Override the CLI token for this subcommand. Defaults to the handler's
+                function name in kebab-case.
         """
         if self._inside_context_manager:
             raise RuntimeError('You must run this before the with statement!')
 
-        if self._subparsers is None:
-            self.add_subparsers(metavar="")
+        if parent is not None:
+            if not callable(parent):
+                raise TypeError("'parent' must be a function object, not a string.")
+            parent_key = self._subcommand_keys.get(id(parent))
+            if parent_key is None:
+                raise ValueError(f"Parent function '{parent.__name__}' is not a registered subcommand.")
+            parent_wrapper = self.subcommands[parent_key]
+            target_subparsers = parent_wrapper.get_child_subparsers()
+            cli_name = name or getattr(handler, '__name__').replace('_', '-')
+            dotted_key = f"{parent_key}.{cli_name}"
+        else:
+            if self._subparsers is None:
+                self.add_subparsers(metavar="")
+            assert self._subparsers is not None
+            target_subparsers = self._subparsers
+            cli_name = name or getattr(handler, '__name__').replace('_', '-')
+            dotted_key = cli_name
 
-        name = getattr(handler, '__name__').replace("_", "-")
+        # Pre-register config sections so hierarchical access never returns None.
+        # Use underscore form for config paths (hyphens can't be Python identifiers).
+        config_path = dotted_key.replace('-', '_')
+        _config_navigate(self.config, config_path)
+        _config_navigate(self.config_source, config_path)
 
         if deprecated:
-            self._deprecated_commands[name] = deprecated
+            self._deprecated_commands[dotted_key] = deprecated
             description += f' [Deprecated]: {deprecated}'
 
         self.acquire_lock()
 
-        if not hidden and self._subparsers is not None:
+        if parent is None and not hidden and self._subparsers is not None:
             if self._subparsers.metavar:
-                self._subparsers.metavar = "{%s,%s}" % (self._subparsers.metavar[1:-1], name)
+                self._subparsers.metavar = "{%s,%s}" % (self._subparsers.metavar[1:-1], cli_name)
             else:
-                self._subparsers.metavar = "{%s}" % name
-            kwargs['help'] = description
+                self._subparsers.metavar = "{%s}" % cli_name
 
-        assert self._subparsers is not None  # guaranteed by add_subparsers() call above
-        self.subcommands[name] = SubparserWrapper(self, name, self._subparsers.add_parser(name, **kwargs))
-        self.subcommands[name].set_defaults(entrypoint=handler)
+        kwargs['help'] = description
+
+        self.subcommands[dotted_key] = SubparserWrapper(self, config_path, target_subparsers.add_parser(cli_name, **kwargs))
+        self.subcommands[dotted_key].set_defaults(entrypoint=handler)
+        self._subcommand_keys[id(handler)] = dotted_key
 
         self.release_lock()
 
         return handler
 
-    def subcommand(self, description: str, hidden: bool = False, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
+    def subcommand(self, description: str, hidden: bool = False, parent: Optional[Callable[..., Any]] = None, name: Optional[str] = None, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         """Decorator to register a subcommand.
 
         Args:
@@ -721,9 +791,16 @@ class MILC(object):
 
             hidden
                 When True don't display this command in --help
+
+            parent
+                The parent subcommand function. When provided, this subcommand is registered
+                as a child of that subcommand.
+
+            name
+                Override the CLI token for this subcommand.
         """
         def subcommand_function(handler: Callable[P, R]) -> Callable[P, R]:
-            return self.add_subcommand(handler, description, hidden=hidden, **kwargs)
+            return self.add_subcommand(handler, description, hidden=hidden, parent=parent, name=name, **kwargs)
 
         return subcommand_function
 

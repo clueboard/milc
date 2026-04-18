@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Hashable, List
+from typing import TYPE_CHECKING, Any, Generator, Hashable, List, Tuple
 
 if TYPE_CHECKING:
     from .milc import MILC
@@ -16,22 +16,24 @@ class Configuration(AttrDict):
         """Returns a config section, creating it if it doesn't exist yet.
         """
         if key not in self._data:
-            self._data[key] = ConfigurationSection(self)
+            self._data[key] = ConfigurationSection(self, str(key))
 
         return self._data[key]
 
 
 class ConfigurationSection(Configuration):
-    def __init__(self, parent: AttrDict, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, parent: AttrDict, section_name: str, *args: Any, **kwargs: Any) -> None:
         super(ConfigurationSection, self).__init__(*args, **kwargs)
         self._parent = parent
+        self._section_name = section_name
 
     def __getitem__(self, key: Hashable) -> Any:
         """Returns a config value, pulling from the `user` section as a fallback.
         This is called when the attribute is accessed either via the get method or through [ ] index.
         """
-        if key in self._data and self._data.get(key) is not None:
-            return self._data[key]
+        val = self._data.get(key)
+        if val is not None:
+            return val
 
         elif key in self._parent.user:
             return self._parent.user[key]
@@ -56,6 +58,39 @@ class ConfigurationSection(Configuration):
             object.__setattr__(self, key, value)
 
 
+def _config_navigate(config_root: 'Configuration', dotted_path: str) -> 'ConfigurationSection':
+    """Navigate config to the ConfigurationSection at dotted_path, creating as needed.
+
+    Consistent with the lazy-creation behavior of Configuration.__getitem__:
+    intermediate sections are always created if they don't exist.
+    """
+    parts = dotted_path.split('.')
+    section: Any = config_root
+    for i, part in enumerate(parts):
+        existing = section._data.get(part)
+        if isinstance(existing, ConfigurationSection):
+            section = existing
+        else:
+            path_so_far = '.'.join(parts[:i + 1])
+            new_section = ConfigurationSection(config_root, path_so_far)
+            section._data[part] = new_section
+            section = new_section
+    return section
+
+
+def _collect_config_sections(section: 'Configuration', prefix: str = '') -> Generator[Tuple[str, str, Any], None, None]:
+    """Recursively yield (dotted_section_name, option_name, value) for all leaf values.
+
+    Used by _save_config_file to emit flat INI sections with dotted names.
+    """
+    for key, value in section._data.items():
+        if isinstance(value, ConfigurationSection):
+            sub_prefix = f"{prefix}.{key}" if prefix else key
+            yield from _collect_config_sections(value, sub_prefix)
+        else:
+            yield prefix, key, value
+
+
 class SubparserWrapper(object):
     """Wrap subparsers so we can track what options the user passed.
     """
@@ -66,10 +101,19 @@ class SubparserWrapper(object):
         self.submodule = submodule
         self.subparser = subparser
         self._arg_parser = self.cli._arg_parser
+        self._child_subparsers = None
 
         for attr in dir(subparser):
             if not hasattr(self, attr):
                 setattr(self, attr, getattr(subparser, attr))
+
+    def get_child_subparsers(self) -> Any:
+        """Lazily create and return the _SubParsersAction for nested sub-subcommands."""
+        if self._child_subparsers is None:
+            self._child_subparsers = self.subparser.add_subparsers(
+                title='Sub-commands', dest='subparsers', metavar=""
+            )
+        return self._child_subparsers
 
     def completer(self, completer: Any) -> None:
         """Add an arpcomplete completer to this subcommand.

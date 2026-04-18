@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+"""Example MILC program demonstrating nested subcommands.
+
+PYTHON_ARGCOMPLETE_OK
+"""
+import os
+import sys
+
+from milc import cli
+
+cli.milc_options(name='nested_example', author='Milc Test', version='1.0.0')
+
+# Must be imported after milc_options()
+import milc.subcommand.config  # noqa: F401
+
+
+@cli.argument('-n', '--name', help='Name', default='World')
+@cli.entrypoint('Nested subcommand demo.')
+def main(cli):
+    cli.log.info('No subcommand specified!')
+    cli.print_usage()
+
+
+# --- Top-level subcommand: remote ---
+
+@cli.subcommand('Manage remotes.')
+def remote(cli):
+    cli.print_help()
+
+
+@cli.argument('--fetch', action='store_true', help='Fetch after adding')
+@cli.argument('--url', help='Remote URL', default='')
+@cli.subcommand('Add a remote.', parent=remote)
+def add(cli):
+    cli.echo('add: url=%s fetch=%s', cli.config.remote.add.url, cli.config.remote.add.fetch)
+
+
+@cli.argument('--name', help='Remote name to remove', default='')
+@cli.subcommand('Remove a remote.', parent=remote)
+def remove(cli):
+    cli.echo('remove: name=%s', cli.config.remote.remove.name)
+
+
+# --- Top-level subcommand: sub1 ---
+
+@cli.subcommand('Sub-group 1.')
+def sub1(cli):
+    cli.print_help()
+
+
+@cli.subcommand('Add under sub1.', parent=sub1)
+def add(cli):  # noqa: F811 - intentional name collision to test id-based dispatch
+    cli.echo('sub1 add')
+
+
+# --- Top-level subcommand: sub2 ---
+
+@cli.subcommand('Sub-group 2.')
+def sub2(cli):
+    cli.print_help()
+
+
+@cli.subcommand('Add under sub2.', parent=sub2)
+def add(cli):  # noqa: F811 - intentional name collision to test id-based dispatch
+    cli.echo('sub2 add')
+
+
+# --- Subcommand path reporting ---
+
+@cli.subcommand('Report subcommand info.')
+def info(cli):
+    cli.echo('name=%s', cli.subcommand_name)
+    cli.echo('path=%s', '.'.join(cli.subcommand_path))
+
+
+@cli.subcommand('Nested info.', parent=info)
+def nested(cli):
+    cli.echo('name=%s', cli.subcommand_name)
+    cli.echo('path=%s', '.'.join(cli.subcommand_path))
+
+
+if __name__ == '__main__':
+    cli()
