@@ -1,0 +1,37 @@
+#!/usr/bin/env python3
+"""Example MILC program demonstrating env_prefix configuration.
+
+PYTHON_ARGCOMPLETE_OK
+"""
+import argparse
+
+from milc import cli
+
+cli.milc_options(name='env_prefix_example', env_prefix='MYAPP')
+
+
+@cli.argument('--host', required=True, help='Hostname')
+@cli.argument('--port', type=int, default=8080, help='Port number')
+@cli.argument('--verbose', action='store_true', help='Verbose mode')
+@cli.argument('--tags', nargs='+', default=[], help='One or more tags')
+@cli.argument('--pair', nargs=2, default=[], help='Exactly two values')
+@cli.argument('--label', action='append', default=[], help='Repeatable label')
+@cli.argument('--rest', nargs=argparse.REMAINDER, default=[], help='Remaining args')
+@cli.argument('--output', nargs='?', const='stdout', default=None, help='Output destination')
+@cli.argument('--colors', action='store_boolean', default=True, help='colorized output')
+@cli.entrypoint('Test env_prefix feature.')
+def main(cli):
+    cli.echo('host=%s', cli.config.general.host)
+    cli.echo('port=%s', cli.config.general.port)
+    cli.echo('verbose=%s', cli.config.general.verbose)
+    cli.echo('tags=%s', cli.config.general.tags)
+    cli.echo('pair=%s', cli.config.general.pair)
+    cli.echo('label=%s', cli.config.general.label)
+    cli.echo('rest=%s', cli.config.general.rest)
+    cli.echo('output=%s', cli.config.general.output)
+    cli.echo('colors=%s', cli.config.general.colors)
+    cli.echo('host_source=%s', cli.config_source.general.host or 'default')
+
+
+if __name__ == '__main__':
+    cli()

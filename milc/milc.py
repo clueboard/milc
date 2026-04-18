@@ -28,7 +28,7 @@ from typing_extensions import ParamSpec
 from ._in_argv import _in_argv, _index_argv
 from .ansi import MILCFormatter, ansi_colors, ansi_config, ansi_escape, format_ansi
 from .attrdict import AttrDict
-from .configuration import Configuration, ConfigurationSection, SubparserWrapper, _collect_config_sections, _config_navigate, get_argument_name, get_argument_strings, handle_store_boolean
+from .configuration import Configuration, SubparserWrapper, _collect_config_sections, _config_navigate, get_argument_name, get_argument_strings, handle_store_boolean
 
 P = ParamSpec("P")
 R = TypeVar("R")
@@ -37,7 +37,7 @@ R = TypeVar("R")
 class MILC(object):
     """MILC - An Opinionated Batteries Included Framework
     """
-    def __init__(self, name: Optional[str] = None, author: Optional[str] = None, version: Optional[str] = None, logger: Optional[logging.Logger] = None) -> None:
+    def __init__(self, name: Optional[str] = None, author: Optional[str] = None, version: Optional[str] = None, logger: Optional[logging.Logger] = None, env_prefix: Optional[str] = None) -> None:
         """Initialize the MILC object.
         """
         # Set some defaults
@@ -68,6 +68,10 @@ class MILC(object):
         self.arg_only: Dict[str, List[str]] = {}
         self.config_file = self.find_config_file()
         self.default_arguments: Dict[str, Dict[str, Optional[str]]] = {}
+        self.env_prefix = env_prefix
+        self.env_vars_used: Dict[str, Dict[str, str]] = {}
+        self._env_var_defaults: Dict[str, Dict[str, Any]] = {}
+        self._env_var_errors: List[str] = []
         self.platform = platform()
         self.interactive = sys.stdin.isatty()
         self.release_lock()
@@ -393,10 +397,59 @@ class MILC(object):
                 kwargs['help'] = f"[Deprecated]: {kwargs['deprecated']}"
             del kwargs['deprecated']
 
+    def _apply_env_var_default(self, config_name: str, arg_name: str, args: Sequence[Any], kwargs: Dict[str, Any]) -> None:
+        """Apply env var as default when env_prefix is set and a matching env var exists.
+        """
+        if self.env_prefix is None or not any(a.startswith('--') for a in args):
+            return
+        prefix = self.env_prefix + '_' if self.env_prefix != '' else ''
+        if config_name == 'general':
+            env_key = prefix + arg_name.replace('-', '_').upper()
+        else:
+            env_key = prefix + config_name.replace('-', '_').upper() + '_' + arg_name.replace('-', '_').upper()
+        env_value = os.environ.get(env_key)
+        if env_value is None:
+            return
+        action = kwargs.get('action')
+        # store_false args are the --no-X half of store_boolean pairs; the store_boolean arg itself is already handled, so skip these entirely.
+        if action == 'store_false':
+            self.log.debug('Ignoring %s for --%s: store_false arguments do not support env var defaults', env_key, arg_name)
+            return
+        # List-producing and ambiguous-arity arguments are not supported — skip these.
+        # Covers: nargs='+'/'*'/REMAINDER, nargs=N (integer), and action='append'.
+        # nargs='?' is also excluded: passing the flag with no value should use const, not the env var, and that interaction is too subtle to handle reliably.
+        nargs = kwargs.get('nargs')
+        if nargs in ('+', '*', '?', argparse.REMAINDER) or isinstance(nargs, int) or action == 'append':
+            self.log.debug('Ignoring %s for --%s: nargs=%r / action=%r arguments do not support env var defaults', env_key, arg_name, nargs, action)
+            return
+        type_fn = kwargs.get('type')
+        if action in ('store_true', 'store_boolean'):
+            resolved = env_value.lower() not in ('-1', '0', 'false', 'no', 'off', '')
+        elif type_fn:
+            try:
+                resolved = type_fn(env_value)
+            except (ValueError, TypeError) as e:
+                self._env_var_errors.append(f"environment variable {env_key}={env_value!r} is not the correct type: {e}")
+                return
+        else:
+            resolved = env_value
+        # For boolean flags, argparse ignores default when another action already claimed the same dest, so we bypass it and apply the value in merge_args_into_config.
+        # For other args we still need to set the default so argparse accepts required=False.
+        if action not in ('store_true', 'store_boolean'):
+            kwargs['default'] = resolved
+        kwargs['required'] = False
+        if config_name not in self.env_vars_used:
+            self.env_vars_used[config_name] = {}
+        self.env_vars_used[config_name][arg_name] = env_key
+        if config_name not in self._env_var_defaults:
+            self._env_var_defaults[config_name] = {}
+        self._env_var_defaults[config_name][arg_name] = resolved
+
     def _handle_arg_parsing(self, config_name: str, arg_name: str, args: Sequence[Any], kwargs: Dict[str, Any]) -> None:
         """Called by self.argument: Parse this argument into the right datastructures.
         """
         arg_strings = get_argument_strings(self._arg_parser, *args, **kwargs)
+        self._apply_env_var_default(config_name, arg_name, args, kwargs)
 
         if kwargs.get('arg_only'):
             if arg_name not in self.arg_only:
@@ -463,6 +516,9 @@ class MILC(object):
 
         for key, value in vars(self._arg_parser.parse_args()).items():
             self.args[key] = value
+
+        for error in self._env_var_errors:
+            self._arg_parser.error(error)
 
         if 'entrypoint' in self.args:
             self._subcommand = self.args.entrypoint
@@ -552,13 +608,19 @@ class MILC(object):
                 if self.args_passed[section][argument] or (argument in self._config_store_true and arg_value) or (argument in self._config_store_false and not arg_value):
                     config_section[argument] = arg_value
                     config_source_section[argument] = 'argument'
+                elif section in self.env_vars_used and argument in self.env_vars_used[section]:
+                    # Env var overrides config file and default; use stored resolved value (not arg_value, since argparse may not have used our default for boolean flags)
+                    if config_source_section[argument] == 'config_file':
+                        self.log.debug('Environment variable %s overrides config file value for %s.%s', self.env_vars_used[section][argument], section, argument)
+                    config_section[argument] = self._env_var_defaults[section][argument]
+                    config_source_section[argument] = 'env_var'
                 elif config_section[argument] is None:
                     # Capture the default value
                     config_section[argument] = arg_value
 
         self.release_lock()
 
-    def _save_config_file(self, config: AttrDict) -> None:
+    def _save_config_file(self, config: Configuration) -> None:
         """Write config to disk.
         """
         # Generate a sanitized version of our running configuration.
@@ -740,7 +802,7 @@ class MILC(object):
                 raise TypeError("'parent' must be a function object, not a string.")
             parent_key = self._subcommand_keys.get(id(parent))
             if parent_key is None:
-                raise ValueError(f"Parent function '{parent.__name__}' is not a registered subcommand.")
+                raise ValueError(f"Parent function '{getattr(parent, '__name__', repr(parent))}' is not a registered subcommand.")
             parent_wrapper = self.subcommands[parent_key]
             target_subparsers = parent_wrapper.get_child_subparsers()
             cli_name = name or getattr(handler, '__name__').replace('_', '-')

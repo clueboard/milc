@@ -3,8 +3,8 @@
 from typing import Any, Tuple
 
 import milc
-from milc.milc import MILC
 from milc.configuration import ConfigurationSection, _collect_config_sections, _config_navigate
+from milc.milc import MILC
 
 
 def print_config(section: str, key: str) -> None:
@@ -12,8 +12,11 @@ def print_config(section: str, key: str) -> None:
     """
     config_section = _config_navigate(milc.cli.config, section)
     config_source_section = _config_navigate(milc.cli.config_source, section)
-    if config_source_section[key] == 'config_file':
+    source = config_source_section[key]
+    if source == 'config_file':
         milc.cli.echo('%s.%s{fg_blue}={fg_reset}%s', section, key, config_section[key])
+    elif source == 'env_var':
+        milc.cli.echo('%s.%s{fg_yellow}={fg_reset}%s {fg_yellow}(env){fg_reset}', section, key, config_section[key])
     else:
         milc.cli.echo('{fg_cyan}%s.%s=%s', section, key, config_section[key])
 
@@ -23,7 +26,7 @@ def show_config() -> None:
     """
     for section_name, key, value in sorted(_collect_config_sections(milc.cli.config)):
         config_source_section = _config_navigate(milc.cli.config_source, section_name)
-        if config_source_section[key] == 'config_file' or milc.cli.config.config.all:
+        if config_source_section[key] in ('config_file', 'env_var') or milc.cli.config.config.all:
             print_config(section_name, key)
 
 
@@ -78,6 +81,38 @@ def set_config(section: str, option: str, value: str) -> None:
             config_source_section[option] = 'config_file'
 
 
+def _process_config_token(config_token: str) -> bool:
+    """Process a single config token. Returns True if a write occurred.
+    """
+    section, option, value = parse_config_token(config_token)
+
+    if section and option and value:
+        set_config(section, option, value)
+        return not milc.cli.args.read_only
+
+    if section and option:
+        config_section = _config_navigate(milc.cli.config, section)
+        if isinstance(config_section[option], ConfigurationSection):
+            full_section = f"{section}.{option}"
+            nested = config_section[option]
+            for section_name, key, value in _collect_config_sections(nested, full_section):
+                src_section = _config_navigate(milc.cli.config_source, section_name)
+                if src_section[key] in ('config_file', 'env_var'):
+                    print_config(section_name, key)
+        else:
+            print_config(section, option)
+        return False
+
+    if section:
+        config_section = _config_navigate(milc.cli.config, section)
+        for section_name, key, value in _collect_config_sections(config_section, section):
+            src_section = _config_navigate(milc.cli.config_source, section_name)
+            if src_section[key] == 'config_file':
+                print_config(section_name, key)
+
+    return False
+
+
 @milc.cli.argument('-a', '--all', action='store_true', help='Show all configuration options.')
 @milc.cli.argument('-ro', '--read-only', arg_only=True, action='store_true', help='Operate in read-only mode.')
 @milc.cli.argument('configs', nargs='*', arg_only=True, help='Configuration options to read or write.')
@@ -105,42 +140,9 @@ def config(cli: MILC) -> bool:
         show_config()
         return False
 
-    # Process config_tokens
-    save_config = False
+    results = [_process_config_token(token) for token in milc.cli.args.configs]
+    save_config = any(results)
 
-    for config_token in milc.cli.args.configs:
-        section, option, value = parse_config_token(config_token)
-
-        # Do what the user wants
-        if section and option and value:
-            # Write a configuration option
-            set_config(section, option, value)
-            if not milc.cli.args.read_only:
-                save_config = True
-
-        elif section and option:
-            # Display a single key — but if the value is a nested section, display its contents
-            config_section = _config_navigate(milc.cli.config, section)
-            if isinstance(config_section[option], ConfigurationSection):
-                full_section = f"{section}.{option}"
-                nested = config_section[option]
-                for section_name, key, value in _collect_config_sections(nested, full_section):
-                    src_section = _config_navigate(milc.cli.config_source, section_name)
-                    if src_section[key] == 'config_file':
-                        print_config(section_name, key)
-            else:
-                print_config(section, option)
-
-        elif section:
-            # Display an entire section (and nested sub-sections)
-            config_section = _config_navigate(milc.cli.config, section)
-            config_source_section = _config_navigate(milc.cli.config_source, section)
-            for section_name, key, value in _collect_config_sections(config_section, section):
-                src_section = _config_navigate(milc.cli.config_source, section_name)
-                if src_section[key] == 'config_file':
-                    print_config(section_name, key)
-
-    # Ending actions
     if save_config:
         milc.cli.save_config()
 

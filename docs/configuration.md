@@ -64,11 +64,13 @@ Sometimes you need to know how a configuration value was set. You can use `cli.c
 The possible values returned are:
 
 * `'argument'`
-  * The value was passed as an argument
+  * The value was passed as a CLI argument
+* `'env_var'`
+  * The value was read from an environment variable (see [Environment Variables](environment_variables.md))
 * `'config_file'`
   * The value was read from the config file
-* `'default'`
-  * This is the default value
+* `None`
+  * The value is the argument default
 
 # Automatic Type Inference
 

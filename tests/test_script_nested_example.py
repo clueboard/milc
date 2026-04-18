@@ -4,10 +4,10 @@ from tempfile import mkstemp
 
 from .common import check_assert, check_command, check_returncode
 
-
 # ---------------------------------------------------------------------------
 # Top-level help
 # ---------------------------------------------------------------------------
+
 
 def test_top_level_help_lists_only_top_level_subcommands():
     """Top-level --help metavar must NOT include grandchild commands."""
@@ -28,6 +28,7 @@ def test_top_level_help_lists_only_top_level_subcommands():
 # Parent fallback handlers
 # ---------------------------------------------------------------------------
 
+
 def test_remote_no_child_runs_fallback():
     """Invoking a parent subcommand without a child runs its handler."""
     result = check_command(sys.executable, 'nested_example', '--config-file', os.devnull, 'remote')
@@ -46,6 +47,7 @@ def test_remote_help_lists_child_commands():
 # ---------------------------------------------------------------------------
 # Argument routing for nested subcommands
 # ---------------------------------------------------------------------------
+
 
 def test_remote_add_default_args():
     result = check_command(sys.executable, 'nested_example', '--no-color', '--config-file', os.devnull, 'remote', 'add')
@@ -76,6 +78,7 @@ def test_remote_remove():
 # Same function name under different parents (id-based dispatch)
 # ---------------------------------------------------------------------------
 
+
 def test_sub1_add_dispatches_correctly():
     result = check_command(sys.executable, 'nested_example', '--no-color', '--config-file', os.devnull, 'sub1', 'add')
     check_returncode(result)
@@ -94,6 +97,7 @@ def test_sub2_add_dispatches_correctly():
 # subcommand_name and subcommand_path
 # ---------------------------------------------------------------------------
 
+
 def test_info_subcommand_name_and_path():
     result = check_command(sys.executable, 'nested_example', '--no-color', '--config-file', os.devnull, 'info')
     check_returncode(result)
@@ -111,6 +115,7 @@ def test_info_nested_subcommand_name_and_path():
 # ---------------------------------------------------------------------------
 # Config subcommand with dotted paths
 # ---------------------------------------------------------------------------
+
 
 def test_config_set_and_read_nested_key():
     fd, tempfile = mkstemp()
@@ -156,6 +161,7 @@ def test_config_show_nested_section():
 # ---------------------------------------------------------------------------
 # Config file round-trip: write [remote.add] section, read back via config
 # ---------------------------------------------------------------------------
+
 
 def test_config_file_roundtrip_nested_subcommand():
     fd, tempfile = mkstemp()

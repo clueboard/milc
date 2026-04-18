@@ -45,3 +45,13 @@ This will result in the following help output:
 ### action: store_boolean
 
 In addition to the normal set of `action=` arguments that you can pass to `@argument()`, you can also pass a new action called `store_boolean`. This action behaves like `store_true` except that it adds a corresponding `--no-<argument>` flag that the user can pass as well.
+
+# Environment Variable Defaults
+
+MILC can automatically read argument values from environment variables. Enable this by passing `env_prefix` to `cli.milc_options()`:
+
+```python
+cli.milc_options(name='myapp', env_prefix='MYAPP')
+```
+
+With this set, `--host` will also accept its value from `MYAPP_HOST`. CLI flags always take priority over environment variables. See the [Environment Variables](environment_variables.md) page for full details.

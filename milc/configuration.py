@@ -58,14 +58,14 @@ class ConfigurationSection(Configuration):
             object.__setattr__(self, key, value)
 
 
-def _config_navigate(config_root: 'Configuration', dotted_path: str) -> 'ConfigurationSection':
+def _config_navigate(config_root: 'Configuration', dotted_path: str) -> 'Configuration':
     """Navigate config to the ConfigurationSection at dotted_path, creating as needed.
 
     Consistent with the lazy-creation behavior of Configuration.__getitem__:
     intermediate sections are always created if they don't exist.
     """
     parts = dotted_path.split('.')
-    section: Any = config_root
+    section: Configuration = config_root
     for i, part in enumerate(parts):
         existing = section._data.get(part)
         if isinstance(existing, ConfigurationSection):
@@ -110,9 +110,7 @@ class SubparserWrapper(object):
     def get_child_subparsers(self) -> Any:
         """Lazily create and return the _SubParsersAction for nested sub-subcommands."""
         if self._child_subparsers is None:
-            self._child_subparsers = self.subparser.add_subparsers(
-                title='Sub-commands', dest='subparsers', metavar=""
-            )
+            self._child_subparsers = self.subparser.add_subparsers(title='Sub-commands', dest='subparsers', metavar="")
         return self._child_subparsers
 
     def completer(self, completer: Any) -> None:

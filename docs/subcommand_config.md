@@ -118,6 +118,16 @@ general.log_format: %H:%M:%S -> None
 ℹ Wrote configuration to '/Users/example/Library/Application Support/my_cli/my_cli.ini'
 ```
 
+## Output Colors
+
+The `config` subcommand uses color to indicate where each value came from:
+
+| Color | Meaning |
+|-------|---------|
+| Blue `=` sign | Value was read from the config file |
+| Yellow `=` sign and `(env)` suffix | Value was set by an environment variable (see [Environment Variables](environment_variables.md)) |
+| Cyan key=value | Value is the argument default or was passed on the CLI |
+
 ## Multiple Operations
 
 You can combine multiple read and write operations into a single command. They will be executed and displayed in order:

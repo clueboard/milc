@@ -2,6 +2,12 @@
 
 This is a list of breaking changes that have been made to MILC. If your script stops working after a minor or major version upgrade this document will tell you how to fix it.
 
+# Version 2.0.0
+
+* `cli.config_source` now returns `'env_var'` for arguments whose value came from an environment variable via `env_prefix`. Previously only `'argument'`, `'config_file'`, and `None` were possible values. Code that exhaustively checks `config_source` values will need to handle `'env_var'`.
+* `cli.args_passed` has been removed from the public API. Use `cli.config_source` to determine where a value came from.
+* `cli.milc_options()` now uses `is not None` checks for all parameters. Previously, passing a falsy value (e.g. `name=''`) would silently fall back to the previously set value. Now it is applied as-is.
+
 # Version 1.9.0
 * Appdirs [has been deprecated](https://github.com/ActiveState/appdirs/issues/79#issuecomment-877645712) and replaced with [platformdirs](https://github.com/tox-dev/platformdirs).
 

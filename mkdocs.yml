@@ -34,6 +34,7 @@ nav:
     - Argument (Tab) Completion: argcomplete.md
     - Argument Parsing: argument_parsing.md
     - Configuration: configuration.md
+    - Environment Variables: environment_variables.md
     - Config Subcommand: subcommand_config.md
     - Logging: logging.md
     - Metadata: metadata.md

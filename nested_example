@@ -23,6 +23,7 @@ def main(cli):
 
 # --- Top-level subcommand: remote ---
 
+
 @cli.subcommand('Manage remotes.')
 def remote(cli):
     cli.print_help()
@@ -43,6 +44,7 @@ def remove(cli):
 
 # --- Top-level subcommand: sub1 ---
 
+
 @cli.subcommand('Sub-group 1.')
 def sub1(cli):
     cli.print_help()
@@ -55,6 +57,7 @@ def add(cli):  # noqa: F811 - intentional name collision to test id-based dispat
 
 # --- Top-level subcommand: sub2 ---
 
+
 @cli.subcommand('Sub-group 2.')
 def sub2(cli):
     cli.print_help()
@@ -66,6 +69,7 @@ def add(cli):  # noqa: F811 - intentional name collision to test id-based dispat
 
 
 # --- Subcommand path reporting ---
+
 
 @cli.subcommand('Report subcommand info.')
 def info(cli):

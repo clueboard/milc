@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+"""Example MILC program demonstrating env_prefix with subcommands.
+
+PYTHON_ARGCOMPLETE_OK
+"""
+from milc import cli
+
+cli.milc_options(name='env_prefix_subcommand_example', env_prefix='MYAPP')
+
+
+@cli.argument('--host', default='global-default', help='Global hostname')
+@cli.entrypoint('Test env_prefix with subcommands.')
+def main(cli):
+    cli.echo('host=%s', cli.config.general.host)
+
+
+@cli.argument('--host', default='subc-default', help='Subcommand hostname')
+@cli.subcommand('Subcommand with its own --host.')
+def subc(cli):
+    cli.echo('subc_host=%s', cli.config.subc.host)
+
+
+if __name__ == '__main__':
+    cli()

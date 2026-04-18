@@ -27,16 +27,23 @@ class MILCInterface:
         self._author: Optional[str] = None
         self._version: Optional[str] = None
         self._logger: Optional[Logger] = None
+        self._env_prefix: Optional[str] = None
 
-    def milc_options(self, *, name: Optional[str] = None, author: Optional[str] = None, version: Optional[str] = None, logger: Optional[Logger] = None) -> None:
+    def milc_options(self, *, name: Optional[str] = None, author: Optional[str] = None, version: Optional[str] = None, logger: Optional[Logger] = None, env_prefix: Optional[str] = None) -> None:
         if self._milc and self._milc._inside_context_manager:
             raise RuntimeError('You must run cli.milc_options() before cli() or anything else!')
 
-        self._name = name or self._name
-        self._author = author or self._author
-        self._version = version or self._version
-        self._logger = logger or self._logger
-        self._milc = MILC(self._name, self._author, self._version, self._logger)
+        if name is not None:
+            self._name = name
+        if author is not None:
+            self._author = author
+        if version is not None:
+            self._version = version
+        if logger is not None:
+            self._logger = logger
+        if env_prefix is not None:
+            self._env_prefix = env_prefix
+        self._milc = MILC(self._name, self._author, self._version, self._logger, self._env_prefix)
 
     @property
     def milc(self) -> MILC:
@@ -48,10 +55,6 @@ class MILCInterface:
     @property
     def args(self) -> AttrDict:
         return self.milc.args
-
-    @property
-    def args_passed(self) -> AttrDict:
-        return self.milc.args_passed
 
     @property
     def config(self) -> Configuration:
