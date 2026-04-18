@@ -249,6 +249,83 @@ general and subcommand flags:
 
 ![Flag Output](images/tutorial_example4.png)
 
+## Nested Subcommands
+
+MILC supports multi-level subcommands (like `git remote add`) via the `parent=`
+parameter on `@cli.subcommand()`. Pass the parent **function object** — not a string.
+
+```python
+#!/usr/bin/env python3
+"""Example MILC program demonstrating nested subcommands.
+
+PYTHON_ARGCOMPLETE_OK
+"""
+
+from milc import cli
+
+cli.milc_options(name='my_app', author='Milc Milcenson', version='1.0.0')
+
+
+@cli.argument('-n', '--name', help='Name to greet', default='World')
+@cli.entrypoint('My app.')
+def main(cli):
+    cli.log.info('No subcommand specified!')
+    cli.print_usage()
+
+
+@cli.subcommand('Manage remotes.')
+def remote(cli):
+    cli.print_help()
+
+
+@cli.argument('--url', help='Remote URL', default='')
+@cli.argument('--fetch', action='store_true', help='Fetch after adding')
+@cli.subcommand('Add a remote.', parent=remote)
+def add(cli):
+    cli.echo('Adding %s (fetch=%s)', cli.config.remote.add.url, cli.config.remote.add.fetch)
+
+
+@cli.argument('--name', help='Remote name', default='')
+@cli.subcommand('Remove a remote.', parent=remote)
+def remove(cli):
+    cli.echo('Removing %s', cli.config.remote.remove.name)
+
+
+if __name__ == '__main__':
+    cli()
+```
+
+Arguments for nested subcommands are accessed via a matching config path:
+
+```python
+cli.config.remote.add.url      # attribute access
+cli.config['remote']['add']['url']  # dict access
+```
+
+Two different parent subcommands can each have a child with the same function
+name — MILC dispatches by the registered function object, not by name.
+
+```python
+@cli.subcommand('Group one.')
+def group1(cli): ...
+
+@cli.subcommand('Group two.')
+def group2(cli): ...
+
+@cli.subcommand('Add.', parent=group1)
+def add(cli): ...   # group1 add
+
+@cli.subcommand('Add.', parent=group2)
+def add(cli): ...   # group2 add — same name, different parent, no conflict
+```
+
+You can also inspect the active subcommand path at runtime:
+
+```python
+cli.subcommand_name   # e.g. 'add'
+cli.subcommand_path   # e.g. ['remote', 'add']
+```
+
 ## Doing More
 
 Our program does a lot in only a few lines, but there's a lot more you can

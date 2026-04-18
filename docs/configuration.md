@@ -8,6 +8,13 @@ MILC uses [ConfigParser](https://docs.python.org/3/library/configparser.html) to
 
 Configuration options for the main `cli.entrypoint()` are set in `cli.config.general`. If you do not have any subcommands you will find all of your config options here.
 
+For nested subcommands (e.g. `prog remote add`), configuration sections mirror the command path:
+
+```python
+cli.config.remote.add.url        # attribute access
+cli.config['remote']['add']['url']  # dict access
+```
+
 # Reading Config Values
 
 You can read config values using either attribute or dictionary notation. If a key does not exist in the configuration you will get `None` as the value.

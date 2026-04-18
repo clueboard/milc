@@ -33,6 +33,22 @@ i Wrote configuration to '/Users/example/Library/Application Support/my_cli/my_c
 
 Now I can run `my_cli foo` without specifying `--arg1` and `--arg2` each time.
 
+## Nested Subcommand Example
+
+For a command like `my_cli remote add --url https://example.com`, the config key
+uses the full dotted path to the subcommand:
+
+* `remote.add.url`
+* `remote.add.fetch`
+
+```
+$ my_cli config remote.add.url=https://example.com
+remote.add.url: None -> https://example.com
+ℹ Wrote configuration to '/Users/example/Library/Application Support/my_cli/my_cli.ini'
+```
+
+Now `my_cli remote add` will use that URL without needing `--url` each time.
+
 ## Setting User Defaults
 
 Sometimes you want to share a setting between multiple subcommands. For example, multiple commands take the argument `--arg1`. Rather than setting this value for every command you can set a user value which will be used by any command that takes that argument.
@@ -49,7 +65,10 @@ user.arg1: None -> baz
 
 The `config` subcommand is used to interact with the underlying configuration. When run with no argument it shows the current configuration. When arguments are supplied they are assumed to be configuration tokens, which are strings containing no spaces with the following form:
 
-    <subcommand|general|user>[.<key>][=<value>]
+    <section>[.<key>][=<value>]
+
+where `<section>` is `general`, `user`, a top-level subcommand name, or a dotted
+path for nested subcommands (e.g. `remote.add`).
 
 ## Setting Configuration Values
 
