@@ -205,6 +205,14 @@ class MILCInterface:
         """
         return self.milc.entrypoint(description, deprecated)
 
+    def prerun(self, *args: Any, **kwargs: Any) -> Any:
+        """Decorator to run a function after initialization and before dispatch.
+
+        Any *args/**kwargs passed to this decorator are forwarded to the decorated
+        function at runtime after the `cli` object.
+        """
+        return self.milc.prerun(*args, **kwargs)
+
     def subcommand(self, description: str, hidden: bool = False, parent: Optional[Callable[..., Any]] = None, name: Optional[str] = None, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         """Decorator to register a subcommand.
 

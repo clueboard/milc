@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+"""MILC prerun decorator example.
+
+PYTHON_ARGCOMPLETE_OK
+"""
+from milc import cli
+
+
+@cli.prerun
+def plain_prerun(cli):
+    cli.echo(f'plain:{cli.subcommand_name}')
+
+
+@cli.prerun('token', source='kwargs')
+def configured_prerun(cli, token, source=None):
+    cli.echo(f'configured:{token}:{source}:{cli.subcommand_name}')
+
+
+@cli.entrypoint('Entrypoint for prerun decorator tests.')
+def main(cli):
+    cli.echo('entrypoint')
+
+
+@cli.subcommand('Subcommand for prerun decorator tests.')
+def hello(cli):
+    cli.echo('subcommand')
+
+
+if __name__ == '__main__':
+    cli()
