@@ -796,11 +796,19 @@ class MILC(object):
         # Support bare usage as `@cli.prerun`.
         if len(args) == 1 and not kwargs and callable(args[0]):
             handler = args[0]
-            self._prerun.append((handler, (), {}))
+            self.acquire_lock()
+            try:
+                self._prerun.append((handler, (), {}))
+            finally:
+                self.release_lock()
             return handler
 
         def prerun_func(handler: Callable[P, R]) -> Callable[P, R]:
-            self._prerun.append((handler, args, kwargs))
+            self.acquire_lock()
+            try:
+                self._prerun.append((handler, args, kwargs))
+            finally:
+                self.release_lock()
             return handler
 
         return prerun_func
