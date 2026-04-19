@@ -739,7 +739,7 @@ class MILC(object):
         try:
             self.check_deprecated()
             for hook, args, kwargs in self._prerun:
-                hook(*args, **kwargs)
+                hook(self, *args, **kwargs)
 
             if self._subcommand:
                 return self._subcommand(self)
@@ -797,6 +797,7 @@ class MILC(object):
     ) -> Union[Callable[P, R], Callable[[Callable[P, R]], Callable[P, R]]]:
         """Decorator to register a function to run after initialization and before dispatch.
 
+        The decorated function is called with ``cli`` as the first argument.
         Any *args/**kwargs passed to this decorator are forwarded directly to the
         decorated function at runtime.
         """

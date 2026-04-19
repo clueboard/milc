@@ -218,6 +218,7 @@ class MILCInterface:
     ) -> Union[Callable[P, R], Callable[[Callable[P, R]], Callable[P, R]]]:
         """Decorator to run a function after initialization and before dispatch.
 
+        The decorated function is called with ``cli`` as the first argument.
         Any *args/**kwargs passed to this decorator are forwarded directly to the
         decorated function at runtime.
         """

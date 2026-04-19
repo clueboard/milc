@@ -7,12 +7,12 @@ from milc import cli
 
 
 @cli.prerun
-def plain_prerun():
+def plain_prerun(cli):
     print('plain')
 
 
 @cli.prerun('token', source='kwargs')
-def configured_prerun(token, source=None):
+def configured_prerun(cli, token, source=None):
     print(f'configured:{token}:{source}')
 
 
