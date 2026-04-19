@@ -220,6 +220,19 @@ Decorator that marks the entrypoint used when a subcommand is not supplied.
   deprecated
   Deprecation message. When set the subcommand will marked as deprecated and this message will be displayed in the help output.
 
+<a id="milc_interface.MILCInterface.prerun"></a>
+
+#### prerun
+
+```python
+def prerun(*args: Any, **kwargs: Any) -> Any
+```
+
+Decorator to run a function after initialization and before dispatch.
+
+Any *args/**kwargs passed to this decorator are forwarded to the decorated
+function at runtime after the `cli` object.
+
 <a id="milc_interface.MILCInterface.subcommand"></a>
 
 #### subcommand
