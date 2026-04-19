@@ -719,19 +719,21 @@ class MILC(object):
     def __call__(self) -> Any:
         """Execute the entrypoint function.
         """
-        if not self._initialized:
-            self.acquire_lock()
-            self._initialized = True
-            self.release_lock()
+        if self._initialized:
+            raise RuntimeError('cli() has already been called and should not be called twice!')
 
-            colorama.init()
-            self.parse_args()
-            self.merge_args_into_config()
+        self.acquire_lock()
+        self._initialized = True
+        self.release_lock()
 
-            if self.config.general.interactive:
-                self.interactive = True
+        colorama.init()
+        self.parse_args()
+        self.merge_args_into_config()
 
-            self.setup_logging()
+        if self.config.general.interactive:
+            self.interactive = True
+
+        self.setup_logging()
 
         try:
             self.check_deprecated()
