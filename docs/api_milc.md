@@ -105,6 +105,15 @@ The **kwargs arguments get passed directly to `subprocess.run`.
   
   text
   Set to False to disable encoding and get `bytes()` from `.stdout` and `.stderr`.
+  
+
+**Notes**:
+
+  On msys2/cygwin (Windows with an `MSYSTEM` environment variable set), the command is
+  automatically wrapped in a subshell. stdin is also defaulted to `subprocess.DEVNULL`
+  because subprocess calls in that environment leave stdin in a broken state, which
+  causes interactive features like `cli.questions` to stop working. Pass `stdin=` explicitly
+  to override this default.
 
 <a id="milc.MILC.initialize_argparse"></a>
 
@@ -509,5 +518,5 @@ def long_running_function():
         Stream to write the output. Defaults to sys.stdout.
 
     enabled
-        Enable or disable the spinner. Defaults to `True`.
+        Enable or disable the spinner. Defaults to `sys.stdout.isatty()`.
 

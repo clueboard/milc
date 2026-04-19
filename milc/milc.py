@@ -170,6 +170,13 @@ class MILC(object):
 
             text
                 Set to False to disable encoding and get `bytes()` from `.stdout` and `.stderr`.
+
+        Note:
+            On msys2/cygwin (Windows with an `MSYSTEM` environment variable set), the command is
+            automatically wrapped in a subshell. stdin is also defaulted to `subprocess.DEVNULL`
+            because subprocess calls in that environment leave stdin in a broken state, which
+            causes interactive features like `cli.questions` to stop working. Pass `stdin=` explicitly
+            to override this default.
         """
         # Sanity Checking
         if isinstance(command, str):
@@ -1047,7 +1054,7 @@ class MILC(object):
                 Stream to write the output. Defaults to sys.stdout.
 
             enabled
-                Enable or disable the spinner. Defaults to `True`.
+                Enable or disable the spinner. Defaults to `sys.stdout.isatty()`.
         """
         spinner_obj: Any = None
 
@@ -1074,4 +1081,6 @@ class MILC(object):
             placement=placement,
             color=color,
             interval=interval,
+            stream=stream,
+            enabled=enabled,
         )

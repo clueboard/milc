@@ -30,6 +30,17 @@ class MILCInterface:
         self._env_prefix: Optional[str] = None
 
     def milc_options(self, *, name: Optional[str] = None, author: Optional[str] = None, version: Optional[str] = None, logger: Optional[Logger] = None, env_prefix: Optional[str] = None) -> None:
+        """Configure MILC before the entrypoint runs.
+
+        Call this before `cli()` or any imports that reference `cli`. It may be called multiple times; each call updates only the supplied arguments.
+
+        Args:
+            name: The name of your program. Used for the config file path and other internal defaults.
+            author: The author string, used in the config file path on some platforms.
+            version: The version string reported by `--version`.
+            logger: A custom logger instance to use instead of MILC's default logger.
+            env_prefix: A string prefix that enables environment variable defaults. When set, each `--flag` can be configured via a `<PREFIX>_<FLAG>` environment variable.
+        """
         if self._milc and self._milc._inside_context_manager:
             raise RuntimeError('You must run cli.milc_options() before cli() or anything else!')
 
@@ -96,10 +107,12 @@ class MILCInterface:
 
     @property
     def subcommand_name(self) -> Optional[str]:
+        """Returns the leaf CLI name of the active subcommand, e.g. 'add' for 'remote add'."""
         return self.milc.subcommand_name
 
     @property
     def subcommand_path(self) -> Optional[list]:
+        """Returns the full subcommand path as a list, e.g. ['remote', 'add']."""
         return self.milc.subcommand_path
 
     def echo(self, text: str, *args: Any, **kwargs: Any) -> None:
@@ -132,6 +145,13 @@ class MILCInterface:
 
             text
                 Set to False to disable encoding and get `bytes()` from `.stdout` and `.stderr`.
+
+        Note:
+            On msys2/cygwin (Windows with an `MSYSTEM` environment variable set), the command is
+            automatically wrapped in a subshell. stdin is also defaulted to `subprocess.DEVNULL`
+            because subprocess calls in that environment leave stdin in a broken state, which
+            causes interactive features like `cli.questions` to stop working. Pass `stdin=` explicitly
+            to override this default.
         """
         return self.milc.run(command, capture_output, combined_output, text, **kwargs)
 
@@ -207,6 +227,12 @@ class MILCInterface:
         return self.milc.subcommand(description, hidden, parent=parent, name=name, **kwargs)
 
     def __enter__(self) -> Any:
+        """Enter the MILC context manager.
+
+        Initializes colorama, parses CLI arguments, merges them with config file values,
+        applies the `--interactive` flag, and sets up logging handlers. Called automatically
+        when using `with cli:` or when `cli()` is invoked without an explicit context manager.
+        """
         return self.milc.__enter__()
 
     def __exit__(
@@ -215,6 +241,11 @@ class MILCInterface:
         exc_val: Optional[BaseException],
         exc_tb: Optional[TracebackType],
     ) -> None:
+        """Exit the MILC context manager.
+
+        Clears the context manager flag. If an unhandled exception occurred (other than
+        `SystemExit` or `KeyboardInterrupt`), logs the error and exits with code 255.
+        """
         return self.milc.__exit__(exc_type, exc_val, exc_tb)
 
     def add_spinner(self, name: str, spinner: Dict[str, Union[int, Sequence[str]]]) -> None:
@@ -234,7 +265,7 @@ class MILCInterface:
         self,
         text: str,
         *args: Any,
-        spinner: Optional[str] = None,
+        spinner: Optional[Union[str, Dict[str, Union[int, Sequence[str]]]]] = None,
         animation: str = 'ellipsed',
         placement: str = 'left',
         color: str = 'blue',
@@ -313,6 +344,6 @@ class MILCInterface:
                 Stream to write the output. Defaults to sys.stdout.
 
             enabled
-                Enable or disable the spinner. Defaults to `True`.
+                Enable or disable the spinner. Defaults to `sys.stdout.isatty()`.
         """
         return self.milc.spinner(text, *args, spinner=spinner, animation=animation, placement=placement, color=color, interval=interval, stream=stream, enabled=enabled, **kwargs)

@@ -14,6 +14,53 @@ This is where the public interface for `cli` is kept. This allows us to reinstan
 class MILCInterface()
 ```
 
+<a id="milc_interface.MILCInterface.milc_options"></a>
+
+#### milc\_options
+
+```python
+def milc_options(*,
+                 name: Optional[str] = None,
+                 author: Optional[str] = None,
+                 version: Optional[str] = None,
+                 logger: Optional[Logger] = None,
+                 env_prefix: Optional[str] = None) -> None
+```
+
+Configure MILC before the entrypoint runs.
+
+Call this before `cli()` or any imports that reference `cli`. It may be called multiple times; each call updates only the supplied arguments.
+
+**Arguments**:
+
+- `name` - The name of your program. Used for the config file path and other internal defaults.
+- `author` - The author string, used in the config file path on some platforms.
+- `version` - The version string reported by `--version`.
+- `logger` - A custom logger instance to use instead of MILC's default logger.
+- `env_prefix` - A string prefix that enables environment variable defaults. When set, each `--flag` can be configured via a `<PREFIX>_<FLAG>` environment variable.
+
+<a id="milc_interface.MILCInterface.subcommand_name"></a>
+
+#### subcommand\_name
+
+```python
+@property
+def subcommand_name() -> Optional[str]
+```
+
+Returns the leaf CLI name of the active subcommand, e.g. 'add' for 'remote add'.
+
+<a id="milc_interface.MILCInterface.subcommand_path"></a>
+
+#### subcommand\_path
+
+```python
+@property
+def subcommand_path() -> Optional[list]
+```
+
+Returns the full subcommand path as a list, e.g. ['remote', 'add'].
+
 <a id="milc_interface.MILCInterface.echo"></a>
 
 #### echo
@@ -61,6 +108,15 @@ The **kwargs arguments get passed directly to `subprocess.run`.
   
   text
   Set to False to disable encoding and get `bytes()` from `.stdout` and `.stderr`.
+  
+
+**Notes**:
+
+  On msys2/cygwin (Windows with an `MSYSTEM` environment variable set), the command is
+  automatically wrapped in a subshell. stdin is also defaulted to `subprocess.DEVNULL`
+  because subprocess calls in that environment leave stdin in a broken state, which
+  causes interactive features like `cli.questions` to stop working. Pass `stdin=` explicitly
+  to override this default.
 
 <a id="milc_interface.MILCInterface.print_help"></a>
 
@@ -194,6 +250,35 @@ Decorator to register a subcommand.
   name
   Override the CLI token for this subcommand.
 
+<a id="milc_interface.MILCInterface.__enter__"></a>
+
+#### \_\_enter\_\_
+
+```python
+def __enter__() -> Any
+```
+
+Enter the MILC context manager.
+
+Initializes colorama, parses CLI arguments, merges them with config file values,
+applies the `--interactive` flag, and sets up logging handlers. Called automatically
+when using `with cli:` or when `cli()` is invoked without an explicit context manager.
+
+<a id="milc_interface.MILCInterface.__exit__"></a>
+
+#### \_\_exit\_\_
+
+```python
+def __exit__(exc_type: Optional[Type[BaseException]],
+             exc_val: Optional[BaseException],
+             exc_tb: Optional[TracebackType]) -> None
+```
+
+Exit the MILC context manager.
+
+Clears the context manager flag. If an unhandled exception occurred (other than
+`SystemExit` or `KeyboardInterrupt`), logs the error and exits with code 255.
+
 <a id="milc_interface.MILCInterface.add_spinner"></a>
 
 #### add\_spinner
@@ -220,7 +305,9 @@ A spinner is a dictionary with two keys:
 ```python
 def spinner(text: str,
             *args: Any,
-            spinner: Optional[str] = None,
+            spinner: Optional[Union[str, Dict[str,
+                                              Union[int,
+                                                    Sequence[str]]]]] = None,
             animation: str = 'ellipsed',
             placement: str = 'left',
             color: str = 'blue',
@@ -300,5 +387,5 @@ def long_running_function():
         Stream to write the output. Defaults to sys.stdout.
 
     enabled
-        Enable or disable the spinner. Defaults to `True`.
+        Enable or disable the spinner. Defaults to `sys.stdout.isatty()`.
 
