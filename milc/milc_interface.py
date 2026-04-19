@@ -240,7 +240,7 @@ class MILCInterface:
         color: str = 'blue',
         interval: int = -1,
         stream: Any = sys.stdout,
-        enabled: bool = True,
+        enabled: bool = sys.stdout.isatty(),
         **kwargs: Any,
     ) -> Halo:
         """Create a spinner object for showing activity to the user.

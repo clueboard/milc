@@ -1,6 +1,6 @@
 # MILC - An Opinionated Batteries-Included Python 3 CLI Framework
 
-MILC is a framework for writing CLI applications in Python 3.6+. It gives you all the features users expect from a modern CLI tool out of the box:
+MILC is a framework for writing CLI applications in Python 3.9+. It gives you all the features users expect from a modern CLI tool out of the box:
 
 * CLI Argument Parsing, with or without subcommands
 * Automatic tab-completion support through [argcomplete](https://github.com/kislyuk/argcomplete)
@@ -11,6 +11,8 @@ MILC is a framework for writing CLI applications in Python 3.6+. It gives you al
 * Labelling log output with colored emoji to easily distinguish message types
 * Thread safety
 * More than 60 built-in [spinners](https://github.com/manrajgrover/py-spinners) with the ability to add your own
+* Subcommands, including nested multi-level subcommands
+* Environment variable defaults via `env_prefix`
 
 ## Getting Started
 
@@ -48,13 +50,15 @@ $ ./hello --no-comma
 $ ./hello -h
 usage: hello [-h] [-V] [-v] [--datetime-fmt GENERAL_DATETIME_FMT]
              [--log-fmt GENERAL_LOG_FMT] [--log-file-fmt GENERAL_LOG_FILE_FMT]
+             [--log-file-level {debug,info,warning,error,critical}]
              [--log-file GENERAL_LOG_FILE] [--color] [--no-color]
-             [--config-file GENERAL_CONFIG_FILE] [--save-config]
+             [--unicode] [--no-unicode] [--interactive]
+             [--config-file GENERAL_CONFIG_FILE]
              [-n GENERAL_NAME] [-c] [--no-comma]
 
 Greet a user.
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -V, --version         Display the version and exit
   -v, --verbose         Make the logging more verbose
@@ -64,6 +68,8 @@ optional arguments:
                         Format string for printed log output
   --log-file-fmt GENERAL_LOG_FILE_FMT
                         Format string for log file.
+  --log-file-level {debug,info,warning,error,critical}
+                        Logging level for log file.
   --log-file GENERAL_LOG_FILE
                         File to write log messages to
   --color               Enable color in output
@@ -72,7 +78,7 @@ optional arguments:
   --no-unicode          Disable unicode loglevels
   --interactive         Force interactive mode even when stdout is not a tty.
   --config-file GENERAL_CONFIG_FILE
-                        The config file to read and/or write
+                        The location for the configuration file
   -n GENERAL_NAME, --name GENERAL_NAME
                         Name to greet
   -c, --comma           Enable comma in output

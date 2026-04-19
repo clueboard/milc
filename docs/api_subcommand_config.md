@@ -72,6 +72,8 @@ This script iterates over the config_tokens supplied as argument. Each config_to
 
     section[.key][=value]
 
+For nested subcommands, section paths use dots: remote.add.url=https://...
+
 If only a section (EG 'compile') is supplied all keys for that section will be displayed.
 
 If section.key is supplied the value for that single key will be displayed.

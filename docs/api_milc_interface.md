@@ -171,6 +171,8 @@ Decorator that marks the entrypoint used when a subcommand is not supplied.
 ```python
 def subcommand(description: str,
                hidden: bool = False,
+               parent: Optional[Callable[..., Any]] = None,
+               name: Optional[str] = None,
                **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]
 ```
 
@@ -184,6 +186,13 @@ Decorator to register a subcommand.
   
   hidden
   When True don't display this command in --help
+  
+  parent
+  The parent subcommand function. When provided, this subcommand is registered
+  as a child of that subcommand.
+  
+  name
+  Override the CLI token for this subcommand.
 
 <a id="milc_interface.MILCInterface.add_spinner"></a>
 

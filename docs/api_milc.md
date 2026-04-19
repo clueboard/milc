@@ -20,10 +20,33 @@ MILC - An Opinionated Batteries Included Framework
 def __init__(name: Optional[str] = None,
              author: Optional[str] = None,
              version: Optional[str] = None,
-             logger: Optional[logging.Logger] = None) -> None
+             logger: Optional[logging.Logger] = None,
+             env_prefix: Optional[str] = None) -> None
 ```
 
 Initialize the MILC object.
+
+<a id="milc.MILC.subcommand_name"></a>
+
+#### subcommand\_name
+
+```python
+@property
+def subcommand_name() -> Optional[str]
+```
+
+Returns the leaf CLI name of the active subcommand, e.g. 'add' for 'remote add'.
+
+<a id="milc.MILC.subcommand_path"></a>
+
+#### subcommand\_path
+
+```python
+@property
+def subcommand_path() -> Optional[List[str]]
+```
+
+Returns the full subcommand path as a list, e.g. ['remote', 'add'].
 
 <a id="milc.MILC.argv_name"></a>
 
@@ -244,6 +267,9 @@ def write_config_option(section: str, option: Any) -> None
 
 Save a single config option to the config file.
 
+!!! note
+    `write_config_option` is an internal method not exposed by the public `cli` interface. Use `cli.save_config()` instead.
+
 <a id="milc.MILC.save_config"></a>
 
 #### save\_config
@@ -294,6 +320,8 @@ def add_subcommand(handler: Callable[P, R],
                    description: str,
                    hidden: bool = False,
                    deprecated: Optional[str] = None,
+                   parent: Optional[Callable[..., Any]] = None,
+                   name: Optional[str] = None,
                    **kwargs: Any) -> Callable[P, R]
 ```
 
@@ -314,6 +342,15 @@ Register a subcommand.
   deprecated
   Deprecation message. When set the subcommand will be marked as deprecated
   and this message will be displayed in help output.
+  
+  parent
+  The parent subcommand function. When provided, this subcommand is registered
+  as a child of that subcommand (enabling nested commands like 'prog remote add').
+  Must be a function object previously registered as a subcommand.
+  
+  name
+  Override the CLI token for this subcommand. Defaults to the handler's
+  function name in kebab-case.
 
 <a id="milc.MILC.subcommand"></a>
 
@@ -322,6 +359,8 @@ Register a subcommand.
 ```python
 def subcommand(description: str,
                hidden: bool = False,
+               parent: Optional[Callable[..., Any]] = None,
+               name: Optional[str] = None,
                **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]
 ```
 
@@ -335,6 +374,13 @@ Decorator to register a subcommand.
   
   hidden
   When True don't display this command in --help
+  
+  parent
+  The parent subcommand function. When provided, this subcommand is registered
+  as a child of that subcommand.
+  
+  name
+  Override the CLI token for this subcommand.
 
 <a id="milc.MILC.setup_logging"></a>
 
@@ -388,7 +434,7 @@ def spinner(text: str,
             color: str = 'blue',
             interval: int = -1,
             stream: Any = sys.stdout,
-            enabled: bool = True,
+            enabled: bool = sys.stdout.isatty(),
             **kwargs: Any) -> Halo
 ```
 

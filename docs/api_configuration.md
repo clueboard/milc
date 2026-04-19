@@ -75,6 +75,16 @@ class SubparserWrapper(object)
 
 Wrap subparsers so we can track what options the user passed.
 
+<a id="configuration.SubparserWrapper.get_child_subparsers"></a>
+
+#### get\_child\_subparsers
+
+```python
+def get_child_subparsers() -> Any
+```
+
+Lazily create and return the _SubParsersAction for nested sub-subcommands.
+
 <a id="configuration.SubparserWrapper.completer"></a>
 
 #### completer

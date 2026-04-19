@@ -29,7 +29,7 @@ Dictionary:
 
 # Setting Config Values
 
-You can create new values by simply assigning to them. This only with dictionary notation.
+You can create new values by simply assigning to them. This only works with dictionary notation.
 
     cli.config['general']['verbose'] = True
 
@@ -39,19 +39,19 @@ Use `cli.save_config()` to save the user's configuration file. It will be writte
 
 # Configuration File Location
 
-MILC uses [platformdirs](https://github.com/tox-dev/platformdirs) to determine the configuration file location. You can set your application's name and author by using `milc.set_metadata`:
+MILC uses [platformdirs](https://github.com/tox-dev/platformdirs) to determine the configuration file location. You can set your application's name and author by using `cli.milc_options()`:
 
 ```python
-from milc import set_metadata
+from milc import cli
 
-set_metadata('Florzelbop', '1.0.0', 'Jane Doe')
+cli.milc_options(name='Florzelbop', version='1.0.0', author='Jane Doe')
 ```
 
 This will (usually) result in the following config file locations:
 
-* Linux: `~/.local/share/Florzelbop`
+* Linux: `~/.config/Florzelbop`
 * macOS: `~/Library/Application Support/Florzelbop`
-* Windows: `C:\Documents and Settings\<User>\Application Data\Local Settings\Florzelbop Jane Doe\hello`
+* Windows: `C:\Users\<User>\AppData\Local\Florzelbop\Florzelbop`
 
 # Where Did A Value Come From?
 

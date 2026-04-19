@@ -28,9 +28,9 @@ Argument decorators (`@argument()`) are used to define command line flags that t
 
 Sometimes you want an argument to be a CLI flag only, and to not have a corresponding configuration option. With `arg_only=True` in your `@argument()` decorator this is possible. You will have to look in `cli.args` to find the value of that flag, it will not be populated to `cli.config`.
 
-### completers
+### completer
 
-You can specify [argcomplete completers](https://kislyuk.github.io/argcomplete/#specifying-completers) for your arguments by passing `completers`. For more detail see the [argcomplete](argcomplete.md) page.
+You can specify [argcomplete completers](https://kislyuk.github.io/argcomplete/#specifying-completers) for your arguments by passing `completer`. For more detail see the [argcomplete](argcomplete.md) page.
 
 ### deprecated
 
