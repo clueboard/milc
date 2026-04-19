@@ -208,8 +208,8 @@ class MILCInterface:
     def prerun(self, *args: Any, **kwargs: Any) -> Any:
         """Decorator to run a function after initialization and before dispatch.
 
-        Any *args/**kwargs passed to this decorator are forwarded to the decorated
-        function at runtime after the `cli` object.
+        Any *args/**kwargs passed to this decorator are forwarded directly to the
+        decorated function at runtime.
         """
         return self.milc.prerun(*args, **kwargs)
 

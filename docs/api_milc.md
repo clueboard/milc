@@ -327,8 +327,8 @@ def prerun(*args: Any, **kwargs: Any) -> Any
 
 Decorator to register a function to run after initialization and before dispatch.
 
-Any *args/**kwargs passed to this decorator are forwarded to the decorated function
-at runtime after the `cli` object.
+Any *args/**kwargs passed to this decorator are forwarded directly to the
+decorated function at runtime.
 
 <a id="milc.MILC.add_subcommand"></a>
 

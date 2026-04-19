@@ -739,7 +739,7 @@ class MILC(object):
         try:
             self.check_deprecated()
             for hook, args, kwargs in self._prerun:
-                hook(self, *args, **kwargs)
+                hook(*args, **kwargs)
 
             if self._subcommand:
                 return self._subcommand(self)
@@ -787,8 +787,8 @@ class MILC(object):
     def prerun(self, *args: Any, **kwargs: Any) -> Any:
         """Decorator to register a function to run after initialization and before dispatch.
 
-        Any *args/**kwargs passed to this decorator are forwarded to the decorated function
-        at runtime after the `cli` object.
+        Any *args/**kwargs passed to this decorator are forwarded directly to the
+        decorated function at runtime.
         """
         if self._initialized:
             raise RuntimeError('You must run this before cli()!')

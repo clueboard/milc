@@ -7,13 +7,13 @@ from milc import cli
 
 
 @cli.prerun
-def plain_prerun(cli):
-    cli.echo(f'plain:{cli.subcommand_name}')
+def plain_prerun():
+    cli.echo('plain')
 
 
 @cli.prerun('token', source='kwargs')
-def configured_prerun(cli, token, source=None):
-    cli.echo(f'configured:{token}:{source}:{cli.subcommand_name}')
+def configured_prerun(token, source=None):
+    cli.echo(f'configured:{token}:{source}')
 
 
 @cli.entrypoint('Entrypoint for prerun decorator tests.')
