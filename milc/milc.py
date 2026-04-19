@@ -10,7 +10,7 @@ from decimal import Decimal
 from pathlib import Path
 from platform import platform
 from tempfile import NamedTemporaryFile
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Tuple, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Tuple, TypeVar, Union, overload
 
 if TYPE_CHECKING:
     from argparse import _SubParsersAction
@@ -784,7 +784,17 @@ class MILC(object):
 
         return entrypoint_func
 
-    def prerun(self, *args: Any, **kwargs: Any) -> Any:
+    @overload
+    def prerun(self, handler: Callable[P, R]) -> Callable[P, R]:
+        ...
+
+    @overload
+    def prerun(self, *args: Any, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
+        ...
+
+    def prerun(
+        self, *args: Any, **kwargs: Any
+    ) -> Union[Callable[P, R], Callable[[Callable[P, R]], Callable[P, R]]]:
         """Decorator to register a function to run after initialization and before dispatch.
 
         Any *args/**kwargs passed to this decorator are forwarded directly to the

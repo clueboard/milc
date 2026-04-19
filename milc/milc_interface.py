@@ -6,7 +6,7 @@ import sys
 import warnings
 from logging import Logger
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Sequence, TypeVar, Union
+from typing import Any, Callable, Dict, Optional, Sequence, TypeVar, Union, overload
 
 from halo import Halo
 from typing_extensions import ParamSpec
@@ -205,7 +205,17 @@ class MILCInterface:
         """
         return self.milc.entrypoint(description, deprecated)
 
-    def prerun(self, *args: Any, **kwargs: Any) -> Any:
+    @overload
+    def prerun(self, handler: Callable[P, R]) -> Callable[P, R]:
+        ...
+
+    @overload
+    def prerun(self, *args: Any, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
+        ...
+
+    def prerun(
+        self, *args: Any, **kwargs: Any
+    ) -> Union[Callable[P, R], Callable[[Callable[P, R]], Callable[P, R]]]:
         """Decorator to run a function after initialization and before dispatch.
 
         Any *args/**kwargs passed to this decorator are forwarded directly to the
