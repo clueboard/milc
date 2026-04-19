@@ -41,13 +41,13 @@ class MILC(object):
         """
         # Set some defaults
         if not name:
-            name = os.environ.get('MILC_APP_NAME') or self.argv_name()
+            name = self.argv_name()
 
         if not version:
-            version = os.environ.get('MILC_APP_VERSION', 'unknown')
+            version = 'unknown'
 
         if not author:
-            author = os.environ.get('MILC_APP_AUTHOR', name.upper())
+            author = name.upper()
 
         # Setup a lock for thread safety
         self._lock = threading.RLock()

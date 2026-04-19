@@ -1,6 +1,6 @@
 # Thread Safety
 
-MILC provides a locking mechanism you can interact with for thread safety. It will acquire and release that lock when changing any objects in memory. You can utilize this same mechanism in your own programs as needed. Under the hood it uses an [RLock object](https://docs.python.org/3.8/library/threading.html#rlock-objects) to do the locking.
+MILC provides a locking mechanism you can interact with for thread safety. It will acquire and release that lock when changing any objects in memory. You can utilize this same mechanism in your own programs as needed. Under the hood it uses an [RLock object](https://docs.python.org/3.9/library/threading.html#rlock-objects) to do the locking.
 
 ## Acquire
 
