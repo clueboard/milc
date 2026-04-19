@@ -10,8 +10,7 @@ from decimal import Decimal
 from pathlib import Path
 from platform import platform
 from tempfile import NamedTemporaryFile
-from types import TracebackType
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Tuple, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Tuple, TypeVar, Union
 
 if TYPE_CHECKING:
     from argparse import _SubParsersAction
@@ -63,7 +62,7 @@ class MILC(object):
         self._entrypoint: Callable[..., Any] = lambda _: None
         self._spinners: Dict[str, Dict[str, Union[int, Sequence[str]]]] = {}
         self._subcommand = None
-        self._inside_context_manager = False
+        self._initialized = False
         self.ansi = ansi_colors
         self.arg_only: Dict[str, List[str]] = {}
         self.config_file = self.find_config_file()
@@ -346,8 +345,8 @@ class MILC(object):
         self.arg_only['config_file'] = ['general']
 
     def add_subparsers(self, title: str = 'Sub-commands', **kwargs: Any) -> None:
-        if self._inside_context_manager:
-            raise RuntimeError('You must run this before the with statement!')
+        if self._initialized:
+            raise RuntimeError('You must run this before cli()!')
 
         self.acquire_lock()
         self._subparsers = self._arg_parser.add_subparsers(title=title, dest='subparsers', **kwargs)
@@ -486,8 +485,8 @@ class MILC(object):
     def argument(self, *args: Any, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         """Decorator to call self.add_argument or self.<subcommand>.add_argument.
         """
-        if self._inside_context_manager:
-            raise RuntimeError('You must run this before the with statement!')
+        if self._initialized:
+            raise RuntimeError('You must run this before cli()!')
 
         def argument_function(handler: Callable[P, R]) -> Callable[P, R]:
             dotted_key = self._subcommand_keys.get(id(handler))
@@ -720,20 +719,37 @@ class MILC(object):
     def __call__(self) -> Any:
         """Execute the entrypoint function.
         """
-        if not self._inside_context_manager:
-            # If they didn't use the context manager use it ourselves
-            with self:
-                return self.__call__()
+        if self._initialized:
+            raise RuntimeError('cli() has already been called and should not be called twice!')
 
-        self.check_deprecated()
+        self.acquire_lock()
+        self._initialized = True
+        self.release_lock()
 
-        if self._subcommand:
-            return self._subcommand(self)
+        colorama.init()
+        self.parse_args()
+        self.merge_args_into_config()
 
-        elif self._entrypoint is not None:
-            return self._entrypoint(self)
+        if self.config.general.interactive:
+            self.interactive = True
 
-        raise RuntimeError('No entrypoint provided!')
+        self.setup_logging()
+
+        try:
+            self.check_deprecated()
+
+            if self._subcommand:
+                return self._subcommand(self)
+
+            elif self._entrypoint is not None:
+                return self._entrypoint(self)
+
+            raise RuntimeError('No entrypoint provided!')
+        except (SystemExit, KeyboardInterrupt):
+            raise
+        except BaseException as e:
+            self.log.error('%s: %s', type(e).__name__, e)
+            sys.exit(255)
 
     def entrypoint(self, description: str, deprecated: Optional[str] = None) -> Callable[[Callable[P, R]], Callable[P, R]]:
         """Decorator that marks the entrypoint used when a subcommand is not supplied.
@@ -744,7 +760,7 @@ class MILC(object):
             deprecated
                 Deprecation message. When set the subcommand will marked as deprecated and this message will be displayed in the help output.
         """
-        if self._inside_context_manager:
+        if self._initialized:
             raise RuntimeError('You must run this before cli()!')
 
         self.acquire_lock()
@@ -801,8 +817,8 @@ class MILC(object):
                 Override the CLI token for this subcommand. Defaults to the handler's
                 function name in kebab-case.
         """
-        if self._inside_context_manager:
-            raise RuntimeError('You must run this before the with statement!')
+        if self._initialized:
+            raise RuntimeError('You must run this before cli()!')
 
         if parent is not None:
             if not callable(parent):
@@ -874,7 +890,7 @@ class MILC(object):
         return subcommand_function
 
     def setup_logging(self) -> None:
-        """Called by __enter__() to setup the logging configuration.
+        """Called by __call__() to setup the logging configuration.
         """
         if self.milc_logger:
             if len(logging.root.handlers) != 0:
@@ -907,40 +923,6 @@ class MILC(object):
                 logging.root.addHandler(self.log_print_handler)
 
             self.release_lock()
-
-    def __enter__(self) -> Any:
-        if self._inside_context_manager:
-            self.log.debug('Warning: context manager was entered again. This usually means that self.__call__() was called before the with statement. You probably do not want to do that.')
-            return
-
-        self.acquire_lock()
-        self._inside_context_manager = True
-        self.release_lock()
-
-        colorama.init()
-        self.parse_args()
-        self.merge_args_into_config()
-
-        if self.config.general.interactive:
-            self.interactive = True
-
-        self.setup_logging()
-
-        return self
-
-    def __exit__(
-        self,
-        exc_type: Optional[Type[BaseException]],
-        exc_val: Optional[BaseException],
-        exc_tb: Optional[TracebackType],
-    ) -> None:
-        self.acquire_lock()
-        self._inside_context_manager = False
-        self.release_lock()
-
-        if exc_type is not None and not issubclass(exc_type, (SystemExit, KeyboardInterrupt)):
-            self.log.error('%s: %s', exc_type.__name__, exc_val)
-            sys.exit(255)
 
     def is_spinner(self, name: str) -> bool:
         """Returns true if name is a valid spinner.

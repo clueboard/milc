@@ -6,8 +6,7 @@ import sys
 import warnings
 from logging import Logger
 from pathlib import Path
-from types import TracebackType
-from typing import Any, Callable, Dict, Optional, Sequence, Type, TypeVar, Union
+from typing import Any, Callable, Dict, Optional, Sequence, TypeVar, Union
 
 from halo import Halo
 from typing_extensions import ParamSpec
@@ -41,7 +40,7 @@ class MILCInterface:
             logger: A custom logger instance to use instead of MILC's default logger.
             env_prefix: A string prefix that enables environment variable defaults. When set, each `--flag` can be configured via a `<PREFIX>_<FLAG>` environment variable.
         """
-        if self._milc and self._milc._inside_context_manager:
+        if self._milc and self._milc._initialized:
             raise RuntimeError('You must run cli.milc_options() before cli() or anything else!')
 
         if name is not None:
@@ -225,28 +224,6 @@ class MILCInterface:
                 Override the CLI token for this subcommand.
         """
         return self.milc.subcommand(description, hidden, parent=parent, name=name, **kwargs)
-
-    def __enter__(self) -> Any:
-        """Enter the MILC context manager.
-
-        Initializes colorama, parses CLI arguments, merges them with config file values,
-        applies the `--interactive` flag, and sets up logging handlers. Called automatically
-        when using `with cli:` or when `cli()` is invoked without an explicit context manager.
-        """
-        return self.milc.__enter__()
-
-    def __exit__(
-        self,
-        exc_type: Optional[Type[BaseException]],
-        exc_val: Optional[BaseException],
-        exc_tb: Optional[TracebackType],
-    ) -> None:
-        """Exit the MILC context manager.
-
-        Clears the context manager flag. If an unhandled exception occurred (other than
-        `SystemExit` or `KeyboardInterrupt`), logs the error and exits with code 255.
-        """
-        return self.milc.__exit__(exc_type, exc_val, exc_tb)
 
     def add_spinner(self, name: str, spinner: Dict[str, Union[int, Sequence[str]]]) -> None:
         """Adds a new spinner to the list of spinners.
