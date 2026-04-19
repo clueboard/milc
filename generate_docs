@@ -19,7 +19,7 @@ def main(cli):
     doc_files = []
 
     for file in Path('milc').glob('**/*.py'):
-        if file.name == '__init__.py':
+        if file.name.startswith('_') or file.name == '__init__.py':
             continue
 
         # Generate the markdown
