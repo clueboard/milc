@@ -35,6 +35,8 @@ Users have several CLI arguments they can pass to control the output of logs. Th
     * Format string for log file.
 * `--log-file`, default: None
     * File to write log messages to
+* `--log-file-level {debug,info,warning,error,critical}`
+    * Change the minimum log level
 * `--color` and `--no-color`
     * Enable or disable ANSI color
 * `--unicode` and `--no-unicode`
@@ -64,6 +66,3 @@ if __name__ == '__main__':
     cli()
 
 ```
-
-!!! warning
-    You should only call `cli.milc_options()` one time during your program's execution.

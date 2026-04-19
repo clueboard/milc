@@ -122,11 +122,11 @@ general.log_format: %H:%M:%S -> None
 
 The `config` subcommand uses color to indicate where each value came from:
 
-| Color | Meaning |
-|-------|---------|
-| Blue `=` sign | Value was read from the config file |
-| Yellow `=` sign and `(env)` suffix | Value was set by an environment variable (see [Environment Variables](environment_variables.md)) |
-| Cyan key=value | Value is the argument default or was passed on the CLI |
+| Color | Suffix | Meaning |
+|-------|--------|---------|
+| Blue `=` sign | `(config)` | Value was read from the config file |
+| Yellow `=` sign | `(env)` | Value was set by an environment variable (see [Environment Variables](environment_variables.md)) |
+| Cyan key=value | Varies | Value is the argument default or was passed on the CLI |
 
 ## Multiple Operations
 

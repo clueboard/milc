@@ -35,7 +35,7 @@ def main(cli):
     cli.log.info('Hello%s %s!', comma, cli.config.general.name)
 
 if __name__ == '__main__':
-    cli.run()
+    cli()
 ```
 
 ### Output

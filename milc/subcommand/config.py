@@ -14,11 +14,11 @@ def print_config(section: str, key: str) -> None:
     config_source_section = _config_navigate(milc.cli.config_source, section)
     source = config_source_section[key]
     if source == 'config_file':
-        milc.cli.echo('%s.%s{fg_blue}={fg_reset}%s', section, key, config_section[key])
+        milc.cli.echo('%s.%s{fg_blue}={fg_reset}%s {fg_blue}(config){fg_reset}', section, key, config_section[key])
     elif source == 'env_var':
         milc.cli.echo('%s.%s{fg_yellow}={fg_reset}%s {fg_yellow}(env){fg_reset}', section, key, config_section[key])
     else:
-        milc.cli.echo('{fg_cyan}%s.%s=%s', section, key, config_section[key])
+        milc.cli.echo('{fg_cyan}%s.%s=%s (%s){fg_reset}', section, key, config_section[key], source)
 
 
 def show_config() -> None:
