@@ -9,7 +9,7 @@ Basic usage of a sparkline is simple:
 ```python
 from milc import sparkline
 
-print(sparkline([5, 9, 2, 3, 6, 9, 3, 5, 6])
+print(sparkline([5, 9, 2, 3, 6, 9, 3, 5, 6]))
 ```
 
 This will output the following text:
@@ -27,7 +27,7 @@ Input:
 ```python
 from milc import sparkline
 
-print(sparkline([3, 7, None, 2, 1])
+print(sparkline([3, 7, None, 2, 1]))
 ```
 
 Output:
@@ -67,7 +67,7 @@ If you need to optimize the performance of a sparkline, or you want to set the b
 ```python
 from milc import sparkline
 
-print(sparkline([5, 9, 2, 3, 6, 9, 3, 5, 6], 2, 9)
+print(sparkline([5, 9, 2, 3, 6, 9, 3, 5, 6], min_value=2, max_value=9))
 ```
 
 Any values that fall outside your min and max will be ignored.

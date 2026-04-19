@@ -80,7 +80,7 @@ user passes `-v` or `--verbose`:
     cli.config['general']['verbose']
 
 Under the hood MILC uses
-[ConfigParser](https://docs.python.org/2/library/configparser.html) to read
+[ConfigParser](https://docs.python.org/3/library/configparser.html) to read
 and write configuration files. If you are not familiar with ConfigParser this
 is a sample config file:
 

@@ -226,7 +226,7 @@ def spinner(text: str,
             color: str = 'blue',
             interval: int = -1,
             stream: Any = sys.stdout,
-            enabled: bool = True,
+            enabled: bool = sys.stdout.isatty(),
             **kwargs: Any) -> Halo
 ```
 

@@ -267,9 +267,6 @@ def write_config_option(section: str, option: Any) -> None
 
 Save a single config option to the config file.
 
-!!! note
-    `write_config_option` is an internal method not exposed by the public `cli` interface. Use `cli.save_config()` instead.
-
 <a id="milc.MILC.save_config"></a>
 
 #### save\_config
@@ -428,7 +425,9 @@ A spinner is a dictionary with two keys:
 ```python
 def spinner(text: str,
             *args: Any,
-            spinner: Optional[str] = None,
+            spinner: Optional[Union[str, Dict[str,
+                                              Union[int,
+                                                    Sequence[str]]]]] = None,
             animation: str = 'ellipsed',
             placement: str = 'left',
             color: str = 'blue',
@@ -486,7 +485,9 @@ def long_running_function():
         %-format the text.
 
     spinner
-        The name of the spinner to use. Available names are here:
+        The name of the spinner to use, or a dict with `interval`
+        (int, ms) and `frames` (list of str) keys to use directly
+        as the spinner definition. Available names are here:
         <https://raw.githubusercontent.com/sindresorhus/cli-spinners/dac4fc6571059bb9e9bc204711e9dfe8f72e5c6f/spinners.json>
 
     animation

@@ -966,7 +966,7 @@ class MILC(object):
         self,
         text: str,
         *args: Any,
-        spinner: Optional[str] = None,
+        spinner: Optional[Union[str, Dict[str, Union[int, Sequence[str]]]]] = None,
         animation: str = 'ellipsed',
         placement: str = 'left',
         color: str = 'blue',
@@ -1023,7 +1023,9 @@ class MILC(object):
                 %-format the text.
 
             spinner
-                The name of the spinner to use. Available names are here:
+                The name of the spinner to use, or a dict with `interval`
+                (int, ms) and `frames` (list of str) keys to use directly
+                as the spinner definition. Available names are here:
                 <https://raw.githubusercontent.com/sindresorhus/cli-spinners/dac4fc6571059bb9e9bc204711e9dfe8f72e5c6f/spinners.json>
 
             animation
@@ -1047,12 +1049,16 @@ class MILC(object):
             enabled
                 Enable or disable the spinner. Defaults to `True`.
         """
-        spinner_name = spinner or 'line'  # FIXME: Grab one of the ascii spinners at random instead of line
         spinner_obj: Any = None
 
-        if spinner in self._spinners:
+        if isinstance(spinner, dict):
+            spinner_name = ''
+            spinner_obj = spinner
+        elif spinner in self._spinners:
             spinner_name = ''
             spinner_obj = self._spinners[spinner]
+        else:
+            spinner_name = spinner or 'line'  # FIXME: Grab one of the ascii spinners at random instead of line
 
         if args:
             text = format_ansi(text % args)
