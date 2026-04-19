@@ -396,7 +396,7 @@ Decorator to register a subcommand.
 def setup_logging() -> None
 ```
 
-Called by __enter__() to setup the logging configuration.
+Called by __call__() to setup the logging configuration.
 
 <a id="milc.MILC.is_spinner"></a>
 

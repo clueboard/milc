@@ -250,35 +250,6 @@ Decorator to register a subcommand.
   name
   Override the CLI token for this subcommand.
 
-<a id="milc_interface.MILCInterface.__enter__"></a>
-
-#### \_\_enter\_\_
-
-```python
-def __enter__() -> Any
-```
-
-Enter the MILC context manager.
-
-Initializes colorama, parses CLI arguments, merges them with config file values,
-applies the `--interactive` flag, and sets up logging handlers. Called automatically
-when using `with cli:` or when `cli()` is invoked without an explicit context manager.
-
-<a id="milc_interface.MILCInterface.__exit__"></a>
-
-#### \_\_exit\_\_
-
-```python
-def __exit__(exc_type: Optional[Type[BaseException]],
-             exc_val: Optional[BaseException],
-             exc_tb: Optional[TracebackType]) -> None
-```
-
-Exit the MILC context manager.
-
-Clears the context manager flag. If an unhandled exception occurred (other than
-`SystemExit` or `KeyboardInterrupt`), logs the error and exits with code 255.
-
 <a id="milc_interface.MILCInterface.add_spinner"></a>
 
 #### add\_spinner
