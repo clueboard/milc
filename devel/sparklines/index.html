@@ -393,6 +393,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../environment_variables/" class="md-nav__link">
+        Environment Variables
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../subcommand_config/" class="md-nav__link">
         Config Subcommand
       </a>
@@ -679,7 +693,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_milc/" class="md-nav__link">
+      <a href="../api_milc_interface/" class="md-nav__link">
         milc.milc
       </a>
     </li>
@@ -695,20 +709,6 @@
     <li class="md-nav__item">
       <a href="../api_questions/" class="md-nav__link">
         User Input
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api__sparkline/" class="md-nav__link">
-        milc._sparkline
       </a>
     </li>
   
@@ -833,23 +833,21 @@
 <p>A sparkline is a tool for displaying numerical information in a very compact format. You can read more about the general concept on <a href="https://en.wikipedia.org/wiki/Sparkline">the Wikipedia page</a> and read about Unicode sparklines specifically in <a href="https://blog.jonudell.net/2021/08/05/the-tao-of-unicode-sparklines/">an article by Jon Udell</a>.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>Basic usage of a sparkline is simple:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">milc</span><span class="w"> </span><span class="kn">import</span> <span class="n">sparkline</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">sparkline</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
-</code></pre></div>
+<p>```python
+from milc import sparkline</p>
+<p>print(sparkline([5, 9, 2, 3, 6, 9, 3, 5, 6]))
+```</p>
 <p>This will output the following text:</p>
-<div class="highlight"><pre><span></span><code>▆▃▄▇▄▆▇
-</code></pre></div>
+<p><code>▆▃▄▇▄▆▇</code></p>
 <h2 id="whitespace">Whitespace<a class="headerlink" href="#whitespace" title="Permanent link">&para;</a></h2>
 <p>Any item in your sparkline sequence that is not a number (<code>int</code>, <code>float</code>, or <code>decimal.Decimal</code>) will be rendered as a blank space. It is recommended that you consistently use the same object for this purpose, I prefer <code>None</code>.</p>
 <p>Input:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">milc</span><span class="w"> </span><span class="kn">import</span> <span class="n">sparkline</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">sparkline</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-</code></pre></div>
+<p>```python
+from milc import sparkline</p>
+<p>print(sparkline([3, 7, None, 2, 1]))
+```</p>
 <p>Output:</p>
-<div class="highlight"><pre><span></span><code>▃█ ▂▁
-</code></pre></div>
+<p><code>▃█ ▂▁</code></p>
 <h2 id="color">Color<a class="headerlink" href="#color" title="Permanent link">&para;</a></h2>
 <p>MILC supports coloring your sparkline in two different ways. You can combine these for a total of 4 colors per sparkline.</p>
 <h3 id="negative-and-positive-numbers">Negative and Positive Numbers<a class="headerlink" href="#negative-and-positive-numbers" title="Permanent link">&para;</a></h3>
@@ -870,10 +868,10 @@
 </ul>
 <h2 id="optimization">Optimization<a class="headerlink" href="#optimization" title="Permanent link">&para;</a></h2>
 <p>If you need to optimize the performance of a sparkline, or you want to set the boundaries for your data, you can supply min and max values when creating your sparkline. This will avoid two iterations over the list to find min and max values.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">milc</span><span class="w"> </span><span class="kn">import</span> <span class="n">sparkline</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">sparkline</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
-</code></pre></div>
+<p>```python
+from milc import sparkline</p>
+<p>print(sparkline([5, 9, 2, 3, 6, 9, 3, 5, 6], min_value=2, max_value=9))
+```</p>
 <p>Any values that fall outside your min and max will be ignored.</p>
 
 

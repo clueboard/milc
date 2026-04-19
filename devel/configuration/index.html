@@ -403,6 +403,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../environment_variables/" class="md-nav__link">
+        Environment Variables
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../subcommand_config/" class="md-nav__link">
         Config Subcommand
       </a>
@@ -607,7 +621,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_milc/" class="md-nav__link">
+      <a href="../api_milc_interface/" class="md-nav__link">
         milc.milc
       </a>
     </li>
@@ -623,20 +637,6 @@
     <li class="md-nav__item">
       <a href="../api_questions/" class="md-nav__link">
         User Input
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api__sparkline/" class="md-nav__link">
-        milc._sparkline
       </a>
     </li>
   
@@ -706,6 +706,10 @@
 <h1 id="structure">Structure<a class="headerlink" href="#structure" title="Permanent link">&para;</a></h1>
 <p>MILC uses <a href="https://docs.python.org/3/library/configparser.html">ConfigParser</a> to store configuration values. We've mapped the section names to subcommands, and values passed as CLI arguments will be automatically populated to keys named after the argument.</p>
 <p>Configuration options for the main <code>cli.entrypoint()</code> are set in <code>cli.config.general</code>. If you do not have any subcommands you will find all of your config options here.</p>
+<p>For nested subcommands (e.g. <code>prog remote add</code>), configuration sections mirror the command path:</p>
+<p><code>python
+cli.config.remote.add.url        # attribute access
+cli.config['remote']['add']['url']  # dict access</code></p>
 <h1 id="reading-config-values">Reading Config Values<a class="headerlink" href="#reading-config-values" title="Permanent link">&para;</a></h1>
 <p>You can read config values using either attribute or dictionary notation. If a key does not exist in the configuration you will get <code>None</code> as the value.</p>
 <p>Attribute:</p>
@@ -717,23 +721,23 @@
 </code></pre></div>
 
 <h1 id="setting-config-values">Setting Config Values<a class="headerlink" href="#setting-config-values" title="Permanent link">&para;</a></h1>
-<p>You can create new values by simply assigning to them. This only with dictionary notation.</p>
+<p>You can create new values by simply assigning to them. This only works with dictionary notation.</p>
 <div class="codehilite"><pre><span></span><code>cli.config[&#39;general&#39;][&#39;verbose&#39;] = True
 </code></pre></div>
 
 <h1 id="writing-configuration-files">Writing Configuration Files<a class="headerlink" href="#writing-configuration-files" title="Permanent link">&para;</a></h1>
 <p>Use <code>cli.save_config()</code> to save the user's configuration file. It will be written to the location specified by <code>cli.config_file</code>.</p>
 <h1 id="configuration-file-location">Configuration File Location<a class="headerlink" href="#configuration-file-location" title="Permanent link">&para;</a></h1>
-<p>MILC uses <a href="https://github.com/tox-dev/platformdirs">platformdirs</a> to determine the configuration file location. You can set your application's name and author by using <code>milc.set_metadata</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">milc</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_metadata</span>
-
-<span class="n">set_metadata</span><span class="p">(</span><span class="s1">&#39;Florzelbop&#39;</span><span class="p">,</span> <span class="s1">&#39;1.0.0&#39;</span><span class="p">,</span> <span class="s1">&#39;Jane Doe&#39;</span><span class="p">)</span>
-</code></pre></div>
+<p>MILC uses <a href="https://github.com/tox-dev/platformdirs">platformdirs</a> to determine the configuration file location. You can set your application's name and author by using <code>cli.milc_options()</code>:</p>
+<p>```python
+from milc import cli</p>
+<p>cli.milc_options(name='Florzelbop', version='1.0.0', author='Jane Doe')
+```</p>
 <p>This will (usually) result in the following config file locations:</p>
 <ul>
-<li>Linux: <code>~/.local/share/Florzelbop</code></li>
+<li>Linux: <code>~/.config/Florzelbop</code></li>
 <li>macOS: <code>~/Library/Application Support/Florzelbop</code></li>
-<li>Windows: <code>C:\Documents and Settings\&lt;User&gt;\Application Data\Local Settings\Florzelbop Jane Doe\hello</code></li>
+<li>Windows: <code>C:\Users\&lt;User&gt;\AppData\Local\Florzelbop\Florzelbop</code></li>
 </ul>
 <h1 id="where-did-a-value-come-from">Where Did A Value Come From?<a class="headerlink" href="#where-did-a-value-come-from" title="Permanent link">&para;</a></h1>
 <p>Sometimes you need to know how a configuration value was set. You can use <code>cli.config_source</code> to find out.</p>
@@ -744,11 +748,13 @@
 <p>The possible values returned are:</p>
 <ul>
 <li><code>'argument'</code></li>
-<li>The value was passed as an argument</li>
+<li>The value was passed as a CLI argument</li>
+<li><code>'env_var'</code></li>
+<li>The value was read from an environment variable (see <a href="../environment_variables/">Environment Variables</a>)</li>
 <li><code>'config_file'</code></li>
 <li>The value was read from the config file</li>
-<li><code>'default'</code></li>
-<li>This is the default value</li>
+<li><code>None</code></li>
+<li>The value is the argument default</li>
 </ul>
 <h1 id="automatic-type-inference">Automatic Type Inference<a class="headerlink" href="#automatic-type-inference" title="Permanent link">&para;</a></h1>
 <p>Under the hood all configuration options are stored as plain text. MILC converts your config values into appropriate data types when it can figure out how.</p>
@@ -807,13 +813,13 @@
       
       
         
-        <a href="../subcommand_config/" class="md-footer__link md-footer__link--next" aria-label="Next: Config Subcommand" rel="next">
+        <a href="../environment_variables/" class="md-footer__link md-footer__link--next" aria-label="Next: Environment Variables" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Config Subcommand
+              Environment Variables
             </div>
           </div>
           <div class="md-footer__button md-icon">

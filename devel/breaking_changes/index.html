@@ -401,6 +401,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../environment_variables/" class="md-nav__link">
+        Environment Variables
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../subcommand_config/" class="md-nav__link">
         Config Subcommand
       </a>
@@ -605,7 +619,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_milc/" class="md-nav__link">
+      <a href="../api_milc_interface/" class="md-nav__link">
         milc.milc
       </a>
     </li>
@@ -621,20 +635,6 @@
     <li class="md-nav__item">
       <a href="../api_questions/" class="md-nav__link">
         User Input
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api__sparkline/" class="md-nav__link">
-        milc._sparkline
       </a>
     </li>
   
@@ -701,6 +701,14 @@
 
 <h1 id="breaking-changes">Breaking Changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h1>
 <p>This is a list of breaking changes that have been made to MILC. If your script stops working after a minor or major version upgrade this document will tell you how to fix it.</p>
+<h1 id="version-200">Version 2.0.0<a class="headerlink" href="#version-200" title="Permanent link">&para;</a></h1>
+<ul>
+<li><code>cli.config_source</code> now returns <code>'env_var'</code> for arguments whose value came from an environment variable via <code>env_prefix</code>. Previously only <code>'argument'</code>, <code>'config_file'</code>, and <code>None</code> were possible values. Code that exhaustively checks <code>config_source</code> values will need to handle <code>'env_var'</code>.</li>
+<li><code>cli.args_passed</code> has been removed from the public API. Use <code>cli.config_source</code> to determine where a value came from.</li>
+<li><code>cli.milc_options()</code> now uses <code>is not None</code> checks for all parameters. Previously, passing a falsy value (e.g. <code>name=''</code>) would silently fall back to the previously set value. Now it is applied as-is.</li>
+<li>The context manager code (with cli: aka <code>__enter__</code>/<code>__exit__</code>) has been removed. It added unnecessary complexity.</li>
+<li>Removed support for <code>set_metadata()</code> and the <code>MILC_APP_NAME</code>, <code>MILC_APP_VERSION</code>, and <code>MILC_APP_AUTHOR</code> environment vars</li>
+</ul>
 <h1 id="version-190">Version 1.9.0<a class="headerlink" href="#version-190" title="Permanent link">&para;</a></h1>
 <ul>
 <li>Appdirs <a href="https://github.com/ActiveState/appdirs/issues/79#issuecomment-877645712">has been deprecated</a> and replaced with <a href="https://github.com/tox-dev/platformdirs">platformdirs</a>.</li>

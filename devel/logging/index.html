@@ -393,6 +393,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../environment_variables/" class="md-nav__link">
+        Environment Variables
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../subcommand_config/" class="md-nav__link">
         Config Subcommand
       </a>
@@ -655,7 +669,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_milc/" class="md-nav__link">
+      <a href="../api_milc_interface/" class="md-nav__link">
         milc.milc
       </a>
     </li>
@@ -671,20 +685,6 @@
     <li class="md-nav__item">
       <a href="../api_questions/" class="md-nav__link">
         User Input
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api__sparkline/" class="md-nav__link">
-        milc._sparkline
       </a>
     </li>
   
@@ -821,6 +821,10 @@
 <li>File to write log messages to</li>
 </ul>
 </li>
+<li><code>--log-file-level {debug,info,warning,error,critical}</code><ul>
+<li>Change the minimum log level</li>
+</ul>
+</li>
 <li><code>--color</code> and <code>--no-color</code><ul>
 <li>Enable or disable ANSI color</li>
 </ul>
@@ -833,26 +837,20 @@
 <h1 id="custom-loggers">Custom Loggers<a class="headerlink" href="#custom-loggers" title="Permanent link">&para;</a></h1>
 <p>You may want to bypass MILC's logging and use your own logger instead. To do this use <code>cli.milc_options(logger=&lt;MyLogger&gt;)</code>. This should be done before you call <code>cli()</code> or do anything else.</p>
 <p>Example:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">milc</span><span class="w"> </span><span class="kn">import</span> <span class="n">cli</span>
-
-
-<span class="nd">@cli</span><span class="o">.</span><span class="n">entrypoint</span><span class="p">(</span><span class="s1">&#39;Hello, World!&#39;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">hello</span><span class="p">(</span><span class="n">cli</span><span class="p">):</span>
-    <span class="n">cli</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Hello, World!&#39;</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">my_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;my-program&#39;</span><span class="p">)</span>
-    <span class="c1"># Configure my_logger the way you want/need here</span>
-
-    <span class="n">cli</span><span class="o">.</span><span class="n">milc_options</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">my_logger</span><span class="p">)</span>
-    <span class="n">cli</span><span class="p">()</span>
+<p>```python
+import logging</p>
+<p>from milc import cli</p>
+<p>@cli.entrypoint('Hello, World!')
+def hello(cli):
+    cli.log.info('Hello, World!')</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+    my_logger = logging.getLogger('my-program')
+    # Configure my_logger the way you want/need here</p>
+<div class="codehilite"><pre><span></span><code>cli.milc_options(logger=my_logger)
+cli()
 </code></pre></div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>You should only call <code>cli.milc_options()</code> one time during your program's execution.</p>
-</div>
+
+<p>```</p>
 
 
 

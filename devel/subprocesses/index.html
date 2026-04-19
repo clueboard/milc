@@ -393,6 +393,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../environment_variables/" class="md-nav__link">
+        Environment Variables
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../subcommand_config/" class="md-nav__link">
         Config Subcommand
       </a>
@@ -700,7 +714,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_milc/" class="md-nav__link">
+      <a href="../api_milc_interface/" class="md-nav__link">
         milc.milc
       </a>
     </li>
@@ -716,20 +730,6 @@
     <li class="md-nav__item">
       <a href="../api_questions/" class="md-nav__link">
         User Input
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api__sparkline/" class="md-nav__link">
-        milc._sparkline
       </a>
     </li>
   
@@ -875,11 +875,11 @@
 <p>MILC provides some tools to make running subcommands easier and more convienent to work with.</p>
 <h2 id="basic-subprocess-execution">Basic Subprocess Execution<a class="headerlink" href="#basic-subprocess-execution" title="Permanent link">&para;</a></h2>
 <p>You can use <code>cli.run()</code> to easily and safely run shell commands. The first argument to <code>cli.run()</code> should be an argument list, which is a list or tuple containing the command and any arguments you want to pass in. For example, if you wanted to run a git command you might build this argument list:</p>
-<div class="highlight"><pre><span></span><code><span class="n">git_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;git&#39;</span><span class="p">,</span> <span class="s1">&#39;-C&#39;</span><span class="p">,</span> <span class="s1">&#39;/srv/web/htdocs&#39;</span><span class="p">,</span> <span class="s1">&#39;pull&#39;</span><span class="p">]</span>
-</code></pre></div>
+<p><code>python
+git_cmd = ['git', '-C', '/srv/web/htdocs', 'pull']</code></p>
 <p>This is all you need to do to run that command:</p>
-<div class="highlight"><pre><span></span><code><span class="n">p</span> <span class="o">=</span> <span class="n">cli</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">git_cmd</span><span class="p">)</span>
-</code></pre></div>
+<p><code>python
+p = cli.run(git_cmd)</code></p>
 <p>This will return a <a href="https://docs.python.org/3/library/subprocess.html#subprocess.CompletedProcess">subprocess.CompletedProcess</a> instance. You can examine attributes such as <code>p.returncode</code>, <code>p.stderr</code>, and <code>p.stdout</code> to see the fate of the process.</p>
 <h2 id="supported-arguments">Supported Arguments<a class="headerlink" href="#supported-arguments" title="Permanent link">&para;</a></h2>
 <table>

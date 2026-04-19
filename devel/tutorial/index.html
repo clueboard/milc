@@ -332,69 +332,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#quick-program-overview" class="md-nav__link">
-    Quick Program Overview
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#logging-and-printing" class="md-nav__link">
-    Logging and Printing
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#entrypoints" class="md-nav__link">
-    Entrypoints
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration-and-argument-parsing" class="md-nav__link">
-    Configuration and Argument Parsing
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#subcommands" class="md-nav__link">
-    Subcommands
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration-and-subcommands" class="md-nav__link">
-    Configuration and Subcommands
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#user-controlled-configuration" class="md-nav__link">
-    User Controlled Configuration
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#example-output" class="md-nav__link">
-    Example Output
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#doing-more" class="md-nav__link">
-    Doing More
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -483,6 +420,20 @@
     <li class="md-nav__item">
       <a href="../configuration/" class="md-nav__link">
         Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../environment_variables/" class="md-nav__link">
+        Environment Variables
       </a>
     </li>
   
@@ -699,7 +650,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_milc/" class="md-nav__link">
+      <a href="../api_milc_interface/" class="md-nav__link">
         milc.milc
       </a>
     </li>
@@ -715,20 +666,6 @@
     <li class="md-nav__item">
       <a href="../api_questions/" class="md-nav__link">
         User Input
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api__sparkline/" class="md-nav__link">
-        milc._sparkline
       </a>
     </li>
   
@@ -788,69 +725,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#quick-program-overview" class="md-nav__link">
-    Quick Program Overview
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#logging-and-printing" class="md-nav__link">
-    Logging and Printing
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#entrypoints" class="md-nav__link">
-    Entrypoints
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration-and-argument-parsing" class="md-nav__link">
-    Configuration and Argument Parsing
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#subcommands" class="md-nav__link">
-    Subcommands
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration-and-subcommands" class="md-nav__link">
-    Configuration and Subcommands
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#user-controlled-configuration" class="md-nav__link">
-    User Controlled Configuration
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#example-output" class="md-nav__link">
-    Example Output
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#doing-more" class="md-nav__link">
-    Doing More
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -877,20 +751,18 @@
 <p>MILC works by registering functions as either the entrypoint or a subcommand.
 The entrypoint can be thought of as your <code>main()</code>, or the place where program
 execution begins. A minimal MILC program looks like this:</p>
-<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env python3</span>
-<span class="sd">&quot;&quot;&quot;Hello World implementation using MILC.</span>
-
-<span class="sd">PYTHON_ARGCOMPLETE_OK</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">milc</span><span class="w"> </span><span class="kn">import</span> <span class="n">cli</span>
-
-<span class="nd">@cli</span><span class="o">.</span><span class="n">entrypoint</span><span class="p">(</span><span class="s1">&#39;Greet a user.&#39;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">cli</span><span class="p">):</span>
-    <span class="n">cli</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Hello, World!&#39;</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">cli</span><span class="p">()</span>
-</code></pre></div>
+<p>```python</p>
+<h1 id="usrbinenv-python3">!/usr/bin/env python3<a class="headerlink" href="#usrbinenv-python3" title="Permanent link">&para;</a></h1>
+<p>"""Hello World implementation using MILC.</p>
+<p>PYTHON_ARGCOMPLETE_OK
+"""
+from milc import cli</p>
+<p>@cli.entrypoint('Greet a user.')
+def main(cli):
+    cli.log.info('Hello, World!')</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+    cli()
+```</p>
 <h2 id="quick-program-overview">Quick Program Overview<a class="headerlink" href="#quick-program-overview" title="Permanent link">&para;</a></h2>
 <p>Before we dive into the features our program is using let's take a look at the general structure of a MILC program. We start by importing the <code>cli</code> object- this is where most of MILC's functionality is exposed and where a lot of important state tracking happens.</p>
 <p>Next, we've decorated our main function with <code>cli.entrypoint()</code>. This is how we tell MILC what function to execute and set the help text for our program.</p>
@@ -934,33 +806,30 @@ cli.config[&#39;general&#39;][&#39;verbose&#39;]
 </code></pre></div>
 
 <p>Under the hood MILC uses
-<a href="https://docs.python.org/2/library/configparser.html">ConfigParser</a> to read
+<a href="https://docs.python.org/3/library/configparser.html">ConfigParser</a> to read
 and write configuration files. If you are not familiar with ConfigParser this
 is a sample config file:</p>
-<div class="highlight"><pre><span></span><code>[general]
-verbose=true
-</code></pre></div>
+<p><code>[general]
+verbose=true</code></p>
 <p>MILC maps all of the arguments for the root entrypoint into the general
 section. Subcommand arguments are mapped into their own section. We'll talk
 about this more when we introduce subcommands, for now you just need to
 understand that arguments are added to the general section.</p>
 <p>Building on our program from earlier we can make our program more flexible
 about who it is greeting by adding a new flag, <code>--name</code>, or <code>-n</code> for short:</p>
-<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env python3</span>
-<span class="sd">&quot;&quot;&quot;Hello World implementation using MILC.</span>
-
-<span class="sd">PYTHON_ARGCOMPLETE_OK</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">milc</span><span class="w"> </span><span class="kn">import</span> <span class="n">cli</span>
-
-<span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;--name&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Name to greet&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;World&#39;</span><span class="p">)</span>
-<span class="nd">@cli</span><span class="o">.</span><span class="n">entrypoint</span><span class="p">(</span><span class="s1">&#39;Greet a user.&#39;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">cli</span><span class="p">):</span>
-    <span class="n">cli</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Hello, </span><span class="si">%s</span><span class="s1">!&#39;</span><span class="p">,</span> <span class="n">cli</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">cli</span><span class="p">()</span>
-</code></pre></div>
+<p>```python</p>
+<h1 id="usrbinenv-python3_1">!/usr/bin/env python3<a class="headerlink" href="#usrbinenv-python3_1" title="Permanent link">&para;</a></h1>
+<p>"""Hello World implementation using MILC.</p>
+<p>PYTHON_ARGCOMPLETE_OK
+"""
+from milc import cli</p>
+<p>@cli.argument('-n', '--name', help='Name to greet', default='World')
+@cli.entrypoint('Greet a user.')
+def main(cli):
+    cli.log.info('Hello, %s!', cli.config.general.name)</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+    cli()
+```</p>
 <p>One important thing to note is that decorators are processed from the bottom
 to the top. You must place <code>@cli.entrypoint</code> directly above the function
 definition, and then place any <code>cli.argument()</code> decorators above that to
@@ -978,88 +847,71 @@ pattern. MILC uses argparser's native subcommand support to implement this
 for you. To use it you designate functions as subcommand entrypoints using
 <code>cli.subcommand</code>.</p>
 <p>Let's extend our program from earlier to use subcommands:</p>
-<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env python3</span>
-<span class="sd">&quot;&quot;&quot;Example MILC program that shows off many features.</span>
-
-<span class="sd">PYTHON_ARGCOMPLETE_OK</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">milc</span><span class="w"> </span><span class="kn">import</span> <span class="n">cli</span>
-
-<span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;--name&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Name to greet&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;World&#39;</span><span class="p">)</span>
-<span class="nd">@cli</span><span class="o">.</span><span class="n">entrypoint</span><span class="p">(</span><span class="s1">&#39;Greet a user.&#39;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">cli</span><span class="p">):</span>
-    <span class="n">cli</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No subcommand specified!&#39;</span><span class="p">)</span>
-    <span class="n">cli</span><span class="o">.</span><span class="n">print_usage</span><span class="p">()</span>
-
-
-<span class="nd">@cli</span><span class="o">.</span><span class="n">subcommand</span><span class="p">(</span><span class="s1">&#39;Say hello.&#39;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">hello</span><span class="p">(</span><span class="n">cli</span><span class="p">):</span>
-    <span class="n">cli</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{fg_green}</span><span class="s1">Hello, </span><span class="si">%s</span><span class="s1">!&#39;</span><span class="p">,</span> <span class="n">cli</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-
-
-<span class="nd">@cli</span><span class="o">.</span><span class="n">subcommand</span><span class="p">(</span><span class="s1">&#39;Say goodbye.&#39;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">goodbye</span><span class="p">(</span><span class="n">cli</span><span class="p">):</span>
-    <span class="n">cli</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{fg_blue}</span><span class="s1">Goodbye, </span><span class="si">%s</span><span class="s1">!&#39;</span><span class="p">,</span> <span class="n">cli</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">cli</span><span class="p">()</span>
-</code></pre></div>
+<p>```python</p>
+<h1 id="usrbinenv-python3_2">!/usr/bin/env python3<a class="headerlink" href="#usrbinenv-python3_2" title="Permanent link">&para;</a></h1>
+<p>"""Example MILC program that shows off many features.</p>
+<p>PYTHON_ARGCOMPLETE_OK
+"""</p>
+<p>from milc import cli</p>
+<p>@cli.argument('-n', '--name', help='Name to greet', default='World')
+@cli.entrypoint('Greet a user.')
+def main(cli):
+    cli.log.info('No subcommand specified!')
+    cli.print_usage()</p>
+<p>@cli.subcommand('Say hello.')
+def hello(cli):
+    cli.echo('{fg_green}Hello, %s!', cli.config.general.name)</p>
+<p>@cli.subcommand('Say goodbye.')
+def goodbye(cli):
+    cli.echo('{fg_blue}Goodbye, %s!', cli.config.general.name)</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+    cli()
+```</p>
 <h2 id="configuration-and-subcommands">Configuration and Subcommands<a class="headerlink" href="#configuration-and-subcommands" title="Permanent link">&para;</a></h2>
 <p>Each subcommand gets its own section in the configuration. You can access a
 subcommand's config with <code>cli.config.&lt;subcommand&gt;</code>. Options for the root
 entrypoint can be found in the <code>cli.config.general</code> section of the config.</p>
 <p>We add flags to our subcommands by decorating them with <code>@cli.argument</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;--comma&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;comma in output&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_boolean&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</code></pre></div>
+<p><code>python
+@cli.argument('--comma', help='comma in output', action='store_boolean', default=True)</code></p>
 <h2 id="user-controlled-configuration">User Controlled Configuration<a class="headerlink" href="#user-controlled-configuration" title="Permanent link">&para;</a></h2>
 <p>Using the built-in <code>config</code> subcommand our user can permanently set certain
 options so they don't have to type them in each time. We do this by adding a
 single line to our program, <code>import milc.subcommand.config</code>. Let's take a
 look at our final program:</p>
-<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env python3</span>
-<span class="sd">&quot;&quot;&quot;Example MILC program that shows off many features.</span>
-
-<span class="sd">PYTHON_ARGCOMPLETE_OK</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">milc</span><span class="w"> </span><span class="kn">import</span> <span class="n">cli</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">milc.subcommand.config</span>
-
-
-<span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;--name&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Name to greet&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;World&#39;</span><span class="p">)</span>
-<span class="nd">@cli</span><span class="o">.</span><span class="n">entrypoint</span><span class="p">(</span><span class="s1">&#39;Greet a user.&#39;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">cli</span><span class="p">):</span>
-    <span class="n">cli</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No subcommand specified!&#39;</span><span class="p">)</span>
-    <span class="n">cli</span><span class="o">.</span><span class="n">print_usage</span><span class="p">()</span>
-
-
-<span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;--comma&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;comma in output&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_boolean&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nd">@cli</span><span class="o">.</span><span class="n">subcommand</span><span class="p">(</span><span class="s1">&#39;Say hello.&#39;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">hello</span><span class="p">(</span><span class="n">cli</span><span class="p">):</span>
-    <span class="n">comma</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span> <span class="k">if</span> <span class="n">cli</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">hello</span><span class="o">.</span><span class="n">comma</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
-    <span class="n">cli</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{fg_green}</span><span class="s1">Hello</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">!&#39;</span><span class="p">,</span> <span class="n">comma</span><span class="p">,</span> <span class="n">cli</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-
-
-<span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;--flag&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Write it in a flag&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">)</span>
-<span class="nd">@cli</span><span class="o">.</span><span class="n">subcommand</span><span class="p">(</span><span class="s1">&#39;Say goodbye.&#39;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">goodbye</span><span class="p">(</span><span class="n">cli</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">cli</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">goodbye</span><span class="o">.</span><span class="n">flag</span><span class="p">:</span>
-        <span class="n">cli</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Drawing a flag.&#39;</span><span class="p">)</span>
-        <span class="n">colors</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{bg_red}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{bg_lightred_ex}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{bg_lightyellow_ex}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{bg_green}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{bg_blue}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{bg_magenta}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;Goodbye, </span><span class="si">%s</span><span class="s1">!&#39;</span> <span class="o">%</span> <span class="n">cli</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">name</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">letter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
-            <span class="n">color</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colors</span><span class="p">)]</span>
-            <span class="n">cli</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">color</span> <span class="o">+</span> <span class="n">letter</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="o">*</span><span class="mi">39</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">cli</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Parting is such sweet sorrow.&#39;</span><span class="p">)</span>
-        <span class="n">cli</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{fg_blue}</span><span class="s1">Goodbye, </span><span class="si">%s</span><span class="s1">!&#39;</span><span class="p">,</span> <span class="n">cli</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">cli</span><span class="p">()</span>
-</code></pre></div>
+<p>```python</p>
+<h1 id="usrbinenv-python3_3">!/usr/bin/env python3<a class="headerlink" href="#usrbinenv-python3_3" title="Permanent link">&para;</a></h1>
+<p>"""Example MILC program that shows off many features.</p>
+<p>PYTHON_ARGCOMPLETE_OK
+"""</p>
+<p>from milc import cli
+import milc.subcommand.config</p>
+<p>@cli.argument('-n', '--name', help='Name to greet', default='World')
+@cli.entrypoint('Greet a user.')
+def main(cli):
+    cli.log.info('No subcommand specified!')
+    cli.print_usage()</p>
+<p>@cli.argument('--comma', help='comma in output', action='store_boolean', default=True)
+@cli.subcommand('Say hello.')
+def hello(cli):
+    comma = ',' if cli.config.hello.comma else ''
+    cli.echo('{fg_green}Hello%s %s!', comma, cli.config.general.name)</p>
+<p>@cli.argument('-f', '--flag', help='Write it in a flag', action='store_true')
+@cli.subcommand('Say goodbye.')
+def goodbye(cli):
+    if cli.config.goodbye.flag:
+        cli.log.debug('Drawing a flag.')
+        colors = ('{bg_red}', '{bg_lightred_ex}', '{bg_lightyellow_ex}', '{bg_green}', '{bg_blue}', '{bg_magenta}')
+        string = 'Goodbye, %s!' % cli.config.general.name
+        for i, letter in enumerate(string):
+            color = colors[i % len(colors)]
+            cli.echo(color + letter + ' '*39)
+    else:
+        cli.log.warning('Parting is such sweet sorrow.')
+        cli.echo('{fg_blue}Goodbye, %s!', cli.config.general.name)</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+    cli()
+```</p>
 <h2 id="example-output">Example Output<a class="headerlink" href="#example-output" title="Permanent link">&para;</a></h2>
 <p>Now that we've written our program and we have a better idea what is going
 on, let's explore how it works. We'll start by demonstrating it with no
@@ -1072,6 +924,56 @@ arguments passed.</p>
 <p>Finally, let's combine it all together to demonstrate the use of both
 general and subcommand flags:</p>
 <p><img alt="Flag Output" src="../images/tutorial_example4.png" /></p>
+<h2 id="nested-subcommands">Nested Subcommands<a class="headerlink" href="#nested-subcommands" title="Permanent link">&para;</a></h2>
+<p>MILC supports multi-level subcommands (like <code>git remote add</code>) via the <code>parent=</code>
+parameter on <code>@cli.subcommand()</code>. Pass the parent <strong>function object</strong> — not a string.</p>
+<p>```python</p>
+<h1 id="usrbinenv-python3_4">!/usr/bin/env python3<a class="headerlink" href="#usrbinenv-python3_4" title="Permanent link">&para;</a></h1>
+<p>"""Example MILC program demonstrating nested subcommands.</p>
+<p>PYTHON_ARGCOMPLETE_OK
+"""</p>
+<p>from milc import cli</p>
+<p>cli.milc_options(name='my_app', author='Milc Milcenson', version='1.0.0')</p>
+<p>@cli.argument('-n', '--name', help='Name to greet', default='World')
+@cli.entrypoint('My app.')
+def main(cli):
+    cli.log.info('No subcommand specified!')
+    cli.print_usage()</p>
+<p>@cli.subcommand('Manage remotes.')
+def remote(cli):
+    cli.print_help()</p>
+<p>@cli.argument('--url', help='Remote URL', default='')
+@cli.argument('--fetch', action='store_true', help='Fetch after adding')
+@cli.subcommand('Add a remote.', parent=remote)
+def add(cli):
+    cli.echo('Adding %s (fetch=%s)', cli.config.remote.add.url, cli.config.remote.add.fetch)</p>
+<p>@cli.argument('--name', help='Remote name', default='')
+@cli.subcommand('Remove a remote.', parent=remote)
+def remove(cli):
+    cli.echo('Removing %s', cli.config.remote.remove.name)</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+    cli()
+```</p>
+<p>Arguments for nested subcommands are accessed via a matching config path:</p>
+<p><code>python
+cli.config.remote.add.url      # attribute access
+cli.config['remote']['add']['url']  # dict access</code></p>
+<p>Two different parent subcommands can each have a child with the same function
+name — MILC dispatches by the registered function object, not by name.</p>
+<p>```python
+@cli.subcommand('Group one.')
+def group1(cli): ...</p>
+<p>@cli.subcommand('Group two.')
+def group2(cli): ...</p>
+<p>@cli.subcommand('Add.', parent=group1)
+def add(cli): ...   # group1 add</p>
+<p>@cli.subcommand('Add.', parent=group2)
+def add(cli): ...   # group2 add — same name, different parent, no conflict
+```</p>
+<p>You can also inspect the active subcommand path at runtime:</p>
+<p><code>python
+cli.subcommand_name   # e.g. 'add'
+cli.subcommand_path   # e.g. ['remote', 'add']</code></p>
 <h2 id="doing-more">Doing More<a class="headerlink" href="#doing-more" title="Permanent link">&para;</a></h2>
 <p>Our program does a lot in only a few lines, but there's a lot more you can
 do. Explore the rest of the documentation to see everything MILC can do.</p>

@@ -393,6 +393,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../environment_variables/" class="md-nav__link">
+        Environment Variables
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../subcommand_config/" class="md-nav__link">
         Config Subcommand
       </a>
@@ -453,6 +467,13 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#custom-loggers" class="md-nav__link">
@@ -645,7 +666,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_milc/" class="md-nav__link">
+      <a href="../api_milc_interface/" class="md-nav__link">
         milc.milc
       </a>
     </li>
@@ -661,20 +682,6 @@
     <li class="md-nav__item">
       <a href="../api_questions/" class="md-nav__link">
         User Input
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api__sparkline/" class="md-nav__link">
-        milc._sparkline
       </a>
     </li>
   
@@ -728,6 +735,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#custom-loggers" class="md-nav__link">
     Custom Loggers
   </a>
@@ -764,23 +778,30 @@
 <h1 id="milc-metadata">MILC Metadata<a class="headerlink" href="#milc-metadata" title="Permanent link">&para;</a></h1>
 <p>In order to initialize some things, such as the configuration file location and the version number reported by <code>--version</code>, MILC needs to know some basic information before the entrypoint is called. You can use <code>cli.milc_options()</code> to set this information.</p>
 <p>Example:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">milc</span><span class="w"> </span><span class="kn">import</span> <span class="n">cli</span>
-
-<span class="n">cli</span><span class="o">.</span><span class="n">milc_options</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Florzelbop&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;1.0.0&#39;</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s1">&#39;Jane Doe&#39;</span><span class="p">)</span>
-</code></pre></div>
+<p>```python
+from milc import cli</p>
+<p>cli.milc_options(name='Florzelbop', version='1.0.0', author='Jane Doe')
+```</p>
 <p>You should only do this once, and you should do it as early in your program's execution as possible.</p>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>name</code> — The name of your program. Used for the config file path and other internal defaults.</li>
+<li><code>version</code> — The version string reported by <code>--version</code>.</li>
+<li><code>author</code> — The author string, used in the config file path on some platforms.</li>
+<li><code>logger</code> — A custom logger instance to use instead of MILC's default logger.</li>
+<li><code>env_prefix</code> — A string prefix that enables <a href="../environment_variables/">environment variable defaults</a>. When set, each <code>--flag</code> can be configured via a <code>&lt;PREFIX&gt;_&lt;FLAG&gt;</code> environment variable. See <a href="../environment_variables/">Environment Variables</a> for full details.</li>
+</ul>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>If you have spread your program among several files, or you are using <code>milc.subcommand.config</code>, you need to use <code>cli.milc_options()</code> before you import those modules.</p>
 </div>
 <h2 id="custom-loggers">Custom Loggers<a class="headerlink" href="#custom-loggers" title="Permanent link">&para;</a></h2>
 <p>You can also use this to pass in custom loggers.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">milc</span><span class="w"> </span><span class="kn">import</span> <span class="n">cli</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">my_program</span><span class="w"> </span><span class="kn">import</span> <span class="n">custom_logger</span>
-
-<span class="n">cli</span><span class="o">.</span><span class="n">milc_options</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">custom_logger</span><span class="p">)</span>
-</code></pre></div>
+<p>```python
+from milc import cli</p>
+<p>from my_program import custom_logger</p>
+<p>cli.milc_options(logger=custom_logger)
+```</p>
 <h2 id="deprecated-set_metadata">Deprecated: set_metadata()<a class="headerlink" href="#deprecated-set_metadata" title="Permanent link">&para;</a></h2>
 <p>Earlier versions of MILC used <code>milc.set_metadata</code> instead. This is still supported but will throw a Deprecation warning.</p>
 

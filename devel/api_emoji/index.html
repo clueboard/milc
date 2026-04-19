@@ -391,6 +391,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../environment_variables/" class="md-nav__link">
+        Environment Variables
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../subcommand_config/" class="md-nav__link">
         Config Subcommand
       </a>
@@ -607,7 +621,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_milc/" class="md-nav__link">
+      <a href="../api_milc_interface/" class="md-nav__link">
         milc.milc
       </a>
     </li>
@@ -623,20 +637,6 @@
     <li class="md-nav__item">
       <a href="../api_questions/" class="md-nav__link">
         User Input
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api__sparkline/" class="md-nav__link">
-        milc._sparkline
       </a>
     </li>
   
@@ -739,10 +739,10 @@
 </tbody>
 </table>
 <p>If you'd like to use your own icon for a level instead you can simply redefine it:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">milc.emoji</span><span class="w"> </span><span class="kn">import</span> <span class="n">EMOJI_LOGLEVELS</span>
-
-<span class="n">EMOJI_LOGLEVELS</span><span class="p">[</span><span class="s1">&#39;INFO&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">fg_green</span><span class="p">}</span><span class="n">ℹ</span><span class="s1">&#39;</span>
-</code></pre></div>
+<p>```python
+from milc.emoji import EMOJI_LOGLEVELS</p>
+<p>EMOJI_LOGLEVELS['INFO'] = {fg_green}ℹ'
+```</p>
 
 
 
@@ -779,7 +779,7 @@
       
       
         
-        <a href="../api_milc/" class="md-footer__link md-footer__link--next" aria-label="Next: milc.milc" rel="next">
+        <a href="../api_milc_interface/" class="md-footer__link md-footer__link--next" aria-label="Next: milc.milc" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">

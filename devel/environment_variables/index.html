@@ -8,14 +8,14 @@
       
       
       
-        <link rel="canonical" href="https://milc.clueboard.co/devel/api__sparkline/">
+        <link rel="canonical" href="https://milc.clueboard.co/devel/environment_variables/">
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-8.5.10">
     
     
       
-        <title>milc._sparkline - MILC &mdash; A Python 3 CLI Framework</title>
+        <title>Environment Variables - MILC &mdash; A Python 3 CLI Framework</title>
       
     
     
@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#_sparkline" class="md-skip">
+        <a href="#environment-variables" class="md-skip">
           Skip to content
         </a>
       
@@ -107,7 +107,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              milc._sparkline
+              Environment Variables
             
           </span>
         </div>
@@ -305,14 +305,16 @@
 
   
   
+    
+  
   
     
       
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
       
       
       
@@ -380,6 +382,30 @@
       <a href="../configuration/" class="md-nav__link">
         Configuration
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Environment Variables
+      </a>
+      
     </li>
   
 
@@ -509,16 +535,14 @@
 
   
   
-    
-  
   
     
       
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" checked>
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" checked>
       
       
       
@@ -597,7 +621,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_milc/" class="md-nav__link">
+      <a href="../api_milc_interface/" class="md-nav__link">
         milc.milc
       </a>
     </li>
@@ -614,61 +638,6 @@
       <a href="../api_questions/" class="md-nav__link">
         User Input
       </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          milc._sparkline
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        milc._sparkline
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#arguments" class="md-nav__link">
-    Arguments
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -714,21 +683,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#arguments" class="md-nav__link">
-    Arguments
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -741,79 +695,140 @@
                 
                   
 
-  <a href="https://github.com/clueboard/milc/edit/master/docs/api__sparkline.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/clueboard/milc/edit/master/docs/environment_variables.md" title="Edit this page" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
-<p><a id="_sparkline"></a></p>
-<h1 id="_sparkline">_sparkline<a class="headerlink" href="#_sparkline" title="Permanent link">&para;</a></h1>
-<p>Display sparklines from a sequence of numbers.</p>
-<p><a id="_sparkline.is_number"></a></p>
-<h4 id="is_number">is_number<a class="headerlink" href="#is_number" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_number</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span>
-</code></pre></div>
-<p>Returns true if i is a number. Used to filter non-numbers from a list.</p>
-<p><a id="_sparkline.sparkline"></a></p>
-<h4 id="sparkline">sparkline<a class="headerlink" href="#sparkline" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sparkline</span><span class="p">(</span><span class="n">number_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-              <span class="o">*</span><span class="p">,</span>
-              <span class="n">min_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-              <span class="n">max_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-              <span class="n">highlight_low</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">-</span><span class="n">inf</span><span class="p">,</span>
-              <span class="n">highlight_high</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">inf</span><span class="p">,</span>
-              <span class="n">highlight_low_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-              <span class="n">highlight_high_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-              <span class="n">negative_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{fg_red}</span><span class="s1">&#39;</span><span class="p">,</span>
-              <span class="n">positive_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-              <span class="n">highlight_low_reset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{fg_reset}</span><span class="s1">&#39;</span><span class="p">,</span>
-              <span class="n">highlight_high_reset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{fg_reset}</span><span class="s1">&#39;</span><span class="p">,</span>
-              <span class="n">negative_reset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{fg_reset}</span><span class="s1">&#39;</span><span class="p">,</span>
-              <span class="n">positive_reset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{fg_reset}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span>
-</code></pre></div>
-<p>Display a sparkline from a sequence of numbers.</p>
-<p>If you wish to exclude extreme values, or you want to limit the set of characters used, you can adjust <code>min_value</code> and <code>max_value</code> to your own values. Values between your actual min/max will exclude datapoints, while values outside your actual min/max will compress your data into fewer sparks.</p>
-<p>If you want to highlight data that is too low or too high you can use 'highlight_low' and <code>highlight_high</code> to set this. You will also need to set your colors, see below for more details.</p>
-<p>By default this function will display negative numbers in red and positive numbers in the system default color. You can use <code>negative_color</code>, <code>negative_reset</code>, <code>positive_color</code>, and <code>positive_reset</code> to change this behavior.</p>
-<p>If you wish to color your sparkline according to other rules it is recommended to generate it without color and then add color yourself.</p>
-<h3 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h3>
-<div class="codehilite"><pre><span></span><code>min_value
-    The lowest value in your sparkline. If not provided it will be determined automatically.
-
-max_value
-    The highest value in your sparkline. If not provided it will be determined automatically.
-
-highlight_low
-    When a number is less than this value it will be highlighted with `highlight_low_color`.
-
-highlight_high
-    When a number is greater than this value it will be highlighted with `highlight_high_color`.
-
-highlight_low_color
-    A MILC or ANSI color code to apply to integers greater than highlight_low.
-
-highlight_high_color
-    A MILC or ANSI color code to apply to integers greater than highlight_high.
-
-negative_color
-    A MILC or ANSI color code to apply to integers less than 0.
-
-positive_color
-    A MILC or ANSI color code to apply to integers greater than 0.
-
-highlight_low_reset
-    A MILC or ANSI color code to reset the color code applied in `highlight_low_color`. This is usually `{fg_reset}`, `{bg_reset}`, or `{style_reset_all}`.
-
-highlight_high_reset
-    A MILC or ANSI color code to reset the color code applied in `highlight_high_color`. This is usually `{fg_reset}`, `{bg_reset}`, or `{style_reset_all}`.
-
-negative_reset
-    A MILC or ANSI color code to reset the color code applied in `negative_color`. This is usually `{fg_reset}`, `{bg_reset}`, or `{style_reset_all}`.
-
-positive_reset
-    A MILC or ANSI color code to reset the color code applied in `positive_color`. This is usually `{fg_reset}`, `{bg_reset}`, or `{style_reset_all}`.
-</code></pre></div>
+<h1 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h1>
+<p>MILC can automatically populate argument values from environment variables. This lets users configure your program without passing flags every time, while still allowing CLI flags to override them.</p>
+<h1 id="enabling-env_prefix">Enabling env_prefix<a class="headerlink" href="#enabling-env_prefix" title="Permanent link">&para;</a></h1>
+<p>Set <code>env_prefix</code> in <code>cli.milc_options()</code> to opt in:</p>
+<p>```python
+from milc import cli</p>
+<p>cli.milc_options(name='myapp', env_prefix='MYAPP')
+```</p>
+<p>This maps each <code>--flag</code> to an environment variable named <code>&lt;PREFIX&gt;_&lt;FLAG&gt;</code> (uppercase, hyphens replaced with underscores). For example, <code>--host</code> maps to <code>MYAPP_HOST</code>.</p>
+<h1 id="priority-order">Priority Order<a class="headerlink" href="#priority-order" title="Permanent link">&para;</a></h1>
+<p>When <code>env_prefix</code> is set, values are resolved in this order (highest to lowest):</p>
+<ol>
+<li>Command-line argument (<code>--host myhost</code>)</li>
+<li>Environment variable (<code>MYAPP_HOST=myhost</code>)</li>
+<li>Config file (<code>[general] host = myhost</code>)</li>
+<li>Default value</li>
+</ol>
+<h1 id="basic-example">Basic Example<a class="headerlink" href="#basic-example" title="Permanent link">&para;</a></h1>
+<p>```python
+from milc import cli</p>
+<p>cli.milc_options(name='myapp', env_prefix='MYAPP')</p>
+<p>@cli.argument('--host', required=True, help='Hostname')
+@cli.argument('--port', type=int, default=8080, help='Port number')
+@cli.entrypoint('Start the server.')
+def main(cli):
+    cli.echo('Connecting to %s:%s', cli.config.general.host, cli.config.general.port)</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+    cli()
+```</p>
+<p>With this setup, all of these are equivalent:</p>
+<p>```sh</p>
+<h1 id="cli-flag">CLI flag<a class="headerlink" href="#cli-flag" title="Permanent link">&para;</a></h1>
+<p>myapp --host db.example.com</p>
+<h1 id="environment-variable">Environment variable<a class="headerlink" href="#environment-variable" title="Permanent link">&para;</a></h1>
+<p>MYAPP_HOST=db.example.com myapp</p>
+<h1 id="config-file">Config file<a class="headerlink" href="#config-file" title="Permanent link">&para;</a></h1>
+<p>myapp config general.host=db.example.com
+```</p>
+<h1 id="type-coercion">Type Coercion<a class="headerlink" href="#type-coercion" title="Permanent link">&para;</a></h1>
+<p>Environment variable values are always strings. MILC coerces them using the <code>type=</code> function from the argument definition:</p>
+<p><code>python
+@cli.argument('--port', type=int, default=8080, help='Port number')</code></p>
+<p>```sh
+MYAPP_PORT=9090 myapp --host db.example.com</p>
+<h1 id="cliconfiggeneralport-9090-int-not-str">cli.config.general.port == 9090  (int, not str)<a class="headerlink" href="#cliconfiggeneralport-9090-int-not-str" title="Permanent link">&para;</a></h1>
+<p>```</p>
+<p>If the value cannot be coerced, MILC exits with a readable error message:</p>
+<p><code>error: environment variable MYAPP_PORT='notanumber' is not the correct type: invalid literal for int() with base 10: 'notanumber'</code></p>
+<h1 id="boolean-flags">Boolean Flags<a class="headerlink" href="#boolean-flags" title="Permanent link">&para;</a></h1>
+<p><code>store_true</code> arguments accept truthy/falsy string values:</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>true</code>, <code>yes</code>, <code>1</code>, <code>on</code></td>
+<td><code>True</code></td>
+</tr>
+<tr>
+<td><code>false</code>, <code>no</code>, <code>0</code>, <code>off</code>, <code>-1</code>, ``</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>python
+@cli.argument('--verbose', action='store_true', help='Verbose mode')</code></p>
+<p><code>sh
+MYAPP_VERBOSE=true myapp --host db.example.com   # verbose=True
+MYAPP_VERBOSE=false myapp --host db.example.com  # verbose=False</code></p>
+<p><code>store_false</code> arguments are not mapped to environment variables.</p>
+<h1 id="unsupported-argument-types">Unsupported Argument Types<a class="headerlink" href="#unsupported-argument-types" title="Permanent link">&para;</a></h1>
+<p>The following argument types are not supported and will silently ignore any matching environment variable:</p>
+<ul>
+<li><code>store_false</code> — the <code>--no-X</code> half of <code>store_boolean</code> pairs</li>
+<li><code>nargs='+'</code> / <code>nargs='*'</code> / <code>nargs='?'</code> / <code>nargs=argparse.REMAINDER</code> / <code>nargs=N</code> — <code>nargs='?'</code> is excluded because passing the flag with no value should use <code>const</code>, not the env var, and that distinction cannot be made reliably; the others cannot be reliably split from a single string</li>
+<li><code>action='append'</code> — each env var value would become a string element rather than extending a list correctly</li>
+</ul>
+<h1 id="subcommand-scoping">Subcommand Scoping<a class="headerlink" href="#subcommand-scoping" title="Permanent link">&para;</a></h1>
+<p>Environment variables for subcommand arguments are scoped using the subcommand name as an additional prefix:</p>
+<p><code>&lt;PREFIX&gt;_&lt;SUBCOMMAND&gt;_&lt;FLAG&gt;</code></p>
+<p>```python
+cli.milc_options(name='myapp', env_prefix='MYAPP')</p>
+<p>@cli.argument('--host', default='global-default', help='Global hostname')
+@cli.entrypoint('My app.')
+def main(cli):
+    cli.echo('host=%s', cli.config.general.host)</p>
+<p>@cli.argument('--host', default='subc-default', help='Subcommand hostname')
+@cli.subcommand('A subcommand.')
+def deploy(cli):
+    cli.echo('host=%s', cli.config.deploy.host)
+```</p>
+<table>
+<thead>
+<tr>
+<th>Env var</th>
+<th>Affects</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MYAPP_HOST</code></td>
+<td><code>--host</code> on the entrypoint</td>
+</tr>
+<tr>
+<td><code>MYAPP_DEPLOY_HOST</code></td>
+<td><code>--host</code> on the <code>deploy</code> subcommand</td>
+</tr>
+</tbody>
+</table>
+<p>The two env vars are independent. <code>MYAPP_HOST</code> does not affect <code>deploy --host</code>, and vice versa.</p>
+<h1 id="empty-prefix">Empty Prefix<a class="headerlink" href="#empty-prefix" title="Permanent link">&para;</a></h1>
+<p>Setting <code>env_prefix=''</code> consults environment variables without any prefix:</p>
+<p><code>python
+cli.milc_options(name='myapp', env_prefix='')</code></p>
+<p>With this setting, <code>--host</code> maps to the env var <code>HOST</code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>An empty prefix maps flags to short, generic names (<code>HOST</code>, <code>PORT</code>, <code>USER</code>, <code>PATH</code>, etc.) that frequently collide with variables already set in the shell environment. For example, <code>USER</code> and <code>PATH</code> are set by virtually every shell session. Prefer a meaningful prefix like <code>MYAPP</code> to avoid silent, hard-to-diagnose value injection.</p>
+</div>
+<h1 id="checking-provenance">Checking Provenance<a class="headerlink" href="#checking-provenance" title="Permanent link">&para;</a></h1>
+<p>Use <code>cli.config_source</code> to determine where a value came from:</p>
+<p><code>python
+cli.config_source.general.host  # 'argument', 'env_var', 'config_file', or None</code></p>
+<p>See <a href="../configuration/#where-did-a-value-come-from">Configuration</a> for details.</p>
 
 
 
@@ -834,7 +849,7 @@ positive_reset
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../api_questions/" class="md-footer__link md-footer__link--prev" aria-label="Previous: User Input" rel="prev">
+        <a href="../configuration/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Configuration" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -843,20 +858,20 @@ positive_reset
               <span class="md-footer__direction">
                 Previous
               </span>
-              User Input
+              Configuration
             </div>
           </div>
         </a>
       
       
         
-        <a href="../api_subcommand_config/" class="md-footer__link md-footer__link--next" aria-label="Next: milc.subcommand.config" rel="next">
+        <a href="../subcommand_config/" class="md-footer__link md-footer__link--next" aria-label="Next: Config Subcommand" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              milc.subcommand.config
+              Config Subcommand
             </div>
           </div>
           <div class="md-footer__button md-icon">

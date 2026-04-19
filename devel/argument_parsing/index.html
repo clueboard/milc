@@ -403,6 +403,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../environment_variables/" class="md-nav__link">
+        Environment Variables
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../subcommand_config/" class="md-nav__link">
         Config Subcommand
       </a>
@@ -607,7 +621,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_milc/" class="md-nav__link">
+      <a href="../api_milc_interface/" class="md-nav__link">
         milc.milc
       </a>
     </li>
@@ -623,20 +637,6 @@
     <li class="md-nav__item">
       <a href="../api_questions/" class="md-nav__link">
         User Input
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api__sparkline/" class="md-nav__link">
-        milc._sparkline
       </a>
     </li>
   
@@ -722,8 +722,8 @@
 <p>Argument decorators (<code>@argument()</code>) are used to define command line flags that the user has passed. For the most part the arguments passed to this decorator are passed to <a href="https://docs.python.org/3/library/argparse.html#the-add-argument-method"><code>ArgumentParser.add_argument()</code></a> directly. As such you can use all of those method arguments with MILC's <code>@argument()</code> decorator.</p>
 <h3 id="arg_only">arg_only<a class="headerlink" href="#arg_only" title="Permanent link">&para;</a></h3>
 <p>Sometimes you want an argument to be a CLI flag only, and to not have a corresponding configuration option. With <code>arg_only=True</code> in your <code>@argument()</code> decorator this is possible. You will have to look in <code>cli.args</code> to find the value of that flag, it will not be populated to <code>cli.config</code>.</p>
-<h3 id="completers">completers<a class="headerlink" href="#completers" title="Permanent link">&para;</a></h3>
-<p>You can specify <a href="https://kislyuk.github.io/argcomplete/#specifying-completers">argcomplete completers</a> for your arguments by passing <code>completers</code>. For more detail see the <a href="../argcomplete/">argcomplete</a> page.</p>
+<h3 id="completer">completer<a class="headerlink" href="#completer" title="Permanent link">&para;</a></h3>
+<p>You can specify <a href="https://kislyuk.github.io/argcomplete/#specifying-completers">argcomplete completers</a> for your arguments by passing <code>completer</code>. For more detail see the <a href="../argcomplete/">argcomplete</a> page.</p>
 <h3 id="deprecated">deprecated<a class="headerlink" href="#deprecated" title="Permanent link">&para;</a></h3>
 <p>You can use the <code>deprecated</code> argument to mark a flag as deprecated. To use this you should set it to a string that will be displayed in --help. For example:</p>
 <div class="codehilite"><pre><span></span><code>@argument(&#39;--old&#39;, action=&#39;store_true&#39;, deprecated=&#39;Use --new instead&#39;, help=&#39;The old action for my command.&#39;)
@@ -735,6 +735,11 @@
 
 <h3 id="action-store_boolean">action: store_boolean<a class="headerlink" href="#action-store_boolean" title="Permanent link">&para;</a></h3>
 <p>In addition to the normal set of <code>action=</code> arguments that you can pass to <code>@argument()</code>, you can also pass a new action called <code>store_boolean</code>. This action behaves like <code>store_true</code> except that it adds a corresponding <code>--no-&lt;argument&gt;</code> flag that the user can pass as well.</p>
+<h1 id="environment-variable-defaults">Environment Variable Defaults<a class="headerlink" href="#environment-variable-defaults" title="Permanent link">&para;</a></h1>
+<p>MILC can automatically read argument values from environment variables. Enable this by passing <code>env_prefix</code> to <code>cli.milc_options()</code>:</p>
+<p><code>python
+cli.milc_options(name='myapp', env_prefix='MYAPP')</code></p>
+<p>With this set, <code>--host</code> will also accept its value from <code>MYAPP_HOST</code>. CLI flags always take priority over environment variables. See the <a href="../environment_variables/">Environment Variables</a> page for full details.</p>
 
 
 

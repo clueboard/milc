@@ -474,6 +474,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../environment_variables/" class="md-nav__link">
+        Environment Variables
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../subcommand_config/" class="md-nav__link">
         Config Subcommand
       </a>
@@ -678,7 +692,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_milc/" class="md-nav__link">
+      <a href="../api_milc_interface/" class="md-nav__link">
         milc.milc
       </a>
     </li>
@@ -694,20 +708,6 @@
     <li class="md-nav__item">
       <a href="../api_questions/" class="md-nav__link">
         User Input
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api__sparkline/" class="md-nav__link">
-        milc._sparkline
       </a>
     </li>
   
@@ -835,17 +835,17 @@ text both for log output and when <code>cli.echo()</code>ing directly.</p>
 curly-braced delimited color names to your log strings. They will
 automatically output color or not as appropriate.</p>
 <h3 id="colored-log-example">Colored Log Example<a class="headerlink" href="#colored-log-example" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="n">cli</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{bg_red}{fg_white}</span><span class="s1">Could not open file </span><span class="si">%s</span><span class="s1">!&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
-</code></pre></div>
+<p><code>python
+cli.log.error('{bg_red}{fg_white}Could not open file %s!', filename)</code></p>
 <h2 id="colorizing-printed-output">Colorizing Printed Output<a class="headerlink" href="#colorizing-printed-output" title="Permanent link">&para;</a></h2>
 <p>You can use <code>cli.echo()</code> to print strings to stdout in the same way as
 <code>cli.log</code>. Just add the ANSI token below to your string to colorize your
 output.</p>
 <h3 id="colored-print-example">Colored Print Example<a class="headerlink" href="#colored-print-example" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{bg_blue}{fg_white}</span><span class="s1">|___|</span><span class="se">\\</span><span class="s1">___|</span><span class="si">{style_reset_all}</span><span class="s1"> &#39;</span> \
-       <span class="s1">&#39;</span><span class="si">{bg_red}{fg_white}</span><span class="s1">SHARK ATTACK!&#39;</span>
-<span class="n">cli</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-</code></pre></div>
+<p><code>python
+text = '{bg_blue}{fg_white}|___|\\___|{style_reset_all} ' \
+       '{bg_red}{fg_white}SHARK ATTACK!'
+cli.echo(text)</code></p>
 <h2 id="available-colors">Available Colors<a class="headerlink" href="#available-colors" title="Permanent link">&para;</a></h2>
 <p>Colors prefixed with 'fg' will affect the foreground (text) color. Colors
 prefixed with 'bg' will affect the background color. The included

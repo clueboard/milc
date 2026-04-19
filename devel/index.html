@@ -459,6 +459,20 @@
   
   
     <li class="md-nav__item">
+      <a href="environment_variables/" class="md-nav__link">
+        Environment Variables
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="subcommand_config/" class="md-nav__link">
         Config Subcommand
       </a>
@@ -663,7 +677,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api_milc/" class="md-nav__link">
+      <a href="api_milc_interface/" class="md-nav__link">
         milc.milc
       </a>
     </li>
@@ -679,20 +693,6 @@
     <li class="md-nav__item">
       <a href="api_questions/" class="md-nav__link">
         User Input
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="api__sparkline/" class="md-nav__link">
-        milc._sparkline
       </a>
     </li>
   
@@ -800,7 +800,7 @@
 
 
 <h1 id="milc-an-opinionated-batteries-included-python-3-cli-framework">MILC - An Opinionated Batteries-Included Python 3 CLI Framework<a class="headerlink" href="#milc-an-opinionated-batteries-included-python-3-cli-framework" title="Permanent link">&para;</a></h1>
-<p>MILC is a framework for writing CLI applications in Python 3.6+. It gives you all the features users expect from a modern CLI tool out of the box:</p>
+<p>MILC is a framework for writing CLI applications in Python 3.9+. It gives you all the features users expect from a modern CLI tool out of the box:</p>
 <ul>
 <li>CLI Argument Parsing, with or without subcommands</li>
 <li>Automatic tab-completion support through <a href="https://github.com/kislyuk/argcomplete">argcomplete</a></li>
@@ -811,26 +811,28 @@
 <li>Labelling log output with colored emoji to easily distinguish message types</li>
 <li>Thread safety</li>
 <li>More than 60 built-in <a href="https://github.com/manrajgrover/py-spinners">spinners</a> with the ability to add your own</li>
+<li>Subcommands, including nested multi-level subcommands</li>
+<li>Environment variable defaults via <code>env_prefix</code></li>
 </ul>
 <h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
 <p>Read <a href="tutorial/">the tutorial</a> to learn how to use MILC.</p>
 <h2 id="reporting-bugs-and-requesting-features">Reporting Bugs and Requesting Features<a class="headerlink" href="#reporting-bugs-and-requesting-features" title="Permanent link">&para;</a></h2>
 <p>Please let us know about any bugs and/or feature requests you have: <a href="https://github.com/clueboard/milc/issues">https://github.com/clueboard/milc/issues</a></p>
 <h2 id="short-example">Short Example<a class="headerlink" href="#short-example" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">milc</span><span class="w"> </span><span class="kn">import</span> <span class="n">cli</span>
-
-<span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;-c&#39;</span><span class="p">,</span> <span class="s1">&#39;--comma&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_boolean&#39;</span><span class="p">,</span> <span class="n">arg_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;comma in output&#39;</span><span class="p">)</span>
-<span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;--name&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;World&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Name to greet&#39;</span><span class="p">)</span>
-<span class="nd">@cli</span><span class="o">.</span><span class="n">entrypoint</span><span class="p">(</span><span class="s1">&#39;My useful CLI tool.&#39;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">cli</span><span class="p">):</span>
-    <span class="n">comma</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span> <span class="k">if</span> <span class="n">cli</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">comma</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
-    <span class="n">cli</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Hello</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">!&#39;</span><span class="p">,</span> <span class="n">comma</span><span class="p">,</span> <span class="n">cli</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">cli</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-</code></pre></div>
+<p>```python
+from milc import cli</p>
+<p>@cli.argument('-c', '--comma', action='store_boolean', arg_only=True, default=True, help='comma in output')
+@cli.argument('-n', '--name', default='World', help='Name to greet')
+@cli.entrypoint('My useful CLI tool.')
+def main(cli):
+    comma = ',' if cli.args.comma else ''
+    cli.log.info('Hello%s %s!', comma, cli.config.general.name)</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+    cli()
+```</p>
 <h3 id="output">Output<a class="headerlink" href="#output" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>$ ./hello
+<p>```
+$ ./hello
 ℹ Hello, World!
 $ ./hello --no-unicode
 INFO Hello, World!
@@ -839,13 +841,13 @@ $ ./hello --no-comma
 $ ./hello -h
 usage: hello [-h] [-V] [-v] [--datetime-fmt GENERAL_DATETIME_FMT]
              [--log-fmt GENERAL_LOG_FMT] [--log-file-fmt GENERAL_LOG_FILE_FMT]
+             [--log-file-level {debug,info,warning,error,critical}]
              [--log-file GENERAL_LOG_FILE] [--color] [--no-color]
-             [--config-file GENERAL_CONFIG_FILE] [--save-config]
-             [-n GENERAL_NAME] [-c] [--no-comma]
-
-Greet a user.
-
-optional arguments:
+             [--unicode] [--no-unicode] [--interactive]
+             [--config-file GENERAL_CONFIG_FILE]
+             [-n GENERAL_NAME] [-c] [--no-comma]</p>
+<p>Greet a user.</p>
+<p>options:
   -h, --help            show this help message and exit
   -V, --version         Display the version and exit
   -v, --verbose         Make the logging more verbose
@@ -855,6 +857,8 @@ optional arguments:
                         Format string for printed log output
   --log-file-fmt GENERAL_LOG_FILE_FMT
                         Format string for log file.
+  --log-file-level {debug,info,warning,error,critical}
+                        Logging level for log file.
   --log-file GENERAL_LOG_FILE
                         File to write log messages to
   --color               Enable color in output
@@ -863,12 +867,12 @@ optional arguments:
   --no-unicode          Disable unicode loglevels
   --interactive         Force interactive mode even when stdout is not a tty.
   --config-file GENERAL_CONFIG_FILE
-                        The config file to read and/or write
+                        The location for the configuration file
   -n GENERAL_NAME, --name GENERAL_NAME
                         Name to greet
   -c, --comma           Enable comma in output
   --no-comma            Disable comma in output
-</code></pre></div>
+```</p>
 <h1 id="breaking-changes">Breaking Changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h1>
 <p>MILC follows <a href="https://semver.org/">Semantic Versioning</a>. You can see a list of why we made major or minor releases on the <a href="breaking_changes/">Breaking Changes</a> page.</p>
 

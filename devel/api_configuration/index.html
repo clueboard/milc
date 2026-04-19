@@ -391,6 +391,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../environment_variables/" class="md-nav__link">
+        Environment Variables
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../subcommand_config/" class="md-nav__link">
         Config Subcommand
       </a>
@@ -652,7 +666,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_milc/" class="md-nav__link">
+      <a href="../api_milc_interface/" class="md-nav__link">
         milc.milc
       </a>
     </li>
@@ -668,20 +682,6 @@
     <li class="md-nav__item">
       <a href="../api_questions/" class="md-nav__link">
         User Input
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api__sparkline/" class="md-nav__link">
-        milc._sparkline
       </a>
     </li>
   
@@ -779,68 +779,74 @@
 <h1 id="configuration">configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h1>
 <p><a id="configuration.Configuration"></a></p>
 <h2 id="configuration-objects">Configuration Objects<a class="headerlink" href="#configuration-objects" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Configuration</span><span class="p">(</span><span class="n">AttrDict</span><span class="p">)</span>
-</code></pre></div>
+<p><code>python
+class Configuration(AttrDict)</code></p>
 <p>Represents the running configuration.</p>
 <p>This class never raises IndexError, instead it will return None if a
 section or option does not yet exist.</p>
 <p><a id="configuration.Configuration.__getitem__"></a></p>
 <h4 id="__getitem__">__getitem__<a class="headerlink" href="#__getitem__" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span>
-</code></pre></div>
+<p><code>python
+def __getitem__(key: Hashable) -&gt; Any</code></p>
 <p>Returns a config section, creating it if it doesn't exist yet.</p>
 <p><a id="configuration.ConfigurationSection"></a></p>
 <h2 id="configurationsection-objects">ConfigurationSection Objects<a class="headerlink" href="#configurationsection-objects" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ConfigurationSection</span><span class="p">(</span><span class="n">Configuration</span><span class="p">)</span>
-</code></pre></div>
+<p><code>python
+class ConfigurationSection(Configuration)</code></p>
 <p><a id="configuration.ConfigurationSection.__getitem__"></a></p>
 <h4 id="__getitem___1">__getitem__<a class="headerlink" href="#__getitem___1" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span>
-</code></pre></div>
+<p><code>python
+def __getitem__(key: Hashable) -&gt; Any</code></p>
 <p>Returns a config value, pulling from the <code>user</code> section as a fallback.
 This is called when the attribute is accessed either via the get method or through [ ] index.</p>
 <p><a id="configuration.ConfigurationSection.__getattr__"></a></p>
 <h4 id="__getattr__">__getattr__<a class="headerlink" href="#__getattr__" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span>
-</code></pre></div>
+<p><code>python
+def __getattr__(key: str) -&gt; Any</code></p>
 <p>Returns the config value from the <code>user</code> section.
 This is called when the attribute is accessed via dot notation but does not exist.</p>
 <p><a id="configuration.ConfigurationSection.__setattr__"></a></p>
 <h4 id="__setattr__">__setattr__<a class="headerlink" href="#__setattr__" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
-</code></pre></div>
+<p><code>python
+def __setattr__(key: str, value: Any) -&gt; None</code></p>
 <p>Sets dictionary value when an attribute is set.</p>
 <p><a id="configuration.SubparserWrapper"></a></p>
 <h2 id="subparserwrapper-objects">SubparserWrapper Objects<a class="headerlink" href="#subparserwrapper-objects" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SubparserWrapper</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
-</code></pre></div>
+<p><code>python
+class SubparserWrapper(object)</code></p>
 <p>Wrap subparsers so we can track what options the user passed.</p>
+<p><a id="configuration.SubparserWrapper.get_child_subparsers"></a></p>
+<h4 id="get_child_subparsers">get_child_subparsers<a class="headerlink" href="#get_child_subparsers" title="Permanent link">&para;</a></h4>
+<p><code>python
+def get_child_subparsers() -&gt; Any</code></p>
+<p>Lazily create and return the _SubParsersAction for nested sub-subcommands.</p>
 <p><a id="configuration.SubparserWrapper.completer"></a></p>
 <h4 id="completer">completer<a class="headerlink" href="#completer" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">completer</span><span class="p">(</span><span class="n">completer</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
-</code></pre></div>
+<p><code>python
+def completer(completer: Any) -&gt; None</code></p>
 <p>Add an arpcomplete completer to this subcommand.</p>
 <p><a id="configuration.SubparserWrapper.add_argument"></a></p>
 <h4 id="add_argument">add_argument<a class="headerlink" href="#add_argument" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
-</code></pre></div>
+<p><code>python
+def add_argument(*args: Any, **kwargs: Any) -&gt; None</code></p>
 <p>Add an argument for this subcommand.</p>
 <p>This also stores the default for the argument in <code>self.cli.default_arguments</code>.</p>
 <p><a id="configuration.get_argument_strings"></a></p>
 <h4 id="get_argument_strings">get_argument_strings<a class="headerlink" href="#get_argument_strings" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_argument_strings</span><span class="p">(</span><span class="n">arg_parser</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-                         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-</code></pre></div>
+<p><code>python
+def get_argument_strings(arg_parser: Any, *args: Any,
+                         **kwargs: Any) -&gt; List[str]</code></p>
 <p>Takes argparse arguments and returns a list of argument strings or positional names.</p>
 <p><a id="configuration.get_argument_name"></a></p>
 <h4 id="get_argument_name">get_argument_name<a class="headerlink" href="#get_argument_name" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_argument_name</span><span class="p">(</span><span class="n">arg_parser</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span>
-</code></pre></div>
+<p><code>python
+def get_argument_name(arg_parser: Any, *args: Any, **kwargs: Any) -&gt; Any</code></p>
 <p>Takes argparse arguments and returns the dest name.</p>
 <p><a id="configuration.handle_store_boolean"></a></p>
 <h4 id="handle_store_boolean">handle_store_boolean<a class="headerlink" href="#handle_store_boolean" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">handle_store_boolean</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span>
-</code></pre></div>
+<p><code>python
+def handle_store_boolean(self: 'MILC | SubparserWrapper', *args: Any,
+                         **kwargs: Any) -&gt; Any</code></p>
 <p>Does the add_argument for action='store_boolean'.</p>
 
 

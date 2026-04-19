@@ -391,6 +391,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../environment_variables/" class="md-nav__link">
+        Environment Variables
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../subcommand_config/" class="md-nav__link">
         Config Subcommand
       </a>
@@ -607,7 +621,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_milc/" class="md-nav__link">
+      <a href="../api_milc_interface/" class="md-nav__link">
         milc.milc
       </a>
     </li>
@@ -634,20 +648,6 @@
         User Input
       </a>
       
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api__sparkline/" class="md-nav__link">
-        milc._sparkline
-      </a>
     </li>
   
 
@@ -716,11 +716,11 @@
 <p>Sometimes you need to ask the user a question. MILC provides basic functions for collecting and validating user input. You can find these in the <code>milc.questions</code> module.</p>
 <p><a id="questions.yesno"></a></p>
 <h4 id="yesno">yesno<a class="headerlink" href="#yesno" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">yesno</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-          <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-          <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-          <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span>
-</code></pre></div>
+<p><code>python
+def yesno(prompt: str,
+          *args: Any,
+          default: Optional[bool] = None,
+          **kwargs: Any) -&gt; bool</code></p>
 <p>Displays <code>prompt</code> to the user and gets a yes or no response.</p>
 <p>Returns <code>True</code> for a yes and <code>False</code> for a no.</p>
 <table>
@@ -742,19 +742,19 @@
 </tbody>
 </table>
 <p>If you add <code>--yes</code> and <code>--no</code> arguments to your program the user can answer questions by passing command line flags.</p>
-<div class="highlight"><pre><span></span><code><span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;-y&#39;</span><span class="p">,</span> <span class="s1">&#39;--yes&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">arg_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Answer yes to all questions.&#39;</span><span class="p">)</span>
-<span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;--no&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">arg_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Answer no to all questions.&#39;</span><span class="p">)</span>
-</code></pre></div>
+<p><code>python
+@cli.argument('-y', '--yes', action='store_true', arg_only=True, help='Answer yes to all questions.')
+@cli.argument('-n', '--no', action='store_true', arg_only=True, help='Answer no to all questions.')</code></p>
 <p><a id="questions.password"></a></p>
 <h4 id="password">password<a class="headerlink" href="#password" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">password</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Enter password:&#39;</span><span class="p">,</span>
-             <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-             <span class="n">confirm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-             <span class="n">confirm_prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Confirm password:&#39;</span><span class="p">,</span>
-             <span class="n">confirm_limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
-             <span class="n">validate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-             <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-</code></pre></div>
+<p><code>python
+def password(prompt: str = 'Enter password:',
+             *args: Any,
+             confirm: bool = False,
+             confirm_prompt: str = 'Confirm password:',
+             confirm_limit: int = 3,
+             validate: Optional[Callable[[str], bool]] = None,
+             **kwargs: Any) -&gt; Optional[str]</code></p>
 <p>Securely receive a password from the user. Returns the password or None.</p>
 <p>When running in non-interactive mode this will always return None. Otherwise it will return the confirmed password the user provides.</p>
 <table>
@@ -789,14 +789,14 @@
 </table>
 <p><a id="questions.question"></a></p>
 <h4 id="question">question<a class="headerlink" href="#question" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">question</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-             <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-             <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-             <span class="n">confirm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-             <span class="n">answer_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">T</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-             <span class="n">validate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="n">Concatenate</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">P</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-             <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
-</code></pre></div>
+<p><code>python
+def question(prompt: str,
+             *args: Any,
+             default: Optional[str] = None,
+             confirm: bool = False,
+             answer_type: Optional[Callable[[str], T]] = None,
+             validate: Optional[Callable[Concatenate[str, P], bool]] = None,
+             **kwargs: Any) -&gt; Union[str, T, None]</code></p>
 <p>Allow the user to type in a free-form string to answer.</p>
 <table>
 <thead>
@@ -830,14 +830,14 @@
 </table>
 <p><a id="questions.choice"></a></p>
 <h4 id="choice">choice<a class="headerlink" href="#choice" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">choice</span><span class="p">(</span><span class="n">heading</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-           <span class="n">options</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-           <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-           <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-           <span class="n">confirm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-           <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Please enter your choice: &#39;</span><span class="p">,</span>
-           <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-</code></pre></div>
+<p><code>python
+def choice(heading: str,
+           options: Sequence[str],
+           *args: Any,
+           default: Optional[int] = None,
+           confirm: bool = False,
+           prompt: str = 'Please enter your choice: ',
+           **kwargs: Any) -&gt; Optional[str]</code></p>
 <p>Present the user with a list of options and let them select one.</p>
 <p>Users can enter either the number or the text of their choice. This will return the value of the item they choose, not the numerical index.</p>
 <table>
@@ -895,7 +895,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../api_milc/" class="md-footer__link md-footer__link--prev" aria-label="Previous: milc.milc" rel="prev">
+        <a href="../api_milc_interface/" class="md-footer__link md-footer__link--prev" aria-label="Previous: milc.milc" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -911,13 +911,13 @@
       
       
         
-        <a href="../api__sparkline/" class="md-footer__link md-footer__link--next" aria-label="Next: milc._sparkline" rel="next">
+        <a href="../api_subcommand_config/" class="md-footer__link md-footer__link--next" aria-label="Next: milc.subcommand.config" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              milc._sparkline
+              milc.subcommand.config
             </div>
           </div>
           <div class="md-footer__button md-icon">
