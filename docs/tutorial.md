@@ -34,7 +34,9 @@ Inside our `main()` function we print a simple message to the log file, which by
 
 Finally, we execute our `cli()` program inside the familiar `if __name__ == '__main__':` guard.
 
-If you need setup logic that should always run after MILC has parsed arguments and initialized configuration, but before dispatching to the selected entrypoint/subcommand, use `@cli.prerun`. MILC calls prerun hooks with `cli` as the first argument. You can also pass decorator arguments (for example `@cli.prerun('token', source='init')`) and they will be forwarded directly after `cli`.
+If you need setup logic that should always run after MILC has parsed arguments and initialized configuration, but before dispatching to the selected entrypoint/subcommand, use `@cli.prerun`. This is particularly useful when you are using subcommands and need to do the same initialization across multiple subcommands.
+
+MILC calls prerun hooks with `cli` as the first argument. You can also pass decorator arguments (for example `@cli.prerun('token', source='init')`) and they will be forwarded directly after `cli`.
 
 ## Logging and Printing
 
