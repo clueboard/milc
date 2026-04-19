@@ -38,7 +38,7 @@ def test_example_config():
         # Make sure we get them back
         result = check_command(sys.executable, 'example', '--no-color', '--config-file', tempfile, 'config')
         check_returncode(result)
-        check_assert(result, result.stdout == 'general.name=Test\nhello.comma=True\nuser.comma=True\n')
+        check_assert(result, result.stdout == 'general.name=Test (config)\nhello.comma=True (config)\nuser.comma=True (config)\n')
 
     finally:
         os.remove(tempfile)
