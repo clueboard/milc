@@ -9,6 +9,12 @@ This is a list of breaking changes that have been made to MILC. If your script s
 * The context manager code (with cli: aka `__enter__`/`__exit__`) has been removed. It added unnecessary complexity.
 * Removed support for `set_metadata()` and the `MILC_APP_NAME`, `MILC_APP_VERSION`, and `MILC_APP_AUTHOR` environment vars
 
+# Version 1.11.0
+* Removed Python 3.8 support.
+
+# Version 1.10.0
+* Fixed many bugs identified by the autocanonizer (AI).
+
 # Version 1.9.0
 * Appdirs [has been deprecated](https://github.com/ActiveState/appdirs/issues/79#issuecomment-877645712) and replaced with [platformdirs](https://github.com/tox-dev/platformdirs).
 
