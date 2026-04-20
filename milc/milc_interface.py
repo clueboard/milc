@@ -6,7 +6,7 @@ import sys
 import warnings
 from logging import Logger
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Sequence, TypeVar, Union
+from typing import Any, Callable, Dict, Optional, Sequence, TypeVar, Union, overload
 
 from halo import Halo
 from typing_extensions import ParamSpec
@@ -204,6 +204,23 @@ class MILCInterface:
                 Deprecation message. When set the subcommand will marked as deprecated and this message will be displayed in the help output.
         """
         return self.milc.entrypoint(description, deprecated)
+
+    @overload
+    def prerun(self, handler: Callable[P, R]) -> Callable[P, R]:
+        ...
+
+    @overload
+    def prerun(self, *args: Any, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
+        ...
+
+    def prerun(self, *args: Any, **kwargs: Any) -> Union[Callable[..., Any], Callable[[Callable[..., Any]], Callable[..., Any]]]:
+        """Decorator to run a function after initialization and before dispatch.
+
+        The decorated function is called with ``cli`` as the first argument.
+        Any *args/**kwargs passed to this decorator are forwarded directly to the
+        decorated function at runtime.
+        """
+        return self.milc.prerun(*args, **kwargs)
 
     def subcommand(self, description: str, hidden: bool = False, parent: Optional[Callable[..., Any]] = None, name: Optional[str] = None, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         """Decorator to register a subcommand.

@@ -10,7 +10,7 @@ from decimal import Decimal
 from pathlib import Path
 from platform import platform
 from tempfile import NamedTemporaryFile
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Tuple, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Tuple, TypeVar, Union, overload
 
 if TYPE_CHECKING:
     from argparse import _SubParsersAction
@@ -60,6 +60,7 @@ class MILC(object):
         self._config_store_true: List[str] = []
         self._config_store_false: List[str] = []
         self._entrypoint: Callable[..., Any] = lambda _: None
+        self._prerun: List[Tuple[Callable[..., Any], Tuple[Any, ...], Dict[str, Any]]] = []
         self._spinners: Dict[str, Dict[str, Union[int, Sequence[str]]]] = {}
         self._subcommand = None
         self._initialized = False
@@ -737,6 +738,8 @@ class MILC(object):
 
         try:
             self.check_deprecated()
+            for hook, args, kwargs in self._prerun:
+                hook(self, *args, **kwargs)
 
             if self._subcommand:
                 return self._subcommand(self)
@@ -780,6 +783,44 @@ class MILC(object):
             return handler
 
         return entrypoint_func
+
+    @overload
+    def prerun(self, handler: Callable[P, R]) -> Callable[P, R]:
+        ...
+
+    @overload
+    def prerun(self, *args: Any, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
+        ...
+
+    def prerun(self, *args: Any, **kwargs: Any) -> Union[Callable[..., Any], Callable[[Callable[..., Any]], Callable[..., Any]]]:
+        """Decorator to register a function to run after initialization and before dispatch.
+
+        The decorated function is called with ``cli`` as the first argument.
+        Any *args/**kwargs passed to this decorator are forwarded directly to the
+        decorated function at runtime.
+        """
+        if self._initialized:
+            raise RuntimeError('You must run this before cli()!')
+
+        # Support bare usage as `@cli.prerun`.
+        if len(args) == 1 and not kwargs and callable(args[0]):
+            handler = args[0]
+            self.acquire_lock()
+            try:
+                self._prerun.append((handler, (), {}))
+            finally:
+                self.release_lock()
+            return handler
+
+        def prerun_func(handler: Callable[P, R]) -> Callable[P, R]:
+            self.acquire_lock()
+            try:
+                self._prerun.append((handler, args, kwargs))
+            finally:
+                self.release_lock()
+            return handler
+
+        return prerun_func
 
     def add_subcommand(
         self,
