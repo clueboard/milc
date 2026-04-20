@@ -127,9 +127,10 @@ Set up your development environment:
 
 Please follow this checklist before submitting a PR:
 
+* [ ] Follow the guidelines in CODESTYLE.md
 * [ ] Format your code: `yapf -i -r .`
-* [ ] Generate docs: `./generate_docs`
-* [ ] Add any new doc files to the `nav` section of `mkdocs.yml`
+* [ ] Generate API docs: `./generate_docs`
+* [ ] Add any new API doc files to the `nav` section of `mkdocs.yml`
 * [ ] Run tests: `./ci_tests`
 
 # FAQ
