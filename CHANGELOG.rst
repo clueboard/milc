@@ -2,6 +2,143 @@ Changelog
 =========
 
 
+2.0.0 (2026-04-20)
+------------------
+
+Fix
+~~~
+- Use 'uv run mike' in release_docs to find mike in virtual environment
+  (#89) [Copilot, skullydazed]
+
+Other
+~~~~~
+- New release: 1.11.0 → 2.0.0. [Zach White]
+- Add `@cli.prerun` lifecycle hook with optional argument forwarding
+  (#90) [Copilot, Copilot, Zach White, skullydazed]
+
+  * Add core and interface support for cli.prerun
+- Add missing intermediate versions. [Zach White]
+- Fix tests. [Zach White]
+- Make the clankers happy. [Zach White]
+- Housekeeping. [Zach White]
+- Fix the devel_docs job. [Zach White]
+- Remove context manager, inline initialization into __call__ (#88)
+  [Copilot, skullydazed]
+
+  * Remove context manager, inline initialization into __call__
+
+  - Remove __enter__/__exit__ from both MILC and MILCInterface
+  - Rename _inside_context_manager to _initialized
+  - Inline initialization logic (colorama, arg parsing, config merge,
+    logging setup) directly into __call__()
+  - Preserve error handling: catch non-SystemExit/KeyboardInterrupt
+    exceptions, log them, and sys.exit(255)
+  - Update guard error messages to reference cli() instead of
+    "with statement"
+  - Update setup_logging docstring
+  - Remove unused TracebackType and Type imports
+  - Regenerate API docs
+- Add CLAUDE.md that points to AGENTS.md. [Zach White]
+- Fix spinner() params silently dropped and sync MILCInterface docs.
+  [Claude Sonnet 4.6, Zach White]
+
+  - Pass `stream` and `enabled` through to Halo() constructor (they were
+    accepted but silently ignored)
+  - Fix `enabled` default documented as `True`; actual default is
+    `sys.stdout.isatty()` since commit 78c1339
+  - Fix `MILCInterface.spinner` type for `spinner` param: was `Optional[str]`,
+    should be `Optional[Union[str, Dict[str, Union[int, Sequence[str]]]]]`
+  - Add docstring to `milc_options()` (was absent from generated API docs)
+  - Document msys2/cygwin stdin-breaks-after-subprocess behavior in `run()`
+  - Add docstrings to `__enter__`, `__exit__`, `subcommand_name`,
+    `subcommand_path` on MILCInterface to match underlying MILC class
+  - Regenerate docs
+- Add check to ensure api docs stay up to date. [Zach White]
+- Generate_docs: skip files that start with _ [Zach White]
+- Allow spinner() to accept a dict and fix documentation errors. [Claude
+  Sonnet 4.6, Zach White]
+
+  - MILC.spinner() now accepts a dict directly as the spinner parameter,
+    bypassing name lookup; type annotation updated accordingly
+  - Fix sparklines.md: missing closing parens on print() calls and
+    positional args on keyword-only min_value/max_value parameters
+  - Add env_prefix to metadata.md parameter list with link to env vars docs
+  - Fix tutorial.md ConfigParser link from Python 2 to Python 3 docs
+- Fix documentation discrepancies and spinner TTY default. [Claude
+  Sonnet 4.6, Zach White]
+
+  - Correct Python version requirement to 3.9+ across README and installation docs
+  - Fix set_metadata() example to use keyword-only arguments (was a TypeError)
+  - Fix completer kwarg name (was incorrectly documented as 'completers')
+  - Fix config file paths: Linux ~/.config/ (not ~/.local/share/), modern Windows path
+  - Update configuration.md to reference cli.milc_options() instead of deprecated set_metadata()
+  - Remove non-existent --save-config flag from README help output; add --log-file-level
+  - Add subcommands and env_prefix to README feature list
+  - Fix !!! warn -> !!! warning admonition in subcommand_config.md
+  - Fix incomplete sentence in configuration.md
+  - Add internal-only note to write_config_option in api_milc.md
+  - Fix spinner enabled default in MILCInterface to match MILC (sys.stdout.isatty())
+  - Regenerated API docs include env_prefix, parent/name params, subcommand_name/path properties
+- Add env_prefix support for environment variable configuration. [Claude
+  Sonnet 4.6, Zach White]
+
+  App authors can now opt in to automatic env var defaults by passing
+  env_prefix to milc_options(). The framework handles type coercion,
+  required validation, and provenance tracking (cli.config_source)
+  with priority order: argv > env var > config file > default.
+
+  Also fixes pre-existing ruff/ty/yapf violations in configuration.py,
+  milc.py, and subcommand/config.py.
+- Update docs for nested subcommands and write_config_option
+  deprecation. [Claude Sonnet 4.6, Zach White]
+
+  - tutorial.md: add Nested Subcommands section with full example,
+    config path access, same-name collision note, and subcommand_path
+  - configuration.md: document hierarchical config paths for nested
+    subcommands
+  - subcommand_config.md: update token grammar and add nested subcommand
+    example
+- Add nested subcommand support. [Claude Sonnet 4.6, Zach White]
+
+  Adds a `parent=` parameter to `@cli.subcommand()` that accepts a
+  function object previously registered as a subcommand, enabling
+  git-style hierarchical commands like `prog remote add`.
+
+  Key changes:
+  - `ConfigurationSection` is now fully hierarchical: leaf values and
+    nested sections coexist in the same `_data` dict
+  - `_config_navigate(root, 'remote.add')` always-creates the path,
+    consistent with existing lazy-creation semantics
+  - `_collect_config_sections` recursively yields all leaves for
+    save/display
+  - `_subcommand_keys: Dict[int, str]` reverse-maps `id(handler)` to
+    its dotted key (e.g. `'remote.add'`), resolving same-name handler
+    collisions under different parents
+  - Config storage uses underscore paths (`remote.add` → `remote_add`
+    in Python attribute access); INI file uses dotted section names
+    `[remote.add]`
+  - `merge_args_into_config` now prefers the active subcommand section
+    when a subcommand arg and a general arg share the same dest name
+  - `subcommand_path` property added, returning e.g. `['remote', 'add']`
+  - `config` subcommand updated to handle dotted section paths via
+    `rsplit('.', 1)` and nested-section display
+- Disable spinners when stdout isn't a tty. [Zach White]
+- Bump cryptography from 46.0.6 to 46.0.7 (#86) [dependabot[bot],
+  dependabot[bot]]
+
+  Bumps [cryptography](https://github.com/pyca/cryptography) from 46.0.6 to 46.0.7.
+  - [Changelog](https://github.com/pyca/cryptography/blob/main/CHANGELOG.rst)
+  - [Commits](https://github.com/pyca/cryptography/compare/46.0.6...46.0.7)
+
+  ---
+  updated-dependencies:
+  - dependency-name: cryptography
+    dependency-version: 46.0.7
+    dependency-type: indirect
+  ...
+- Minor: changelog update. [Zach White]
+
+
 1.11.0 (2026-04-17)
 -------------------
 - New release: 1.10.0 → 1.11.0. [Zach White]
