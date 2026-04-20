@@ -213,9 +213,7 @@ class MILCInterface:
     def prerun(self, *args: Any, **kwargs: Any) -> Callable[[Callable[P, R]], Callable[P, R]]:
         ...
 
-    def prerun(
-        self, *args: Any, **kwargs: Any
-    ) -> Union[Callable[P, R], Callable[[Callable[P, R]], Callable[P, R]]]:
+    def prerun(self, *args: Any, **kwargs: Any) -> Union[Callable[..., Any], Callable[[Callable[..., Any]], Callable[..., Any]]]:
         """Decorator to run a function after initialization and before dispatch.
 
         The decorated function is called with ``cli`` as the first argument.
