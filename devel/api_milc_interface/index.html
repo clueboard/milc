@@ -875,6 +875,17 @@ def entrypoint(
   A one-line description to display in --help</p>
 <p>deprecated
   Deprecation message. When set the subcommand will marked as deprecated and this message will be displayed in the help output.</p>
+<p><a id="milc_interface.MILCInterface.prerun"></a></p>
+<h4 id="prerun">prerun<a class="headerlink" href="#prerun" title="Permanent link">&para;</a></h4>
+<p><code>python
+def prerun(
+    *args: Any, **kwargs: Any
+) -&gt; Union[Callable[..., Any], Callable[[Callable[..., Any]], Callable[...,
+                                                                       Any]]]</code></p>
+<p>Decorator to run a function after initialization and before dispatch.</p>
+<p>The decorated function is called with <code>cli</code> as the first argument.
+Any <em>args/</em>*kwargs passed to this decorator are forwarded directly to the
+decorated function at runtime.</p>
 <p><a id="milc_interface.MILCInterface.subcommand"></a></p>
 <h4 id="subcommand">subcommand<a class="headerlink" href="#subcommand" title="Permanent link">&para;</a></h4>
 <p><code>python

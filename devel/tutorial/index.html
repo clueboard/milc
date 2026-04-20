@@ -768,6 +768,8 @@ def main(cli):
 <p>Next, we've decorated our main function with <code>cli.entrypoint()</code>. This is how we tell MILC what function to execute and set the help text for our program.</p>
 <p>Inside our <code>main()</code> function we print a simple message to the log file, which by default is also printed to the user's screen.</p>
 <p>Finally, we execute our <code>cli()</code> program inside the familiar <code>if __name__ == '__main__':</code> guard.</p>
+<p>If you need setup logic that should always run after MILC has parsed arguments and initialized configuration, but before dispatching to the selected entrypoint/subcommand, use <code>@cli.prerun</code>. This is particularly useful when you are using subcommands and need to do the same initialization across multiple subcommands.</p>
+<p>MILC calls prerun hooks with <code>cli</code> as the first argument. You can also pass decorator arguments (for example <code>@cli.prerun('token', source='init')</code>) and they will be forwarded directly after <code>cli</code>.</p>
 <h2 id="logging-and-printing">Logging and Printing<a class="headerlink" href="#logging-and-printing" title="Permanent link">&para;</a></h2>
 <p>MILC provides two mechanisms for outputting text to the user, and which one you
 use depends a lot on the needs of your program. Both use the same API so
