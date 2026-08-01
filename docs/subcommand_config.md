@@ -106,6 +106,12 @@ You can read configuration values for all set options, the entire configuration,
 
     my_cli config user general.verbose general.log_format
 
+## Exporting Configuration
+
+Use `--output` (or `-o`) to write the current configuration to another file. This does not change the normal platformdirs save location:
+
+    my_cli config --output /path/to/config.ini
+
 ## Deleting Configuration Values
 
 You can delete a configuration value by setting it to the special string `None`.

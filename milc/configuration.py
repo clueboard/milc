@@ -1,3 +1,6 @@
+from configparser import RawConfigParser
+from decimal import Decimal
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Generator, Hashable, List, Tuple
 
 if TYPE_CHECKING:
@@ -76,6 +79,37 @@ def _config_navigate(config_root: 'Configuration', dotted_path: str) -> 'Configu
             section._data[part] = new_section
             section = new_section
     return section
+
+
+def _read_config_file(config_file: Path, config: Configuration, config_source: Configuration) -> None:
+    """Merge a configuration file into the running configuration."""
+    raw_config = RawConfigParser()
+
+    raw_config.read(str(config_file))
+
+    # Iterate over the config file options and write them into config.
+    # Section names may be dotted (e.g. [remote.add]) for nested subcommands.
+    for section in raw_config.sections():
+        config_section = _config_navigate(config, section)
+        config_source_section = _config_navigate(config_source, section)
+
+        for option in raw_config.options(section):
+            value = raw_config.get(section, option)
+
+            if value.lower() in ['yes', 'true', 'on']:
+                value = True
+            elif value.lower() in ['no', 'false', 'off']:
+                value = False
+            elif value.lower() in ['none']:
+                continue
+            elif value.replace('.', '').isdigit():
+                if '.' in value:
+                    value = Decimal(value)
+                else:
+                    value = int(value)
+
+            config_section[option] = value
+            config_source_section[option] = 'config_file'
 
 
 def _collect_config_sections(section: 'Configuration', prefix: str = '') -> Generator[Tuple[str, str, Any], None, None]:

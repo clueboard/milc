@@ -24,7 +24,8 @@ def milc_options(*,
                  author: Optional[str] = None,
                  version: Optional[str] = None,
                  logger: Optional[Logger] = None,
-                 env_prefix: Optional[str] = None) -> None
+                 env_prefix: Optional[str] = None,
+                 config_file: Optional[Union[str, Path]] = None) -> None
 ```
 
 Configure MILC before the entrypoint runs.
@@ -38,6 +39,7 @@ Call this before `cli()` or any imports that reference `cli`. It may be called m
 - `version` - The version string reported by `--version`.
 - `logger` - A custom logger instance to use instead of MILC's default logger.
 - `env_prefix` - A string prefix that enables environment variable defaults. When set, each `--flag` can be configured via a `<PREFIX>_<FLAG>` environment variable.
+- `config_file` - A system configuration file to read before the platformdirs user configuration file.
 
 <a id="milc_interface.MILCInterface.subcommand_name"></a>
 
@@ -184,10 +186,10 @@ Decorator to add an argument to a MILC command or subcommand.
 #### save\_config
 
 ```python
-def save_config() -> None
+def save_config(config_file: Optional[Union[str, Path]] = None) -> None
 ```
 
-Save the current configuration to the config file.
+Save the current configuration to the config file or an explicit path.
 
 <a id="milc_interface.MILCInterface.__call__"></a>
 

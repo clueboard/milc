@@ -21,7 +21,8 @@ def __init__(name: Optional[str] = None,
              author: Optional[str] = None,
              version: Optional[str] = None,
              logger: Optional[logging.Logger] = None,
-             env_prefix: Optional[str] = None) -> None
+             env_prefix: Optional[str] = None,
+             config_file: Optional[Union[str, Path]] = None) -> None
 ```
 
 Initialize the MILC object.
@@ -281,10 +282,10 @@ Save a single config option to the config file.
 #### save\_config
 
 ```python
-def save_config() -> None
+def save_config(config_file: Optional[Union[str, Path]] = None) -> None
 ```
 
-Save the current configuration to the config file.
+Save the current configuration to the config file or an explicit path.
 
 <a id="milc.MILC.__call__"></a>
 

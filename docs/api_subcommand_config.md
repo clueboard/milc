@@ -53,6 +53,10 @@ Set a config key in the running config.
                    '--all',
                    action='store_true',
                    help='Show all configuration options.')
+@milc.cli.argument('-o',
+                   '--output',
+                   arg_only=True,
+                   help='Write the current configuration to this file.')
 @milc.cli.argument('-ro',
                    '--read-only',
                    arg_only=True,

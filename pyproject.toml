@@ -95,6 +95,11 @@ ignore = ["E226", "E501"]
 [tool.ruff.lint.mccabe]
 max-complexity = 12
 
+[tool.yapfignore]
+ignore_patterns = [
+  ".*/**",
+]
+
 [tool.yapf]
 align_closing_bracket_with_visual_indent = true
 allow_multiline_dictionary_keys = false

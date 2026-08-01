@@ -19,6 +19,7 @@ You should only do this once, and you should do it as early in your program's ex
 * `author` — The author string, used in the config file path on some platforms.
 * `logger` — A custom logger instance to use instead of MILC's default logger.
 * `env_prefix` — A string prefix that enables [environment variable defaults](environment_variables.md). When set, each `--flag` can be configured via a `<PREFIX>_<FLAG>` environment variable. See [Environment Variables](environment_variables.md) for full details.
+* `config_file` — A system configuration file to read before the platformdirs user configuration file. The user configuration overrides matching settings. `--config-file` bypasses both and uses only its supplied path.
 
 !!! warning
     If you have spread your program among several files, or you are using `milc.subcommand.config`, you need to use `cli.milc_options()` before you import those modules.
