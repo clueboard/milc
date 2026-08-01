@@ -719,10 +719,11 @@
 <li><code>foo.arg2</code></li>
 </ul>
 <p>Let's set these now:</p>
-<p><code>$ my_cli config foo.arg1=bar foo.arg2=bat
+<div class="highlight"><pre><span></span><code>$ my_cli config foo.arg1=bar foo.arg2=bat
 foo.arg1 None -&gt; bar
 foo.arg2 None -&gt; bat
-i Wrote configuration to '/Users/example/Library/Application Support/my_cli/my_cli.ini'</code></p>
+i Wrote configuration to &#39;/Users/example/Library/Application Support/my_cli/my_cli.ini&#39;
+</code></pre></div>
 <p>Now I can run <code>my_cli foo</code> without specifying <code>--arg1</code> and <code>--arg2</code> each time.</p>
 <h2 id="nested-subcommand-example">Nested Subcommand Example<a class="headerlink" href="#nested-subcommand-example" title="Permanent link">&para;</a></h2>
 <p>For a command like <code>my_cli remote add --url https://example.com</code>, the config key
@@ -731,16 +732,18 @@ uses the full dotted path to the subcommand:</p>
 <li><code>remote.add.url</code></li>
 <li><code>remote.add.fetch</code></li>
 </ul>
-<p><code>$ my_cli config remote.add.url=https://example.com
+<div class="highlight"><pre><span></span><code>$ my_cli config remote.add.url=https://example.com
 remote.add.url: None -&gt; https://example.com
-ℹ Wrote configuration to '/Users/example/Library/Application Support/my_cli/my_cli.ini'</code></p>
+ℹ Wrote configuration to &#39;/Users/example/Library/Application Support/my_cli/my_cli.ini&#39;
+</code></pre></div>
 <p>Now <code>my_cli remote add</code> will use that URL without needing <code>--url</code> each time.</p>
 <h2 id="setting-user-defaults">Setting User Defaults<a class="headerlink" href="#setting-user-defaults" title="Permanent link">&para;</a></h2>
 <p>Sometimes you want to share a setting between multiple subcommands. For example, multiple commands take the argument <code>--arg1</code>. Rather than setting this value for every command you can set a user value which will be used by any command that takes that argument.</p>
 <p>Example:</p>
-<p><code>$ my_cli config user.arg1=baz
+<div class="highlight"><pre><span></span><code>$ my_cli config user.arg1=baz
 user.arg1: None -&gt; baz
-ℹ Wrote configuration to '/Users/example/Library/Application Support/my_cli/my_cli.ini'</code></p>
+ℹ Wrote configuration to &#39;/Users/example/Library/Application Support/my_cli/my_cli.ini&#39;
+</code></pre></div>
 <h1 id="subcommand-reference-config">Subcommand reference (<code>config</code>)<a class="headerlink" href="#subcommand-reference-config" title="Permanent link">&para;</a></h1>
 <p>The <code>config</code> subcommand is used to interact with the underlying configuration. When run with no argument it shows the current configuration. When arguments are supplied they are assumed to be configuration tokens, which are strings containing no spaces with the following form:</p>
 <div class="codehilite"><pre><span></span><code>&lt;section&gt;[.&lt;key&gt;][=&lt;value&gt;]
@@ -751,9 +754,10 @@ path for nested subcommands (e.g. <code>remote.add</code>).</p>
 <h2 id="setting-configuration-values">Setting Configuration Values<a class="headerlink" href="#setting-configuration-values" title="Permanent link">&para;</a></h2>
 <p>You can set configuration values by putting an equal sign (=) into your config key. The key must always be the full <code>&lt;section&gt;.&lt;key&gt;</code> form.</p>
 <p>Example:</p>
-<p><code>$ my_cli config user.arg1=default
+<div class="highlight"><pre><span></span><code>$ my_cli config user.arg1=default
 user.arg1: None -&gt; default
-ℹ Wrote configuration to '/Users/example/Library/Application Support/my_cli/my_cli.ini'</code></p>
+ℹ Wrote configuration to &#39;/Users/example/Library/Application Support/my_cli/my_cli.ini&#39;
+</code></pre></div>
 <h2 id="reading-configuration-values">Reading Configuration Values<a class="headerlink" href="#reading-configuration-values" title="Permanent link">&para;</a></h2>
 <p>You can read configuration values for all set options, the entire configuration, a single key, or for an entire section. You can also specify multiple keys to display more than one value.</p>
 <h3 id="all-set-options-example">All Set Options Example<a class="headerlink" href="#all-set-options-example" title="Permanent link">&para;</a></h3>
@@ -776,12 +780,18 @@ user.arg1: None -&gt; default
 <div class="codehilite"><pre><span></span><code>my_cli config user general.verbose general.log_format
 </code></pre></div>
 
+<h2 id="exporting-configuration">Exporting Configuration<a class="headerlink" href="#exporting-configuration" title="Permanent link">&para;</a></h2>
+<p>Use <code>--output</code> (or <code>-o</code>) to write the current configuration to another file. This does not change the normal platformdirs save location:</p>
+<div class="codehilite"><pre><span></span><code>my_cli config --output /path/to/config.ini
+</code></pre></div>
+
 <h2 id="deleting-configuration-values">Deleting Configuration Values<a class="headerlink" href="#deleting-configuration-values" title="Permanent link">&para;</a></h2>
 <p>You can delete a configuration value by setting it to the special string <code>None</code>.</p>
 <p>Example:</p>
-<p><code>$ my_cli config general.log_format None
+<div class="highlight"><pre><span></span><code>$ my_cli config general.log_format None
 general.log_format: %H:%M:%S -&gt; None
-ℹ Wrote configuration to '/Users/example/Library/Application Support/my_cli/my_cli.ini'</code></p>
+ℹ Wrote configuration to &#39;/Users/example/Library/Application Support/my_cli/my_cli.ini&#39;
+</code></pre></div>
 <h2 id="output-colors">Output Colors<a class="headerlink" href="#output-colors" title="Permanent link">&para;</a></h2>
 <p>The <code>config</code> subcommand uses color to indicate where each value came from:</p>
 <table>
@@ -812,11 +822,12 @@ general.log_format: %H:%M:%S -&gt; None
 </table>
 <h2 id="multiple-operations">Multiple Operations<a class="headerlink" href="#multiple-operations" title="Permanent link">&para;</a></h2>
 <p>You can combine multiple read and write operations into a single command. They will be executed and displayed in order:</p>
-<p><code>$ my_cli config foo user.arg1=default foo.arg2=None
+<div class="highlight"><pre><span></span><code>$ my_cli config foo user.arg1=default foo.arg2=None
 foo.arg3=peep
 user.arg1: None -&gt; default
 foo.arg2: bar -&gt; None
-ℹ Wrote configuration to '/Users/example/Library/Application Support/my_cli/my_cli.ini'</code></p>
+ℹ Wrote configuration to &#39;/Users/example/Library/Application Support/my_cli/my_cli.ini&#39;
+</code></pre></div>
 
 
 

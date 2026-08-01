@@ -649,6 +649,19 @@
     MILCInterface Objects
   </a>
   
+    <nav class="md-nav" aria-label="MILCInterface Objects">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#arguments" class="md-nav__link">
+    Arguments
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -725,6 +738,19 @@
     MILCInterface Objects
   </a>
   
+    <nav class="md-nav" aria-label="MILCInterface Objects">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#arguments" class="md-nav__link">
+    Arguments
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -753,17 +779,18 @@
 <p>This is where the public interface for <code>cli</code> is kept. This allows us to reinstantiate MILC without having to recreate the cli object, as well as allowing us to have a well defined public API.</p>
 <p><a id="milc_interface.MILCInterface"></a></p>
 <h2 id="milcinterface-objects">MILCInterface Objects<a class="headerlink" href="#milcinterface-objects" title="Permanent link">&para;</a></h2>
-<p><code>python
-class MILCInterface()</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">MILCInterface</span><span class="p">()</span>
+</code></pre></div>
 <p><a id="milc_interface.MILCInterface.milc_options"></a></p>
 <h4 id="milc_options">milc_options<a class="headerlink" href="#milc_options" title="Permanent link">&para;</a></h4>
-<p><code>python
-def milc_options(*,
-                 name: Optional[str] = None,
-                 author: Optional[str] = None,
-                 version: Optional[str] = None,
-                 logger: Optional[Logger] = None,
-                 env_prefix: Optional[str] = None) -&gt; None</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">milc_options</span><span class="p">(</span><span class="o">*</span><span class="p">,</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">author</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">logger</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Logger</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">env_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">config_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
 <p>Configure MILC before the entrypoint runs.</p>
 <p>Call this before <code>cli()</code> or any imports that reference <code>cli</code>. It may be called multiple times; each call updates only the supplied arguments.</p>
 <p><strong>Arguments</strong>:</p>
@@ -773,23 +800,24 @@ def milc_options(*,
 <li><code>version</code> - The version string reported by <code>--version</code>.</li>
 <li><code>logger</code> - A custom logger instance to use instead of MILC's default logger.</li>
 <li><code>env_prefix</code> - A string prefix that enables environment variable defaults. When set, each <code>--flag</code> can be configured via a <code>&lt;PREFIX&gt;_&lt;FLAG&gt;</code> environment variable.</li>
+<li><code>config_file</code> - A system configuration file to read before the platformdirs user configuration file.</li>
 </ul>
 <p><a id="milc_interface.MILCInterface.subcommand_name"></a></p>
 <h4 id="subcommand_name">subcommand_name<a class="headerlink" href="#subcommand_name" title="Permanent link">&para;</a></h4>
-<p><code>python
-@property
-def subcommand_name() -&gt; Optional[str]</code></p>
+<div class="highlight"><pre><span></span><code><span class="nd">@property</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">subcommand_name</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</code></pre></div>
 <p>Returns the leaf CLI name of the active subcommand, e.g. 'add' for 'remote add'.</p>
 <p><a id="milc_interface.MILCInterface.subcommand_path"></a></p>
 <h4 id="subcommand_path">subcommand_path<a class="headerlink" href="#subcommand_path" title="Permanent link">&para;</a></h4>
-<p><code>python
-@property
-def subcommand_path() -&gt; Optional[list]</code></p>
+<div class="highlight"><pre><span></span><code><span class="nd">@property</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">subcommand_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span>
+</code></pre></div>
 <p>Returns the full subcommand path as a list, e.g. ['remote', 'add'].</p>
 <p><a id="milc_interface.MILCInterface.echo"></a></p>
 <h4 id="echo">echo<a class="headerlink" href="#echo" title="Permanent link">&para;</a></h4>
-<p><code>python
-def echo(text: str, *args: Any, **kwargs: Any) -&gt; None</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">echo</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
 <p>Print colorized text to stdout.</p>
 <p>ANSI color strings (such as {fg_blue}) will be converted into ANSI
 escape sequences, and the ANSI reset sequence will be added to all
@@ -797,12 +825,12 @@ strings.</p>
 <p>If <em>args or </em>*kwargs are passed they will be used to %-format the strings.</p>
 <p><a id="milc_interface.MILCInterface.run"></a></p>
 <h4 id="run">run<a class="headerlink" href="#run" title="Permanent link">&para;</a></h4>
-<p><code>python
-def run(command: Sequence[str],
-        capture_output: bool = True,
-        combined_output: bool = False,
-        text: bool = True,
-        **kwargs: Any) -&gt; Any</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="n">command</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">capture_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">combined_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">text</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span>
+</code></pre></div>
 <p>Run a command using <code>subprocess.run</code>, but using some different defaults.</p>
 <p>Unlike subprocess.run you must supply a sequence of arguments. You can use <code>shlex.split()</code> to build this from a string.</p>
 <p>The **kwargs arguments get passed directly to <code>subprocess.run</code>.</p>
@@ -823,52 +851,52 @@ def run(command: Sequence[str],
   to override this default.</p>
 <p><a id="milc_interface.MILCInterface.print_help"></a></p>
 <h4 id="print_help">print_help<a class="headerlink" href="#print_help" title="Permanent link">&para;</a></h4>
-<p><code>python
-def print_help(*args: Any, **kwargs: Any) -&gt; None</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">print_help</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
 <p>Print a help message for the main program or subcommand, depending on context.</p>
 <p><a id="milc_interface.MILCInterface.print_usage"></a></p>
 <h4 id="print_usage">print_usage<a class="headerlink" href="#print_usage" title="Permanent link">&para;</a></h4>
-<p><code>python
-def print_usage(*args: Any, **kwargs: Any) -&gt; None</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">print_usage</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
 <p>Print brief description of how the main program or subcommand is invoked, depending on context.</p>
 <p><a id="milc_interface.MILCInterface.add_argument"></a></p>
 <h4 id="add_argument">add_argument<a class="headerlink" href="#add_argument" title="Permanent link">&para;</a></h4>
-<p><code>python
-def add_argument(*args: Any, **kwargs: Any) -&gt; None</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
 <p>Wrapper to add arguments and track whether they were passed on the command line.</p>
 <p><a id="milc_interface.MILCInterface.acquire_lock"></a></p>
 <h4 id="acquire_lock">acquire_lock<a class="headerlink" href="#acquire_lock" title="Permanent link">&para;</a></h4>
-<p><code>python
-def acquire_lock(blocking: bool = True) -&gt; bool</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">acquire_lock</span><span class="p">(</span><span class="n">blocking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span>
+</code></pre></div>
 <p>Acquire the MILC lock for exclusive access to properties.</p>
 <p><a id="milc_interface.MILCInterface.release_lock"></a></p>
 <h4 id="release_lock">release_lock<a class="headerlink" href="#release_lock" title="Permanent link">&para;</a></h4>
-<p><code>python
-def release_lock() -&gt; None</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">release_lock</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
 <p>Release the MILC lock.</p>
 <p><a id="milc_interface.MILCInterface.argument"></a></p>
 <h4 id="argument">argument<a class="headerlink" href="#argument" title="Permanent link">&para;</a></h4>
-<p><code>python
-def argument(*args: Any,
-             **kwargs: Any) -&gt; Callable[[Callable[P, R]], Callable[P, R]]</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">argument</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+             <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]]</span>
+</code></pre></div>
 <p>Decorator to add an argument to a MILC command or subcommand.</p>
 <p><a id="milc_interface.MILCInterface.save_config"></a></p>
 <h4 id="save_config">save_config<a class="headerlink" href="#save_config" title="Permanent link">&para;</a></h4>
-<p><code>python
-def save_config() -&gt; None</code></p>
-<p>Save the current configuration to the config file.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">save_config</span><span class="p">(</span><span class="n">config_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+<p>Save the current configuration to the config file or an explicit path.</p>
 <p><a id="milc_interface.MILCInterface.__call__"></a></p>
 <h4 id="__call__">__call__<a class="headerlink" href="#__call__" title="Permanent link">&para;</a></h4>
-<p><code>python
-def __call__() -&gt; Any</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Any</span>
+</code></pre></div>
 <p>Execute the entrypoint function.</p>
 <p><a id="milc_interface.MILCInterface.entrypoint"></a></p>
 <h4 id="entrypoint">entrypoint<a class="headerlink" href="#entrypoint" title="Permanent link">&para;</a></h4>
-<p><code>python
-def entrypoint(
-    description: str,
-    deprecated: Optional[str] = None
-) -&gt; Callable[[Callable[P, R]], Callable[P, R]]</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">entrypoint</span><span class="p">(</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">deprecated</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]]</span>
+</code></pre></div>
 <p>Decorator that marks the entrypoint used when a subcommand is not supplied.</p>
 <p><strong>Arguments</strong>:</p>
 <p>description
@@ -877,23 +905,23 @@ def entrypoint(
   Deprecation message. When set the subcommand will marked as deprecated and this message will be displayed in the help output.</p>
 <p><a id="milc_interface.MILCInterface.prerun"></a></p>
 <h4 id="prerun">prerun<a class="headerlink" href="#prerun" title="Permanent link">&para;</a></h4>
-<p><code>python
-def prerun(
-    *args: Any, **kwargs: Any
-) -&gt; Union[Callable[..., Any], Callable[[Callable[..., Any]], Callable[...,
-                                                                       Any]]]</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">prerun</span><span class="p">(</span>
+    <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span>
+                                                                       <span class="n">Any</span><span class="p">]]]</span>
+</code></pre></div>
 <p>Decorator to run a function after initialization and before dispatch.</p>
 <p>The decorated function is called with <code>cli</code> as the first argument.
 Any <em>args/</em>*kwargs passed to this decorator are forwarded directly to the
 decorated function at runtime.</p>
 <p><a id="milc_interface.MILCInterface.subcommand"></a></p>
 <h4 id="subcommand">subcommand<a class="headerlink" href="#subcommand" title="Permanent link">&para;</a></h4>
-<p><code>python
-def subcommand(description: str,
-               hidden: bool = False,
-               parent: Optional[Callable[..., Any]] = None,
-               name: Optional[str] = None,
-               **kwargs: Any) -&gt; Callable[[Callable[P, R]], Callable[P, R]]</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">subcommand</span><span class="p">(</span><span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+               <span class="n">hidden</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+               <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+               <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+               <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]]</span>
+</code></pre></div>
 <p>Decorator to register a subcommand.</p>
 <p><strong>Arguments</strong>:</p>
 <p>description
@@ -907,9 +935,9 @@ def subcommand(description: str,
   Override the CLI token for this subcommand.</p>
 <p><a id="milc_interface.MILCInterface.add_spinner"></a></p>
 <h4 id="add_spinner">add_spinner<a class="headerlink" href="#add_spinner" title="Permanent link">&para;</a></h4>
-<p><code>python
-def add_spinner(name: str, spinner: Dict[str, Union[int,
-                                                    Sequence[str]]]) -&gt; None</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_spinner</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spinner</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span>
+                                                    <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
 <p>Adds a new spinner to the list of spinners.</p>
 <p>A spinner is a dictionary with two keys:</p>
 <div class="codehilite"><pre><span></span><code>interval
@@ -921,19 +949,19 @@ frames
 
 <p><a id="milc_interface.MILCInterface.spinner"></a></p>
 <h4 id="spinner">spinner<a class="headerlink" href="#spinner" title="Permanent link">&para;</a></h4>
-<p><code>python
-def spinner(text: str,
-            *args: Any,
-            spinner: Optional[Union[str, Dict[str,
-                                              Union[int,
-                                                    Sequence[str]]]]] = None,
-            animation: str = 'ellipsed',
-            placement: str = 'left',
-            color: str = 'blue',
-            interval: int = -1,
-            stream: Any = sys.stdout,
-            enabled: bool = sys.stdout.isatty(),
-            **kwargs: Any) -&gt; Halo</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">spinner</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+            <span class="n">spinner</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span>
+                                              <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span>
+                                                    <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">animation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;ellipsed&#39;</span><span class="p">,</span>
+            <span class="n">placement</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+            <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span>
+            <span class="n">interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">stream</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span>
+            <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">isatty</span><span class="p">(),</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Halo</span>
+</code></pre></div>
 <p>Create a spinner object for showing activity to the user.</p>
 <p>This uses halo <a href="https://github.com/ManrajGrover/halo">https://github.com/ManrajGrover/halo</a> behind the scenes, most of the arguments map to Halo objects 1:1.</p>
 <p>There are 3 basic ways to use this:</p>
@@ -943,21 +971,22 @@ def spinner(text: str,
 <li>Decorate a function (<code>@cli.spinner(...)</code>)</li>
 </ul>
 <h4 id="instantiating-a-spinner">Instantiating a spinner<a class="headerlink" href="#instantiating-a-spinner" title="Permanent link">&para;</a></h4>
-<p>```python
-spinner = cli.spinner(text='Loading', spinner='dots')
-spinner.start()</p>
-<h1 id="do-something-here">Do something here<a class="headerlink" href="#do-something-here" title="Permanent link">&para;</a></h1>
-<p>spinner.stop()
-```</p>
+<div class="highlight"><pre><span></span><code><span class="n">spinner</span> <span class="o">=</span> <span class="n">cli</span><span class="o">.</span><span class="n">spinner</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Loading&#39;</span><span class="p">,</span> <span class="n">spinner</span><span class="o">=</span><span class="s1">&#39;dots&#39;</span><span class="p">)</span>
+<span class="n">spinner</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="c1"># Do something here</span>
+
+<span class="n">spinner</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</code></pre></div>
 <h4 id="using-a-context-manager">Using a context manager<a class="headerlink" href="#using-a-context-manager" title="Permanent link">&para;</a></h4>
-<p><code>python
-with cli.spinner(text='Loading', spinner='dots'):
-    # Do something here</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">cli</span><span class="o">.</span><span class="n">spinner</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Loading&#39;</span><span class="p">,</span> <span class="n">spinner</span><span class="o">=</span><span class="s1">&#39;dots&#39;</span><span class="p">):</span>
+    <span class="c1"># Do something here</span>
+</code></pre></div>
 <h4 id="decorate-a-function">Decorate a function<a class="headerlink" href="#decorate-a-function" title="Permanent link">&para;</a></h4>
-<p><code>python
-@cli.spinner(text='Loading', spinner='dots')
-def long_running_function():
-    # Do something here</code></p>
+<div class="highlight"><pre><span></span><code><span class="nd">@cli</span><span class="o">.</span><span class="n">spinner</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Loading&#39;</span><span class="p">,</span> <span class="n">spinner</span><span class="o">=</span><span class="s1">&#39;dots&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">long_running_function</span><span class="p">():</span>
+    <span class="c1"># Do something here</span>
+</code></pre></div>
 <h3 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h3>
 <div class="codehilite"><pre><span></span><code>text
     The text to display next to the spinner. ANSI color strings

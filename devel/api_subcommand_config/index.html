@@ -706,42 +706,46 @@
 <p>Read and write configuration settings</p>
 <p><a id="subcommand.config.print_config"></a></p>
 <h4 id="print_config">print_config<a class="headerlink" href="#print_config" title="Permanent link">&para;</a></h4>
-<p><code>python
-def print_config(section: str, key: str) -&gt; None</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">print_config</span><span class="p">(</span><span class="n">section</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
 <p>Print a single config setting to stdout.</p>
 <p><a id="subcommand.config.show_config"></a></p>
 <h4 id="show_config">show_config<a class="headerlink" href="#show_config" title="Permanent link">&para;</a></h4>
-<p><code>python
-def show_config() -&gt; None</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">show_config</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
 <p>Print the current configuration to stdout.</p>
 <p><a id="subcommand.config.parse_config_token"></a></p>
 <h4 id="parse_config_token">parse_config_token<a class="headerlink" href="#parse_config_token" title="Permanent link">&para;</a></h4>
-<p><code>python
-def parse_config_token(config_token: str) -&gt; Tuple[str, str, Any]</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_config_token</span><span class="p">(</span><span class="n">config_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+</code></pre></div>
 <p>Split a user-supplied configuration-token into its components.</p>
 <p><a id="subcommand.config.set_config"></a></p>
 <h4 id="set_config">set_config<a class="headerlink" href="#set_config" title="Permanent link">&para;</a></h4>
-<p><code>python
-def set_config(section: str, option: str, value: str) -&gt; None</code></p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_config</span><span class="p">(</span><span class="n">section</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">option</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
 <p>Set a config key in the running config.</p>
 <p><a id="subcommand.config.config"></a></p>
 <h4 id="config">config<a class="headerlink" href="#config" title="Permanent link">&para;</a></h4>
-<p><code>python
-@milc.cli.argument('-a',
-                   '--all',
-                   action='store_true',
-                   help='Show all configuration options.')
-@milc.cli.argument('-ro',
-                   '--read-only',
-                   arg_only=True,
-                   action='store_true',
-                   help='Operate in read-only mode.')
-@milc.cli.argument('configs',
-                   nargs='*',
-                   arg_only=True,
-                   help='Configuration options to read or write.')
-@milc.cli.subcommand("Read and write configuration settings.")
-def config(cli: MILC) -&gt; bool</code></p>
+<div class="highlight"><pre><span></span><code><span class="nd">@milc</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;-a&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;--all&#39;</span><span class="p">,</span>
+                   <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+                   <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Show all configuration options.&#39;</span><span class="p">)</span>
+<span class="nd">@milc</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;--output&#39;</span><span class="p">,</span>
+                   <span class="n">arg_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                   <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Write the current configuration to this file.&#39;</span><span class="p">)</span>
+<span class="nd">@milc</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;-ro&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;--read-only&#39;</span><span class="p">,</span>
+                   <span class="n">arg_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                   <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+                   <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Operate in read-only mode.&#39;</span><span class="p">)</span>
+<span class="nd">@milc</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;configs&#39;</span><span class="p">,</span>
+                   <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span>
+                   <span class="n">arg_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                   <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Configuration options to read or write.&#39;</span><span class="p">)</span>
+<span class="nd">@milc</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">subcommand</span><span class="p">(</span><span class="s2">&quot;Read and write configuration settings.&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">config</span><span class="p">(</span><span class="n">cli</span><span class="p">:</span> <span class="n">MILC</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span>
+</code></pre></div>
 <p>Read and write config settings.</p>
 <p>This script iterates over the config_tokens supplied as argument. Each config_token has the following form:</p>
 <div class="codehilite"><pre><span></span><code>section[.key][=value]

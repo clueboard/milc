@@ -705,10 +705,10 @@
 <p>MILC can automatically populate argument values from environment variables. This lets users configure your program without passing flags every time, while still allowing CLI flags to override them.</p>
 <h1 id="enabling-env_prefix">Enabling env_prefix<a class="headerlink" href="#enabling-env_prefix" title="Permanent link">&para;</a></h1>
 <p>Set <code>env_prefix</code> in <code>cli.milc_options()</code> to opt in:</p>
-<p>```python
-from milc import cli</p>
-<p>cli.milc_options(name='myapp', env_prefix='MYAPP')
-```</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">milc</span><span class="w"> </span><span class="kn">import</span> <span class="n">cli</span>
+
+<span class="n">cli</span><span class="o">.</span><span class="n">milc_options</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;myapp&#39;</span><span class="p">,</span> <span class="n">env_prefix</span><span class="o">=</span><span class="s1">&#39;MYAPP&#39;</span><span class="p">)</span>
+</code></pre></div>
 <p>This maps each <code>--flag</code> to an environment variable named <code>&lt;PREFIX&gt;_&lt;FLAG&gt;</code> (uppercase, hyphens replaced with underscores). For example, <code>--host</code> maps to <code>MYAPP_HOST</code>.</p>
 <h1 id="priority-order">Priority Order<a class="headerlink" href="#priority-order" title="Permanent link">&para;</a></h1>
 <p>When <code>env_prefix</code> is set, values are resolved in this order (highest to lowest):</p>
@@ -719,36 +719,39 @@ from milc import cli</p>
 <li>Default value</li>
 </ol>
 <h1 id="basic-example">Basic Example<a class="headerlink" href="#basic-example" title="Permanent link">&para;</a></h1>
-<p>```python
-from milc import cli</p>
-<p>cli.milc_options(name='myapp', env_prefix='MYAPP')</p>
-<p>@cli.argument('--host', required=True, help='Hostname')
-@cli.argument('--port', type=int, default=8080, help='Port number')
-@cli.entrypoint('Start the server.')
-def main(cli):
-    cli.echo('Connecting to %s:%s', cli.config.general.host, cli.config.general.port)</p>
-<p>if <strong>name</strong> == '<strong>main</strong>':
-    cli()
-```</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">milc</span><span class="w"> </span><span class="kn">import</span> <span class="n">cli</span>
+
+<span class="n">cli</span><span class="o">.</span><span class="n">milc_options</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;myapp&#39;</span><span class="p">,</span> <span class="n">env_prefix</span><span class="o">=</span><span class="s1">&#39;MYAPP&#39;</span><span class="p">)</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;--host&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Hostname&#39;</span><span class="p">)</span>
+<span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;--port&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">8080</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Port number&#39;</span><span class="p">)</span>
+<span class="nd">@cli</span><span class="o">.</span><span class="n">entrypoint</span><span class="p">(</span><span class="s1">&#39;Start the server.&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">cli</span><span class="p">):</span>
+    <span class="n">cli</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s1">&#39;Connecting to </span><span class="si">%s</span><span class="s1">:</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">cli</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">cli</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">cli</span><span class="p">()</span>
+</code></pre></div>
 <p>With this setup, all of these are equivalent:</p>
-<p>```sh</p>
-<h1 id="cli-flag">CLI flag<a class="headerlink" href="#cli-flag" title="Permanent link">&para;</a></h1>
-<p>myapp --host db.example.com</p>
-<h1 id="environment-variable">Environment variable<a class="headerlink" href="#environment-variable" title="Permanent link">&para;</a></h1>
-<p>MYAPP_HOST=db.example.com myapp</p>
-<h1 id="config-file">Config file<a class="headerlink" href="#config-file" title="Permanent link">&para;</a></h1>
-<p>myapp config general.host=db.example.com
-```</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># CLI flag</span>
+myapp<span class="w"> </span>--host<span class="w"> </span>db.example.com
+
+<span class="c1"># Environment variable</span>
+<span class="nv">MYAPP_HOST</span><span class="o">=</span>db.example.com<span class="w"> </span>myapp
+
+<span class="c1"># Config file</span>
+myapp<span class="w"> </span>config<span class="w"> </span>general.host<span class="o">=</span>db.example.com
+</code></pre></div>
 <h1 id="type-coercion">Type Coercion<a class="headerlink" href="#type-coercion" title="Permanent link">&para;</a></h1>
 <p>Environment variable values are always strings. MILC coerces them using the <code>type=</code> function from the argument definition:</p>
-<p><code>python
-@cli.argument('--port', type=int, default=8080, help='Port number')</code></p>
-<p>```sh
-MYAPP_PORT=9090 myapp --host db.example.com</p>
-<h1 id="cliconfiggeneralport-9090-int-not-str">cli.config.general.port == 9090  (int, not str)<a class="headerlink" href="#cliconfiggeneralport-9090-int-not-str" title="Permanent link">&para;</a></h1>
-<p>```</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;--port&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">8080</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Port number&#39;</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="nv">MYAPP_PORT</span><span class="o">=</span><span class="m">9090</span><span class="w"> </span>myapp<span class="w"> </span>--host<span class="w"> </span>db.example.com
+<span class="c1"># cli.config.general.port == 9090  (int, not str)</span>
+</code></pre></div>
 <p>If the value cannot be coerced, MILC exits with a readable error message:</p>
-<p><code>error: environment variable MYAPP_PORT='notanumber' is not the correct type: invalid literal for int() with base 10: 'notanumber'</code></p>
+<div class="highlight"><pre><span></span><code>error: environment variable MYAPP_PORT=&#39;notanumber&#39; is not the correct type: invalid literal for int() with base 10: &#39;notanumber&#39;
+</code></pre></div>
 <h1 id="boolean-flags">Boolean Flags<a class="headerlink" href="#boolean-flags" title="Permanent link">&para;</a></h1>
 <p><code>store_true</code> arguments accept truthy/falsy string values:</p>
 <table>
@@ -769,11 +772,11 @@ MYAPP_PORT=9090 myapp --host db.example.com</p>
 </tr>
 </tbody>
 </table>
-<p><code>python
-@cli.argument('--verbose', action='store_true', help='Verbose mode')</code></p>
-<p><code>sh
-MYAPP_VERBOSE=true myapp --host db.example.com   # verbose=True
-MYAPP_VERBOSE=false myapp --host db.example.com  # verbose=False</code></p>
+<div class="highlight"><pre><span></span><code><span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;--verbose&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Verbose mode&#39;</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="nv">MYAPP_VERBOSE</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span>myapp<span class="w"> </span>--host<span class="w"> </span>db.example.com<span class="w">   </span><span class="c1"># verbose=True</span>
+<span class="nv">MYAPP_VERBOSE</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>myapp<span class="w"> </span>--host<span class="w"> </span>db.example.com<span class="w">  </span><span class="c1"># verbose=False</span>
+</code></pre></div>
 <p><code>store_false</code> arguments are not mapped to environment variables.</p>
 <h1 id="unsupported-argument-types">Unsupported Argument Types<a class="headerlink" href="#unsupported-argument-types" title="Permanent link">&para;</a></h1>
 <p>The following argument types are not supported and will silently ignore any matching environment variable:</p>
@@ -784,18 +787,20 @@ MYAPP_VERBOSE=false myapp --host db.example.com  # verbose=False</code></p>
 </ul>
 <h1 id="subcommand-scoping">Subcommand Scoping<a class="headerlink" href="#subcommand-scoping" title="Permanent link">&para;</a></h1>
 <p>Environment variables for subcommand arguments are scoped using the subcommand name as an additional prefix:</p>
-<p><code>&lt;PREFIX&gt;_&lt;SUBCOMMAND&gt;_&lt;FLAG&gt;</code></p>
-<p>```python
-cli.milc_options(name='myapp', env_prefix='MYAPP')</p>
-<p>@cli.argument('--host', default='global-default', help='Global hostname')
-@cli.entrypoint('My app.')
-def main(cli):
-    cli.echo('host=%s', cli.config.general.host)</p>
-<p>@cli.argument('--host', default='subc-default', help='Subcommand hostname')
-@cli.subcommand('A subcommand.')
-def deploy(cli):
-    cli.echo('host=%s', cli.config.deploy.host)
-```</p>
+<div class="highlight"><pre><span></span><code>&lt;PREFIX&gt;_&lt;SUBCOMMAND&gt;_&lt;FLAG&gt;
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">cli</span><span class="o">.</span><span class="n">milc_options</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;myapp&#39;</span><span class="p">,</span> <span class="n">env_prefix</span><span class="o">=</span><span class="s1">&#39;MYAPP&#39;</span><span class="p">)</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;--host&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;global-default&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Global hostname&#39;</span><span class="p">)</span>
+<span class="nd">@cli</span><span class="o">.</span><span class="n">entrypoint</span><span class="p">(</span><span class="s1">&#39;My app.&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">cli</span><span class="p">):</span>
+    <span class="n">cli</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s1">&#39;host=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">cli</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">host</span><span class="p">)</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;--host&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;subc-default&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Subcommand hostname&#39;</span><span class="p">)</span>
+<span class="nd">@cli</span><span class="o">.</span><span class="n">subcommand</span><span class="p">(</span><span class="s1">&#39;A subcommand.&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">deploy</span><span class="p">(</span><span class="n">cli</span><span class="p">):</span>
+    <span class="n">cli</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s1">&#39;host=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">cli</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">deploy</span><span class="o">.</span><span class="n">host</span><span class="p">)</span>
+</code></pre></div>
 <table>
 <thead>
 <tr>
@@ -817,8 +822,8 @@ def deploy(cli):
 <p>The two env vars are independent. <code>MYAPP_HOST</code> does not affect <code>deploy --host</code>, and vice versa.</p>
 <h1 id="empty-prefix">Empty Prefix<a class="headerlink" href="#empty-prefix" title="Permanent link">&para;</a></h1>
 <p>Setting <code>env_prefix=''</code> consults environment variables without any prefix:</p>
-<p><code>python
-cli.milc_options(name='myapp', env_prefix='')</code></p>
+<div class="highlight"><pre><span></span><code><span class="n">cli</span><span class="o">.</span><span class="n">milc_options</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;myapp&#39;</span><span class="p">,</span> <span class="n">env_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+</code></pre></div>
 <p>With this setting, <code>--host</code> maps to the env var <code>HOST</code>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -826,8 +831,8 @@ cli.milc_options(name='myapp', env_prefix='')</code></p>
 </div>
 <h1 id="checking-provenance">Checking Provenance<a class="headerlink" href="#checking-provenance" title="Permanent link">&para;</a></h1>
 <p>Use <code>cli.config_source</code> to determine where a value came from:</p>
-<p><code>python
-cli.config_source.general.host  # 'argument', 'env_var', 'config_file', or None</code></p>
+<div class="highlight"><pre><span></span><code><span class="n">cli</span><span class="o">.</span><span class="n">config_source</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">host</span>  <span class="c1"># &#39;argument&#39;, &#39;env_var&#39;, &#39;config_file&#39;, or None</span>
+</code></pre></div>
 <p>See <a href="../configuration/#where-did-a-value-come-from">Configuration</a> for details.</p>
 
 

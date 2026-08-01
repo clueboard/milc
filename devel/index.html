@@ -819,20 +819,20 @@
 <h2 id="reporting-bugs-and-requesting-features">Reporting Bugs and Requesting Features<a class="headerlink" href="#reporting-bugs-and-requesting-features" title="Permanent link">&para;</a></h2>
 <p>Please let us know about any bugs and/or feature requests you have: <a href="https://github.com/clueboard/milc/issues">https://github.com/clueboard/milc/issues</a></p>
 <h2 id="short-example">Short Example<a class="headerlink" href="#short-example" title="Permanent link">&para;</a></h2>
-<p>```python
-from milc import cli</p>
-<p>@cli.argument('-c', '--comma', action='store_boolean', arg_only=True, default=True, help='comma in output')
-@cli.argument('-n', '--name', default='World', help='Name to greet')
-@cli.entrypoint('My useful CLI tool.')
-def main(cli):
-    comma = ',' if cli.args.comma else ''
-    cli.log.info('Hello%s %s!', comma, cli.config.general.name)</p>
-<p>if <strong>name</strong> == '<strong>main</strong>':
-    cli()
-```</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">milc</span><span class="w"> </span><span class="kn">import</span> <span class="n">cli</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;-c&#39;</span><span class="p">,</span> <span class="s1">&#39;--comma&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_boolean&#39;</span><span class="p">,</span> <span class="n">arg_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;comma in output&#39;</span><span class="p">)</span>
+<span class="nd">@cli</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;--name&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;World&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Name to greet&#39;</span><span class="p">)</span>
+<span class="nd">@cli</span><span class="o">.</span><span class="n">entrypoint</span><span class="p">(</span><span class="s1">&#39;My useful CLI tool.&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">cli</span><span class="p">):</span>
+    <span class="n">comma</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span> <span class="k">if</span> <span class="n">cli</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">comma</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">cli</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Hello</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">!&#39;</span><span class="p">,</span> <span class="n">comma</span><span class="p">,</span> <span class="n">cli</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">cli</span><span class="p">()</span>
+</code></pre></div>
 <h3 id="output">Output<a class="headerlink" href="#output" title="Permanent link">&para;</a></h3>
-<p>```
-$ ./hello
+<div class="highlight"><pre><span></span><code>$ ./hello
 ℹ Hello, World!
 $ ./hello --no-unicode
 INFO Hello, World!
@@ -845,9 +845,11 @@ usage: hello [-h] [-V] [-v] [--datetime-fmt GENERAL_DATETIME_FMT]
              [--log-file GENERAL_LOG_FILE] [--color] [--no-color]
              [--unicode] [--no-unicode] [--interactive]
              [--config-file GENERAL_CONFIG_FILE]
-             [-n GENERAL_NAME] [-c] [--no-comma]</p>
-<p>Greet a user.</p>
-<p>options:
+             [-n GENERAL_NAME] [-c] [--no-comma]
+
+Greet a user.
+
+options:
   -h, --help            show this help message and exit
   -V, --version         Display the version and exit
   -v, --verbose         Make the logging more verbose
@@ -872,7 +874,7 @@ usage: hello [-h] [-V] [-v] [--datetime-fmt GENERAL_DATETIME_FMT]
                         Name to greet
   -c, --comma           Enable comma in output
   --no-comma            Disable comma in output
-```</p>
+</code></pre></div>
 <h1 id="breaking-changes">Breaking Changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h1>
 <p>MILC follows <a href="https://semver.org/">Semantic Versioning</a>. You can see a list of why we made major or minor releases on the <a href="breaking_changes/">Breaking Changes</a> page.</p>
 

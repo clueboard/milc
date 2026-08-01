@@ -707,9 +707,9 @@
 <p>MILC uses <a href="https://docs.python.org/3/library/configparser.html">ConfigParser</a> to store configuration values. We've mapped the section names to subcommands, and values passed as CLI arguments will be automatically populated to keys named after the argument.</p>
 <p>Configuration options for the main <code>cli.entrypoint()</code> are set in <code>cli.config.general</code>. If you do not have any subcommands you will find all of your config options here.</p>
 <p>For nested subcommands (e.g. <code>prog remote add</code>), configuration sections mirror the command path:</p>
-<p><code>python
-cli.config.remote.add.url        # attribute access
-cli.config['remote']['add']['url']  # dict access</code></p>
+<div class="highlight"><pre><span></span><code><span class="n">cli</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">remote</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">url</span>        <span class="c1"># attribute access</span>
+<span class="n">cli</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;remote&#39;</span><span class="p">][</span><span class="s1">&#39;add&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">]</span>  <span class="c1"># dict access</span>
+</code></pre></div>
 <h1 id="reading-config-values">Reading Config Values<a class="headerlink" href="#reading-config-values" title="Permanent link">&para;</a></h1>
 <p>You can read config values using either attribute or dictionary notation. If a key does not exist in the configuration you will get <code>None</code> as the value.</p>
 <p>Attribute:</p>
@@ -726,19 +726,24 @@ cli.config['remote']['add']['url']  # dict access</code></p>
 </code></pre></div>
 
 <h1 id="writing-configuration-files">Writing Configuration Files<a class="headerlink" href="#writing-configuration-files" title="Permanent link">&para;</a></h1>
-<p>Use <code>cli.save_config()</code> to save the user's configuration file. It will be written to the location specified by <code>cli.config_file</code>.</p>
+<p>Use <code>cli.save_config()</code> to save the user's configuration file. It writes to the user's config location specified by <code>cli.config_file</code>, unless <code>--config-file</code> was supplied. Pass a path to <code>cli.save_config(path)</code> to write the current configuration elsewhere.</p>
 <h1 id="configuration-file-location">Configuration File Location<a class="headerlink" href="#configuration-file-location" title="Permanent link">&para;</a></h1>
 <p>MILC uses <a href="https://github.com/tox-dev/platformdirs">platformdirs</a> to determine the configuration file location. You can set your application's name and author by using <code>cli.milc_options()</code>:</p>
-<p>```python
-from milc import cli</p>
-<p>cli.milc_options(name='Florzelbop', version='1.0.0', author='Jane Doe')
-```</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">milc</span><span class="w"> </span><span class="kn">import</span> <span class="n">cli</span>
+
+<span class="n">cli</span><span class="o">.</span><span class="n">milc_options</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Florzelbop&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;1.0.0&#39;</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s1">&#39;Jane Doe&#39;</span><span class="p">)</span>
+</code></pre></div>
 <p>This will (usually) result in the following config file locations:</p>
 <ul>
 <li>Linux: <code>~/.config/Florzelbop</code></li>
 <li>macOS: <code>~/Library/Application Support/Florzelbop</code></li>
 <li>Windows: <code>C:\Users\&lt;User&gt;\AppData\Local\Florzelbop\Florzelbop</code></li>
 </ul>
+<h1 id="system-configuration-file">System Configuration File<a class="headerlink" href="#system-configuration-file" title="Permanent link">&para;</a></h1>
+<p>Applications can read a system configuration file before the platformdirs user configuration file:</p>
+<div class="highlight"><pre><span></span><code><span class="n">cli</span><span class="o">.</span><span class="n">milc_options</span><span class="p">(</span><span class="n">config_file</span><span class="o">=</span><span class="s1">&#39;/etc/my_app.conf&#39;</span><span class="p">)</span>
+</code></pre></div>
+<p>When the system file exists, MILC reads it first. It then always reads the platformdirs user config, whose settings override matching system settings. <code>cli.config_file</code> remains the platformdirs location, and <code>cli.save_config()</code> writes there. An explicit <code>--config-file</code> command-line argument instead reads and writes only that path, bypassing both layered locations.</p>
 <h1 id="where-did-a-value-come-from">Where Did A Value Come From?<a class="headerlink" href="#where-did-a-value-come-from" title="Permanent link">&para;</a></h1>
 <p>Sometimes you need to know how a configuration value was set. You can use <code>cli.config_source</code> to find out.</p>
 <div class="codehilite"><pre><span></span><code>&gt;&gt;&gt; cli.config_source.general.verbose

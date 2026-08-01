@@ -778,10 +778,10 @@
 <h1 id="milc-metadata">MILC Metadata<a class="headerlink" href="#milc-metadata" title="Permanent link">&para;</a></h1>
 <p>In order to initialize some things, such as the configuration file location and the version number reported by <code>--version</code>, MILC needs to know some basic information before the entrypoint is called. You can use <code>cli.milc_options()</code> to set this information.</p>
 <p>Example:</p>
-<p>```python
-from milc import cli</p>
-<p>cli.milc_options(name='Florzelbop', version='1.0.0', author='Jane Doe')
-```</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">milc</span><span class="w"> </span><span class="kn">import</span> <span class="n">cli</span>
+
+<span class="n">cli</span><span class="o">.</span><span class="n">milc_options</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Florzelbop&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;1.0.0&#39;</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s1">&#39;Jane Doe&#39;</span><span class="p">)</span>
+</code></pre></div>
 <p>You should only do this once, and you should do it as early in your program's execution as possible.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <ul>
@@ -790,6 +790,7 @@ from milc import cli</p>
 <li><code>author</code> — The author string, used in the config file path on some platforms.</li>
 <li><code>logger</code> — A custom logger instance to use instead of MILC's default logger.</li>
 <li><code>env_prefix</code> — A string prefix that enables <a href="../environment_variables/">environment variable defaults</a>. When set, each <code>--flag</code> can be configured via a <code>&lt;PREFIX&gt;_&lt;FLAG&gt;</code> environment variable. See <a href="../environment_variables/">Environment Variables</a> for full details.</li>
+<li><code>config_file</code> — A system configuration file to read before the platformdirs user configuration file. The user configuration overrides matching settings. <code>--config-file</code> bypasses both and uses only its supplied path.</li>
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -797,11 +798,12 @@ from milc import cli</p>
 </div>
 <h2 id="custom-loggers">Custom Loggers<a class="headerlink" href="#custom-loggers" title="Permanent link">&para;</a></h2>
 <p>You can also use this to pass in custom loggers.</p>
-<p>```python
-from milc import cli</p>
-<p>from my_program import custom_logger</p>
-<p>cli.milc_options(logger=custom_logger)
-```</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">milc</span><span class="w"> </span><span class="kn">import</span> <span class="n">cli</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">my_program</span><span class="w"> </span><span class="kn">import</span> <span class="n">custom_logger</span>
+
+<span class="n">cli</span><span class="o">.</span><span class="n">milc_options</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">custom_logger</span><span class="p">)</span>
+</code></pre></div>
 <h2 id="deprecated-set_metadata">Deprecated: set_metadata()<a class="headerlink" href="#deprecated-set_metadata" title="Permanent link">&para;</a></h2>
 <p>Earlier versions of MILC used <code>milc.set_metadata</code> instead. This is still supported but will throw a Deprecation warning.</p>
 
