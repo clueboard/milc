@@ -85,8 +85,7 @@ def test_config_output_exports_without_writing_platformdirs_config(tmp_path):
     _create_config_file(system_config_file, '[general]\nsource = system\n')
     output_config_file = tmp_path / 'output.ini'
     script = tmp_path / 'application.py'
-    script.write_text(
-        """
+    script.write_text("""
 import os
 
 from milc import cli
@@ -103,9 +102,7 @@ def main(cli):
 
 if __name__ == '__main__':
     cli()
-""".strip()
-        + '\n'
-    )
+""".strip() + '\n')
     environment = {**os.environ, 'SYSTEM_CONFIG': str(system_config_file), 'XDG_CONFIG_HOME': str(tmp_path / 'platformdirs')}
 
     result = subprocess.run([sys.executable, str(script), 'config', '--output', str(output_config_file)], capture_output=True, text=True, env=environment)
