@@ -114,6 +114,7 @@ def _process_config_token(config_token: str) -> bool:
 
 
 @milc.cli.argument('-a', '--all', action='store_true', help='Show all configuration options.')
+@milc.cli.argument('-o', '--output', arg_only=True, help='Write the current configuration to this file.')
 @milc.cli.argument('-ro', '--read-only', arg_only=True, action='store_true', help='Operate in read-only mode.')
 @milc.cli.argument('configs', nargs='*', arg_only=True, help='Configuration options to read or write.')
 @milc.cli.subcommand("Read and write configuration settings.")
@@ -138,6 +139,9 @@ def config(cli: MILC) -> bool:
     """
     if not milc.cli.args.configs:
         show_config()
+        if milc.cli.args.output:
+            milc.cli.save_config(milc.cli.args.output)
+            return True
         return False
 
     results = [_process_config_token(token) for token in milc.cli.args.configs]
@@ -145,5 +149,8 @@ def config(cli: MILC) -> bool:
 
     if save_config:
         milc.cli.save_config()
+
+    if milc.cli.args.output:
+        milc.cli.save_config(milc.cli.args.output)
 
     return True

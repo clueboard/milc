@@ -27,8 +27,9 @@ class MILCInterface:
         self._version: Optional[str] = None
         self._logger: Optional[Logger] = None
         self._env_prefix: Optional[str] = None
+        self._config_file: Optional[Union[str, Path]] = None
 
-    def milc_options(self, *, name: Optional[str] = None, author: Optional[str] = None, version: Optional[str] = None, logger: Optional[Logger] = None, env_prefix: Optional[str] = None) -> None:
+    def milc_options(self, *, name: Optional[str] = None, author: Optional[str] = None, version: Optional[str] = None, logger: Optional[Logger] = None, env_prefix: Optional[str] = None, config_file: Optional[Union[str, Path]] = None) -> None:
         """Configure MILC before the entrypoint runs.
 
         Call this before `cli()` or any imports that reference `cli`. It may be called multiple times; each call updates only the supplied arguments.
@@ -39,6 +40,7 @@ class MILCInterface:
             version: The version string reported by `--version`.
             logger: A custom logger instance to use instead of MILC's default logger.
             env_prefix: A string prefix that enables environment variable defaults. When set, each `--flag` can be configured via a `<PREFIX>_<FLAG>` environment variable.
+            config_file: A system configuration file to read before the platformdirs user configuration file.
         """
         if self._milc and self._milc._initialized:
             raise RuntimeError('You must run cli.milc_options() before cli() or anything else!')
@@ -53,7 +55,9 @@ class MILCInterface:
             self._logger = logger
         if env_prefix is not None:
             self._env_prefix = env_prefix
-        self._milc = MILC(self._name, self._author, self._version, self._logger, self._env_prefix)
+        if config_file is not None:
+            self._config_file = config_file
+        self._milc = MILC(self._name, self._author, self._version, self._logger, self._env_prefix, self._config_file)
 
     @property
     def milc(self) -> MILC:
@@ -184,10 +188,10 @@ class MILCInterface:
         """
         return self.milc.argument(*args, **kwargs)
 
-    def save_config(self) -> None:
-        """Save the current configuration to the config file.
+    def save_config(self, config_file: Optional[Union[str, Path]] = None) -> None:
+        """Save the current configuration to the config file or an explicit path.
         """
-        return self.milc.save_config()
+        return self.milc.save_config(config_file)
 
     def __call__(self) -> Any:
         """Execute the entrypoint function.

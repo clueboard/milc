@@ -36,7 +36,7 @@ R = TypeVar("R")
 class MILC(object):
     """MILC - An Opinionated Batteries Included Framework
     """
-    def __init__(self, name: Optional[str] = None, author: Optional[str] = None, version: Optional[str] = None, logger: Optional[logging.Logger] = None, env_prefix: Optional[str] = None) -> None:
+    def __init__(self, name: Optional[str] = None, author: Optional[str] = None, version: Optional[str] = None, logger: Optional[logging.Logger] = None, env_prefix: Optional[str] = None, config_file: Optional[Union[str, Path]] = None) -> None:
         """Initialize the MILC object.
         """
         # Set some defaults
@@ -66,6 +66,8 @@ class MILC(object):
         self._initialized = False
         self.ansi = ansi_colors
         self.arg_only: Dict[str, List[str]] = {}
+        self._config_file_explicit = _in_argv('--config-file')
+        self.system_config_file = Path(config_file).expanduser().resolve() if config_file is not None else None
         self.config_file = self.find_config_file()
         self.default_arguments: Dict[str, Dict[str, Optional[str]]] = {}
         self.env_prefix = env_prefix
@@ -538,9 +540,13 @@ class MILC(object):
         config = Configuration()
         config_source = Configuration()
 
-        if self.config_file.exists():
+        config_files = [self.config_file] if self._config_file_explicit else [config_file for config_file in (self.system_config_file, self.config_file) if config_file is not None]
+        for config_file in config_files:
+            if not config_file.exists():
+                continue
+
             raw_config = RawConfigParser()
-            raw_config.read(str(self.config_file))
+            raw_config.read(str(config_file))
 
             # Iterate over the config file options and write them into config.
             # Section names may be dotted (e.g. [remote.add]) for nested subcommands.
@@ -627,9 +633,12 @@ class MILC(object):
 
         self.release_lock()
 
-    def _save_config_file(self, config: Configuration) -> None:
+    def _save_config_file(self, config: Configuration, config_file: Optional[Path] = None) -> None:
         """Write config to disk.
         """
+        config_file = config_file or self.config_file
+        config_dir = config_file.parent
+
         # Generate a sanitized version of our running configuration.
         # _collect_config_sections recurses into nested ConfigurationSection objects,
         # emitting (dotted_section_name, option_name, value) for every leaf.
@@ -641,21 +650,21 @@ class MILC(object):
             if config_source_section[option_name] == 'config_file' and value is not None:
                 sane_config.set(section_name, option_name, str(value))
 
-        if not self.config_dir.exists():
-            self.config_dir.mkdir(parents=True, exist_ok=True)
+        if not config_dir.exists():
+            config_dir.mkdir(parents=True, exist_ok=True)
 
         # Write the config file atomically.
         self.acquire_lock()
         tmpfile_name = None
         try:
-            with NamedTemporaryFile(mode='w', dir=str(self.config_dir), delete=False) as tmpfile:
+            with NamedTemporaryFile(mode='w', dir=str(config_dir), delete=False) as tmpfile:
                 tmpfile_name = tmpfile.name
                 sane_config.write(tmpfile)
 
             if os.path.getsize(tmpfile_name) > 0:
-                os.replace(tmpfile_name, str(self.config_file))
+                os.replace(tmpfile_name, str(config_file))
             else:
-                self.log.warning('Config file saving failed, not replacing %s with %s.', str(self.config_file), tmpfile_name)
+                self.log.warning('Config file saving failed, not replacing %s with %s.', str(config_file), tmpfile_name)
         finally:
             try:
                 if tmpfile_name and os.path.exists(tmpfile_name):
@@ -682,18 +691,19 @@ class MILC(object):
         # Housekeeping
         self.log.info('Wrote configuration to %s', shlex.quote(str(self.config_file)))
 
-    def save_config(self) -> None:
-        """Save the current configuration to the config file.
+    def save_config(self, config_file: Optional[Union[str, Path]] = None) -> None:
+        """Save the current configuration to the config file or an explicit path.
         """
-        self.log.debug("Saving config file to '%s'", str(self.config_file))
+        save_path = Path(config_file).expanduser().resolve() if config_file is not None else self.config_file
+        self.log.debug("Saving config file to '%s'", str(save_path))
 
-        if not self.config_file:
+        if not save_path:
             self.log.warning('%s.config_file file not set, not saving config!', self.__class__.__name__)
             return
 
         # Write config to disk
-        self._save_config_file(self.config)
-        self.log.info('Wrote configuration to %s', shlex.quote(str(self.config_file)))
+        self._save_config_file(self.config, save_path)
+        self.log.info('Wrote configuration to %s', shlex.quote(str(save_path)))
 
     def check_deprecated(self) -> None:
         entry_name = getattr(self._entrypoint, '__name__')
