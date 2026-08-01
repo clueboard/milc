@@ -2,6 +2,106 @@ Changelog
 =========
 
 
+2.1.0 (2026-08-01)
+------------------
+- New release: 2.0.0 → 2.1.0. [Zach White]
+- Add layered configuration files (#102) [Copilot
+  <223556219+Copilot@users.noreply.github.com>  * have yapf ignore dot
+  directories  * Format layered configuration test  Co-authored-by:
+  Copilot <223556219+Copilot@users.noreply.github.com>  * Apply
+  suggestions from code review  Co-authored-by: Zach White
+  <skullydazed@drpepper.org>  * Fix the agents instructions  * Clarify
+  configuration loading flow  Co-authored-by: Copilot
+  <223556219+Copilot@users.noreply.github.com>  ---------  Co-authored-
+  by: Copilot <223556219+Copilot@users.noreply.github.com>, Zach White]
+
+  * Add layered configuration files
+- Upgrade twine to 7.0.0 in uv.lock (#101) [Copilot, copilot-swe-
+  agent[bot]]
+- Bump urllib3 from 2.6.3 to 2.7.0 (#94) [copilot-swe-agent[bot],
+  dependabot[bot], dependabot[bot]]
+
+  Bumps [urllib3](https://github.com/urllib3/urllib3) from 2.6.3 to 2.7.0.
+  - [Release notes](https://github.com/urllib3/urllib3/releases)
+  - [Changelog](https://github.com/urllib3/urllib3/blob/main/CHANGES.rst)
+  - [Commits](https://github.com/urllib3/urllib3/compare/2.6.3...2.7.0)
+
+  ---
+  updated-dependencies:
+  - dependency-name: urllib3
+    dependency-version: 2.7.0
+    dependency-type: indirect
+  ...
+- Bump pymdown-extensions from 10.21.3 to 11.0 (#100) [dependabot[bot],
+  dependabot[bot]]
+
+  Bumps [pymdown-extensions](https://github.com/facelessuser/pymdown-extensions) from 10.21.3 to 11.0.
+  - [Release notes](https://github.com/facelessuser/pymdown-extensions/releases)
+  - [Commits](https://github.com/facelessuser/pymdown-extensions/compare/10.21.3...11.0)
+
+  ---
+  updated-dependencies:
+  - dependency-name: pymdown-extensions
+    dependency-version: '11.0'
+    dependency-type: indirect
+  ...
+- Bump pymdown-extensions from 10.16.1 to 10.21.3 (#95)
+  [dependabot[bot], dependabot[bot]]
+
+  Bumps [pymdown-extensions](https://github.com/facelessuser/pymdown-extensions) from 10.16.1 to 10.21.3.
+  - [Release notes](https://github.com/facelessuser/pymdown-extensions/releases)
+  - [Commits](https://github.com/facelessuser/pymdown-extensions/compare/10.16.1...10.21.3)
+
+  ---
+  updated-dependencies:
+  - dependency-name: pymdown-extensions
+    dependency-version: 10.21.3
+    dependency-type: indirect
+  ...
+- Bump idna from 3.11 to 3.15 (#96) [dependabot[bot], dependabot[bot]]
+
+  Bumps [idna](https://github.com/kjd/idna) from 3.11 to 3.15.
+  - [Release notes](https://github.com/kjd/idna/releases)
+  - [Changelog](https://github.com/kjd/idna/blob/master/HISTORY.md)
+  - [Commits](https://github.com/kjd/idna/compare/v3.11...v3.15)
+
+  ---
+  updated-dependencies:
+  - dependency-name: idna
+    dependency-version: '3.15'
+    dependency-type: indirect
+  ...
+- Bump cryptography from 46.0.7 to 48.0.1 (#97) [dependabot[bot],
+  dependabot[bot]]
+
+  Bumps [cryptography](https://github.com/pyca/cryptography) from 46.0.7 to 48.0.1.
+  - [Changelog](https://github.com/pyca/cryptography/blob/main/CHANGELOG.rst)
+  - [Commits](https://github.com/pyca/cryptography/compare/46.0.7...48.0.1)
+
+  ---
+  updated-dependencies:
+  - dependency-name: cryptography
+    dependency-version: 48.0.1
+    dependency-type: indirect
+  ...
+- Bump gitpython from 3.1.46 to 3.1.54 (#99) [dependabot[bot],
+  dependabot[bot]]
+
+  Bumps [gitpython](https://github.com/gitpython-developers/GitPython) from 3.1.46 to 3.1.54.
+  - [Release notes](https://github.com/gitpython-developers/GitPython/releases)
+  - [Changelog](https://github.com/gitpython-developers/GitPython/blob/main/CHANGES)
+  - [Commits](https://github.com/gitpython-developers/GitPython/compare/3.1.46...3.1.54)
+
+  ---
+  updated-dependencies:
+  - dependency-name: gitpython
+    dependency-version: 3.1.54
+    dependency-type: indirect
+  ...
+- Add code style guidelines. [Zach White]
+- Minor: changelog update. [Zach White]
+
+
 2.0.0 (2026-04-20)
 ------------------
 
