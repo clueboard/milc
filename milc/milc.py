@@ -540,7 +540,15 @@ class MILC(object):
         config = Configuration()
         config_source = Configuration()
 
-        config_files = [self.config_file] if self._config_file_explicit else [config_file for config_file in (self.system_config_file, self.config_file) if config_file is not None]
+        config_files = []
+        
+        if self._config_file_explicit:
+            config_files.append(self.config_file)
+        else:
+            for config_file in (self.system_config_file, self.config_file):
+                if config_file:
+                    config_files.append(config_file)
+
         for config_file in config_files:
             if not config_file.exists():
                 continue

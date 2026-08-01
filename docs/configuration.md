@@ -35,7 +35,7 @@ You can create new values by simply assigning to them. This only works with dict
 
 # Writing Configuration Files
 
-Use `cli.save_config()` to save the user's configuration file. It writes to the platformdirs location specified by `cli.config_file`, unless `--config-file` was supplied. Pass a path to `cli.save_config(path)` to write the current configuration elsewhere.
+Use `cli.save_config()` to save the user's configuration file. It writes to the user's config location specified by `cli.config_file`, unless `--config-file` was supplied. Pass a path to `cli.save_config(path)` to write the current configuration elsewhere.
 
 # Configuration File Location
 
@@ -58,7 +58,7 @@ This will (usually) result in the following config file locations:
 Applications can read a system configuration file before the platformdirs user configuration file:
 
 ```python
-cli.milc_options(config_file='/etc/florzelbop.ini')
+cli.milc_options(config_file='/etc/my_app.conf')
 ```
 
 When the system file exists, MILC reads it first. It then always reads the platformdirs user config, whose settings override matching system settings. `cli.config_file` remains the platformdirs location, and `cli.save_config()` writes there. An explicit `--config-file` command-line argument instead reads and writes only that path, bypassing both layered locations.
