@@ -139,15 +139,17 @@ def config(cli: MILC) -> bool:
     """
     if not milc.cli.args.configs:
         show_config()
+
         if milc.cli.args.output:
             milc.cli.save_config(milc.cli.args.output)
+
             return True
+
         return False
 
     results = [_process_config_token(token) for token in milc.cli.args.configs]
-    save_config = any(results)
 
-    if save_config:
+    if any(results):
         milc.cli.save_config()
 
     if milc.cli.args.output:

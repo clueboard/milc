@@ -6,7 +6,6 @@ import shlex
 import subprocess
 import sys
 from configparser import RawConfigParser
-from decimal import Decimal
 from pathlib import Path
 from platform import platform
 from tempfile import NamedTemporaryFile
@@ -27,7 +26,7 @@ from typing_extensions import ParamSpec
 from ._in_argv import _in_argv, _index_argv
 from .ansi import MILCFormatter, ansi_colors, ansi_config, ansi_escape, format_ansi
 from .attrdict import AttrDict
-from .configuration import Configuration, SubparserWrapper, _collect_config_sections, _config_navigate, get_argument_name, get_argument_strings, handle_store_boolean
+from .configuration import Configuration, SubparserWrapper, _collect_config_sections, _config_navigate, _read_config_file, get_argument_name, get_argument_strings, handle_store_boolean
 
 P = ParamSpec("P")
 R = TypeVar("R")
@@ -539,9 +538,8 @@ class MILC(object):
         """
         config = Configuration()
         config_source = Configuration()
-
         config_files = []
-        
+
         if self._config_file_explicit:
             config_files.append(self.config_file)
         else:
@@ -553,33 +551,7 @@ class MILC(object):
             if not config_file.exists():
                 continue
 
-            raw_config = RawConfigParser()
-            raw_config.read(str(config_file))
-
-            # Iterate over the config file options and write them into config.
-            # Section names may be dotted (e.g. [remote.add]) for nested subcommands.
-            for section in raw_config.sections():
-                config_section = _config_navigate(config, section)
-                config_source_section = _config_navigate(config_source, section)
-
-                for option in raw_config.options(section):
-                    value = raw_config.get(section, option)
-
-                    # Coerce values into useful datatypes
-                    if value.lower() in ['yes', 'true', 'on']:
-                        value = True
-                    elif value.lower() in ['no', 'false', 'off']:
-                        value = False
-                    elif value.lower() in ['none']:
-                        continue
-                    elif value.replace('.', '').isdigit():
-                        if '.' in value:
-                            value = Decimal(value)
-                        else:
-                            value = int(value)
-
-                    config_section[option] = value
-                    config_source_section[option] = 'config_file'
+            _read_config_file(config_file, config, config_source)
 
         return config, config_source
 
@@ -646,11 +618,12 @@ class MILC(object):
         """
         config_file = config_file or self.config_file
         config_dir = config_file.parent
+        sane_config = RawConfigParser()
+        tmpfile_name = None
 
         # Generate a sanitized version of our running configuration.
         # _collect_config_sections recurses into nested ConfigurationSection objects,
         # emitting (dotted_section_name, option_name, value) for every leaf.
-        sane_config = RawConfigParser()
         for section_name, option_name, value in _collect_config_sections(config):
             if not sane_config.has_section(section_name):
                 sane_config.add_section(section_name)
@@ -663,7 +636,7 @@ class MILC(object):
 
         # Write the config file atomically.
         self.acquire_lock()
-        tmpfile_name = None
+
         try:
             with NamedTemporaryFile(mode='w', dir=str(config_dir), delete=False) as tmpfile:
                 tmpfile_name = tmpfile.name
@@ -703,14 +676,17 @@ class MILC(object):
         """Save the current configuration to the config file or an explicit path.
         """
         save_path = Path(config_file).expanduser().resolve() if config_file is not None else self.config_file
+
         self.log.debug("Saving config file to '%s'", str(save_path))
 
         if not save_path:
             self.log.warning('%s.config_file file not set, not saving config!', self.__class__.__name__)
+
             return
 
         # Write config to disk
         self._save_config_file(self.config, save_path)
+
         self.log.info('Wrote configuration to %s', shlex.quote(str(save_path)))
 
     def check_deprecated(self) -> None:
