@@ -19,6 +19,8 @@ The human author of a change is fully responsible for its correctness, scope, an
 
 Agents and humans alike must follow the canonical project documentation, which can be found as markdown (.md) files in the repo, particularly under /docs. This file does not define separate rules for AI systems; it clarifies that no such separate rules exist.
 
+In particular, you must have read README.md and CODESTYLE.md, and you must check docs/ when necessary.
+
 # Scope and autonomy limits
 
 AI tools must not:
