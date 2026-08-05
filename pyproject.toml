@@ -38,7 +38,6 @@ dependencies = [
     "halo",
     "platformdirs",
     "spinners",
-    "types-colorama",
     "typing_extensions",
 ]
 
@@ -52,6 +51,7 @@ dev = [
     "mkdocs-git-revision-date-plugin",
     "mkdocs-material<9",
     "ty",
+    "types-colorama",
     "pydoc-markdown",
     "pytest",
     "pygments",
